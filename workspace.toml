@@ -1,0 +1,8 @@
+[workspace]
+name = "hrms"
+label = "Human Resource Management System"
+version = "0.0.1"
+description = "A Human Resource Management System for managing employee data, payroll, and other HR-related tasks."
+long_description = """
+The Human Resource Management System (HRMS) is a comprehensive software solution designed to streamline and automate various human resource management processes. It provides tools for managing employee information, tracking attendance, processing payroll, and handling other HR-related tasks efficiently. The system aims to improve productivity, reduce administrative overhead, and enhance the overall employee experience within an organization.
+"""
