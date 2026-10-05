@@ -1,0 +1,83 @@
+[plugin]
+name = "hr_expense"
+label = "Expenses"
+version = "0.1.0"
+description = "Expense reports, advances and policies; accounting and payroll receive events."
+long_description = """
+Expense reports hold lines; each line is converted to the report's currency once, at a rate that is kept
+with it. Policies (warn, ask why, block, or cap) are looked up for the expense date. Receipts and duplicates
+are enforced and acknowledged by the approver, who is the person's manager, fixed when the report is sent,
+and never the person. Advances are settled in their own currency up to what is unclaimed. This plugin never
+posts accounting entries: approval announces the report with its lines, and a finance plugin (or payroll)
+answers with reimbursement events. Built from a reading of Odoo 19 and Frappe HRMS. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "currency"]
+capabilities = ["db::query", "db::mutate", "events::emit", "db::transaction", "plugins::call", "storage::read", "storage::write"]
+access_models = [
+  { name = "expense_category", permissions = ["read", "write"] },
+  { name = "expense_policy", permissions = ["read", "write"] },
+  { name = "expense_report", permissions = ["read", "write"] },
+  { name = "expense_line", permissions = ["read", "write"] },
+  { name = "expense_advance", permissions = ["read", "write"] },
+  { name = "expense_advance_use", permissions = ["read", "write"] },
+  { name = "expense_payment", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "expense_admin"
+label = "Expense administrator"
+description = "Sets up categories and policies"
+
+[[roles]]
+name = "expense_finance"
+label = "Expense finance"
+description = "Decides reports nobody above the person can, records reimbursements and advances paid"
+
+[[roles]]
+name = "expense_proxy"
+label = "Expense proxy"
+description = "May create reports on behalf of other employees"
+
+[[roles]]
+name = "expense_corrector"
+label = "Expense record corrector"
+description = "May delete reports and edit payment records. Nobody should hold this in normal use."
+
+[[events]]
+name = "report_approved"
+
+[[events]]
+name = "report_rejected"
+
+[[events]]
+name = "report_closed"
+
+[[events]]
+name = "advance_requested"
+
+[[events]]
+name = "advance_approved"
+
+[[events]]
+name = "advance_overdue"
+
+[[schedule]]
+name = "expense-nightly"
+function = "expense_nightly"
+cron = "50 0 * * *"
+
+[app]
+icon = "receipt"
+route = "/hr/expenses"
+description = "Expense reports and advances"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

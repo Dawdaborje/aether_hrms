@@ -1,0 +1,168 @@
+{
+  "model_id": "mdl_hbtukrbko6",
+  "name": "att_correction",
+  "label": "%att_correction%",
+  "plural_label": "%att_corrections%",
+  "icon": "edit",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_yizjsx4hwq",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_yevwkjqdvx",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_gmz7vpbabn",
+      "name": "work_date",
+      "label": "%work_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_kpvlr32tw3",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_3ink6co622",
+          "value": "missing_in",
+          "label": "%missing_in%"
+        },
+        {
+          "id": "opt_apdcdg6b52",
+          "value": "missing_out",
+          "label": "%missing_out%"
+        },
+        {
+          "id": "opt_may3cg2bjy",
+          "value": "wrong_time",
+          "label": "%wrong_time%"
+        },
+        {
+          "id": "opt_cch2reqqqy",
+          "value": "absent_to_present",
+          "label": "%absent_to_present%"
+        }
+      ]
+    },
+    {
+      "id": "fld_6kqkcpnvsl",
+      "name": "proposed_in",
+      "label": "%proposed_in%",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_jt3xq2ytmg",
+      "name": "proposed_out",
+      "label": "%proposed_out%",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_4vlzfubadi",
+      "name": "supersede",
+      "label": "%supersede%",
+      "type": "string",
+      "max_length": 400,
+      "help": "Ids of punches this correction replaces, comma separated."
+    },
+    {
+      "id": "fld_7bws755nbb",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_4cbszicmte",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "default": "pending",
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_kaawylxknz",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_uevdf4s52a",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_6f5uw5i4et",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_cllom4ev6q",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_dahhrfleb3",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "help": "The requester's manager when it was made.",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_entznc4lz3",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_j3kgrn2def",
+      "name": "decided_on",
+      "label": "%decided_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_lkicffjzun",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "reference",
+      "employee",
+      "work_date",
+      "kind",
+      "status"
+    ]
+  }
+}

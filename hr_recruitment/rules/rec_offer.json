@@ -1,0 +1,29 @@
+{
+  "model": "rec_offer",
+  "access": [
+    {
+      "name": "recruiters",
+      "roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "salary",
+        "override_reason"
+      ],
+      "read_roles": [
+        "recruiter",
+        "recruit_manager"
+      ]
+    }
+  ]
+}

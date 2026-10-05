@@ -1,0 +1,183 @@
+{
+  "model_id": "mdl_3zrs5atdv5",
+  "name": "ob_task",
+  "label": "%ob_task%",
+  "plural_label": "%ob_tasks%",
+  "icon": "square-check",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_rmq5f8cr42",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "ob_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_aujv21c04w",
+      "name": "step",
+      "label": "%step%",
+      "type": "link",
+      "target": "ob_step",
+      "required": true
+    },
+    {
+      "id": "fld_9t51i6hhjn",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_pg5hzdg42g",
+      "name": "due_start",
+      "label": "%due_start%",
+      "type": "date"
+    },
+    {
+      "id": "fld_w51ush612d",
+      "name": "due_end",
+      "label": "%due_end%",
+      "type": "date"
+    },
+    {
+      "id": "fld_hru7xfgmqm",
+      "name": "assignee",
+      "label": "%assignee%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain",
+      "help": "The login account that does it."
+    },
+    {
+      "id": "fld_obtaskrole1",
+      "name": "assignee_role",
+      "label": "%assignee_role%",
+      "type": "string",
+      "max_length": 120,
+      "index": "plain",
+      "help": "Anyone holding this role may do it."
+    },
+    {
+      "id": "fld_mg83hflxjm",
+      "name": "assignee_note",
+      "label": "%assignee_note%",
+      "type": "string",
+      "max_length": 200,
+      "help": "Which fallback was used, or why nobody was found."
+    },
+    {
+      "id": "fld_f5322zo9u8",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_bxzkwnvuw8",
+          "value": "todo",
+          "label": "%todo%"
+        },
+        {
+          "id": "opt_dit2tetkzc",
+          "value": "done",
+          "label": "%done%"
+        },
+        {
+          "id": "opt_qxz5ew7fgw",
+          "value": "waived",
+          "label": "%waived%"
+        },
+        {
+          "id": "opt_7k6e4huop4",
+          "value": "void",
+          "label": "%void%"
+        }
+      ],
+      "required": true,
+      "default": "todo",
+      "index": "plain"
+    },
+    {
+      "id": "fld_ahmcqqae4k",
+      "name": "gate",
+      "label": "%gate%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_qjkfpiw6jr",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_6nuwznzyqb",
+          "value": "hire",
+          "label": "%hire%"
+        },
+        {
+          "id": "opt_sbg54j7p05",
+          "value": "access",
+          "label": "%access%"
+        },
+        {
+          "id": "opt_v80i6i8o9b",
+          "value": "settlement",
+          "label": "%settlement%"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "id": "fld_rhcsuixy0h",
+      "name": "weight",
+      "label": "%weight%",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "id": "fld_ymvtzpodqn",
+      "name": "done_on",
+      "label": "%done_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_mlry5lb5ua",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_tysb6j92ty",
+      "name": "waive_reason",
+      "label": "%waive_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_fy6oskjvw3",
+      "name": "overdue_notified",
+      "label": "%overdue_notified%",
+      "type": "bool",
+      "default": false
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_mmspn7g511",
+      "fields": [
+        "run",
+        "step"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "assignee",
+      "due_end",
+      "state"
+    ]
+  }
+}

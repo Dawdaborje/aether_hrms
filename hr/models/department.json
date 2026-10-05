@@ -1,0 +1,89 @@
+{
+  "model_id": "mdl_2wk5bl6ddu",
+  "name": "department",
+  "label": "%department%",
+  "plural_label": "%departments%",
+  "icon": "building",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_vpwc5lyzpa",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "plain",
+      "track": true
+    },
+    {
+      "id": "fld_a56xuaphta",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 20,
+      "index": "unique"
+    },
+    {
+      "id": "fld_xglyhnap5u",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "department",
+      "hierarchy": true,
+      "track": true
+    },
+    {
+      "id": "fld_e6rpnzznjr",
+      "name": "manager",
+      "label": "%manager%",
+      "type": "link",
+      "target": "employee",
+      "track": true
+    },
+    {
+      "id": "fld_gmhgff2rkz",
+      "name": "cost_center",
+      "label": "%cost_center%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_7rpjnxruxe",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    },
+    {
+      "id": "fld_ac7riiuwvn",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_73m5bqmi46",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "target": "company.company",
+      "index": "plain",
+      "target_id": "mdl_d7q6tyyshp"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "name",
+      "code",
+      "manager",
+      "is_active"
+    ]
+  }
+}

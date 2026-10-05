@@ -1,0 +1,95 @@
+{
+  "model_id": "mdl_r3yz77dl34",
+  "name": "dependent",
+  "label": "%dependent%",
+  "plural_label": "%dependents%",
+  "icon": "heart",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_ly3scfoctm",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "employee",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_jlnidsquyx",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_toxt3xviuo",
+      "name": "relationship",
+      "label": "%relationship%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_3o5e77sdi7",
+          "value": "spouse",
+          "label": "%spouse%"
+        },
+        {
+          "id": "opt_w6mkehcvqf",
+          "value": "child",
+          "label": "%child%"
+        },
+        {
+          "id": "opt_zqq4di4fwp",
+          "value": "parent",
+          "label": "%parent%"
+        },
+        {
+          "id": "opt_qe2vsgdav6",
+          "value": "sibling",
+          "label": "%sibling%"
+        },
+        {
+          "id": "opt_ikb6ehko22",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_oernws5h7i",
+      "name": "date_of_birth",
+      "label": "%date_of_birth%",
+      "type": "date"
+    },
+    {
+      "id": "fld_ubfodayryt",
+      "name": "phone",
+      "label": "%phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_3geizsskuv",
+      "name": "is_beneficiary",
+      "label": "%is_beneficiary%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_5wj4hcjpyx",
+      "name": "is_emergency_contact",
+      "label": "%is_emergency_contact%",
+      "type": "bool",
+      "default": false
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "relationship",
+      "employee"
+    ]
+  }
+}

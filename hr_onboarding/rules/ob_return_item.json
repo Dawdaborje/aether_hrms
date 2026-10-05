@@ -1,0 +1,17 @@
+{
+  "model": "ob_return_item",
+  "access": [
+    {
+      "name": "officers",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "ob_officer",
+        "ob_manager"
+      ]
+    }
+  ]
+}

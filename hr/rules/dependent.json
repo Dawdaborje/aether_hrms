@@ -1,0 +1,30 @@
+{
+  "model": "dependent",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ],
+      "when": {
+        "employee": "$employee"
+      }
+    },
+    {
+      "name": "hr",
+      "roles": [
+        "hr_user",
+        "hr_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

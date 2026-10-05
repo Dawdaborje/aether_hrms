@@ -1,0 +1,302 @@
+{
+  "model_id": "mdl_3pmpstnfik",
+  "name": "leave_type",
+  "label": "%leave_type%",
+  "plural_label": "%leave_types%",
+  "icon": "calendar-days",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_iawbp2dmns",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "unique"
+    },
+    {
+      "id": "fld_omyjefsbot",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_horoy5kaeh",
+      "name": "color",
+      "label": "%color%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_pxnb7pjv7d",
+      "name": "is_paid",
+      "label": "%is_paid%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_3jlg4ie2nf",
+      "name": "validation",
+      "label": "%validation%",
+      "type": "select",
+      "default": "manager",
+      "options": [
+        {
+          "id": "opt_qussryxwcc",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_jpcojjsxdf",
+          "value": "manager",
+          "label": "%manager%"
+        },
+        {
+          "id": "opt_z3qzof2llu",
+          "value": "hr",
+          "label": "%hr%"
+        },
+        {
+          "id": "opt_p2lociyfhc",
+          "value": "both",
+          "label": "%both%"
+        }
+      ],
+      "help": "Who must approve: nobody, the manager, an HR leave administrator, or the manager and then HR."
+    },
+    {
+      "id": "fld_ubmlohe27s",
+      "name": "requires_allocation",
+      "label": "%requires_allocation%",
+      "type": "bool",
+      "default": true,
+      "help": "Needs days granted first. Locked once requests exist."
+    },
+    {
+      "id": "fld_zqvi4wkzgc",
+      "name": "allow_negative",
+      "label": "%allow_negative%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_gsgtth4xiu",
+      "name": "max_negative",
+      "label": "%max_negative%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "How far below zero the balance may go."
+    },
+    {
+      "id": "fld_jqk5l7kzfi",
+      "name": "half_days",
+      "label": "%half_days%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_bm6mwboee5",
+      "name": "count_all_days",
+      "label": "%count_all_days%",
+      "type": "bool",
+      "default": false,
+      "help": "Count every calendar day, weekends and holidays included (maternity). Locked once requests exist."
+    },
+    {
+      "id": "fld_paw53vc75q",
+      "name": "sandwich",
+      "label": "%sandwich%",
+      "type": "bool",
+      "default": false,
+      "help": "Days off between two leaves count as leave too."
+    },
+    {
+      "id": "fld_cc45n6iqqc",
+      "name": "min_notice_days",
+      "label": "%min_notice_days%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_nkgw5lwqwa",
+      "name": "applicable_after_days",
+      "label": "%applicable_after_days%",
+      "type": "int",
+      "default": 0,
+      "help": "Days of service before it can be taken."
+    },
+    {
+      "id": "fld_3cuhdkwgwx",
+      "name": "max_per_request",
+      "label": "%max_per_request%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_46b4oxfe5a",
+      "name": "gender",
+      "label": "%gender%",
+      "type": "select",
+      "default": "any",
+      "options": [
+        {
+          "id": "opt_32bgtx5ojx",
+          "value": "any",
+          "label": "%any%"
+        },
+        {
+          "id": "opt_3sza3coi4l",
+          "value": "male",
+          "label": "%male%"
+        },
+        {
+          "id": "opt_luzx6sdgsf",
+          "value": "female",
+          "label": "%female%"
+        }
+      ]
+    },
+    {
+      "id": "fld_4tajwoayrd",
+      "name": "annual_days",
+      "label": "%annual_days%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Days granted to everyone each year."
+    },
+    {
+      "id": "fld_qwltvi2b5g",
+      "name": "pro_rata",
+      "label": "%pro_rata%",
+      "type": "bool",
+      "default": true,
+      "help": "Give people hired during the year only the share of the days left."
+    },
+    {
+      "id": "fld_qphu4ubo2i",
+      "name": "earned",
+      "label": "%earned%",
+      "type": "bool",
+      "default": false,
+      "help": "Grant the annual days in instalments through the year instead of at the start."
+    },
+    {
+      "id": "fld_tze37cq5t4",
+      "name": "earned_frequency",
+      "label": "%earned_frequency%",
+      "type": "select",
+      "default": "monthly",
+      "options": [
+        {
+          "id": "opt_qz4jo7wkb2",
+          "value": "monthly",
+          "label": "%monthly%"
+        },
+        {
+          "id": "opt_hbu3pqzifk",
+          "value": "quarterly",
+          "label": "%quarterly%"
+        },
+        {
+          "id": "opt_t3aum55rah",
+          "value": "half_yearly",
+          "label": "%half_yearly%"
+        },
+        {
+          "id": "opt_iq5gjj4kyw",
+          "value": "yearly",
+          "label": "%yearly%"
+        }
+      ]
+    },
+    {
+      "id": "fld_prpq23zbo3",
+      "name": "earned_rounding",
+      "label": "%earned_rounding%",
+      "type": "select",
+      "default": "none",
+      "options": [
+        {
+          "id": "opt_fdnj3nbgc2",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_oj7auhlegk",
+          "value": "0.25",
+          "label": "%0.25%"
+        },
+        {
+          "id": "opt_krroyxjtjm",
+          "value": "0.5",
+          "label": "%0.5%"
+        },
+        {
+          "id": "opt_chgbyiusne",
+          "value": "1",
+          "label": "%1%"
+        }
+      ]
+    },
+    {
+      "id": "fld_3agygcmi3t",
+      "name": "allocate_on",
+      "label": "%allocate_on%",
+      "type": "select",
+      "default": "last",
+      "options": [
+        {
+          "id": "opt_uduxohhzdw",
+          "value": "first",
+          "label": "%first%"
+        },
+        {
+          "id": "opt_yphtvfku2r",
+          "value": "last",
+          "label": "%last%"
+        }
+      ],
+      "help": "Earned leave arrives on the first or last day of its period."
+    },
+    {
+      "id": "fld_dgiynvmzon",
+      "name": "carry_forward",
+      "label": "%carry_forward%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_rwqzndkyxa",
+      "name": "carry_forward_max",
+      "label": "%carry_forward_max%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Most days carried into the next year."
+    },
+    {
+      "id": "fld_wfhic3yja5",
+      "name": "carry_forward_days",
+      "label": "%carry_forward_days%",
+      "type": "int",
+      "default": 0,
+      "help": "Carried days lapse this many days into the year; 0: they last the year."
+    },
+    {
+      "id": "fld_zcxrmkefe5",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "validation",
+      "annual_days",
+      "is_paid"
+    ]
+  }
+}

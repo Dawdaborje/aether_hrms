@@ -1,0 +1,37 @@
+{
+  "model": "perf_checkin",
+  "access": [
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "perf_admin"
+      ]
+    },
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create"
+      ],
+      "when": {
+        "by": "$hr.employee"
+      }
+    },
+    {
+      "name": "managers",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "by": {
+          "in": "$hr.subordinates"
+        }
+      }
+    }
+  ]
+}

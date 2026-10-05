@@ -1,0 +1,22 @@
+{
+  "model": "expense_advance_use",
+  "access": [
+    {
+      "name": "everyone",
+      "operations": [
+        "read",
+        "create"
+      ]
+    },
+    {
+      "name": "nobody_edits",
+      "roles": [
+        "expense_corrector"
+      ],
+      "operations": [
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

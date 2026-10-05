@@ -1,0 +1,33 @@
+{
+  "model": "hire_hold",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "hr",
+      "roles": [
+        "hr_user",
+        "hr_manager"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    },
+    {
+      "name": "through_other_plugins",
+      "roles": [
+        "via:*"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "model_id": "mdl_raeuzfs7xd",
+  "name": "employment",
+  "label": "%employment%",
+  "plural_label": "%employments%",
+  "icon": "file-clock",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_mumj2c6mlw",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "employee",
+      "required": true,
+      "index": "plain",
+      "track": true
+    },
+    {
+      "id": "fld_eatlmqmawy",
+      "name": "date_from",
+      "label": "%date_from%",
+      "type": "date",
+      "required": true,
+      "track": true,
+      "help": "The day these terms start."
+    },
+    {
+      "id": "fld_asdb475u3s",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "planned",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_vbii2eoyue",
+          "value": "planned",
+          "label": "%planned%"
+        },
+        {
+          "id": "opt_73fvg2fab5",
+          "value": "current",
+          "label": "%current%"
+        },
+        {
+          "id": "opt_53ome35dlk",
+          "value": "past",
+          "label": "%past%"
+        }
+      ],
+      "help": "planned: starts later; current: in force today; past: replaced by a later one. Kept up to date by the plugin."
+    },
+    {
+      "id": "fld_f5szadtcrj",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "department",
+      "track": true
+    },
+    {
+      "id": "fld_meo65l4f6u",
+      "name": "job",
+      "label": "%job%",
+      "type": "link",
+      "target": "job",
+      "track": true
+    },
+    {
+      "id": "fld_34x47cizv7",
+      "name": "position",
+      "label": "%position%",
+      "type": "link",
+      "target": "position",
+      "track": true
+    },
+    {
+      "id": "fld_2j7lnu72tf",
+      "name": "manager",
+      "label": "%manager%",
+      "type": "link",
+      "target": "employee",
+      "track": true
+    },
+    {
+      "id": "fld_xt5ylhnfdd",
+      "name": "employment_type",
+      "label": "%employment_type%",
+      "type": "select",
+      "default": "permanent",
+      "options": [
+        {
+          "id": "opt_fxst3r7djj",
+          "value": "permanent",
+          "label": "%permanent%"
+        },
+        {
+          "id": "opt_4p7zwoorw5",
+          "value": "contract",
+          "label": "%contract%"
+        },
+        {
+          "id": "opt_yu73g6dbrw",
+          "value": "temporary",
+          "label": "%temporary%"
+        },
+        {
+          "id": "opt_5dfylftabs",
+          "value": "intern",
+          "label": "%intern%"
+        },
+        {
+          "id": "opt_jnqhptgbtc",
+          "value": "casual",
+          "label": "%casual%"
+        }
+      ],
+      "track": true
+    },
+    {
+      "id": "fld_vvfckw6jcy",
+      "name": "work_location",
+      "label": "%work_location%",
+      "type": "link",
+      "target": "work_location"
+    },
+    {
+      "id": "fld_hwhcb6ubz2",
+      "name": "grade",
+      "label": "%grade%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_q443ydmsuf",
+      "name": "wage",
+      "label": "%wage%",
+      "type": "decimal",
+      "scale": 2,
+      "track": true
+    },
+    {
+      "id": "fld_usjqncgsb5",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "link",
+      "target": "currency.currency",
+      "target_id": "mdl_khholv2eis"
+    },
+    {
+      "id": "fld_bo6eru7igp",
+      "name": "pay_frequency",
+      "label": "%pay_frequency%",
+      "type": "select",
+      "default": "monthly",
+      "options": [
+        {
+          "id": "opt_naegl3syfv",
+          "value": "monthly",
+          "label": "%monthly%"
+        },
+        {
+          "id": "opt_pgncw5vn5i",
+          "value": "biweekly",
+          "label": "%biweekly%"
+        },
+        {
+          "id": "opt_t4mrlbybvz",
+          "value": "weekly",
+          "label": "%weekly%"
+        },
+        {
+          "id": "opt_ckc62kq2yz",
+          "value": "hourly",
+          "label": "%hourly%"
+        },
+        {
+          "id": "opt_uek2htwysn",
+          "value": "annual",
+          "label": "%annual%"
+        }
+      ]
+    },
+    {
+      "id": "fld_4jtwruzlmu",
+      "name": "contract_start",
+      "label": "%contract_start%",
+      "type": "date"
+    },
+    {
+      "id": "fld_tjfzz5l2dt",
+      "name": "contract_end",
+      "label": "%contract_end%",
+      "type": "date"
+    },
+    {
+      "id": "fld_wkypfzh65u",
+      "name": "fixed_term",
+      "label": "%fixed_term%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_noirazm2xi",
+      "name": "trial_end",
+      "label": "%trial_end%",
+      "type": "date"
+    },
+    {
+      "id": "fld_swu37xspsk",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "max_length": 200,
+      "help": "Why the terms changed: hire, promotion, transfer, renewal..."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_xfgli23j3o",
+      "fields": [
+        "employee",
+        "date_from"
+      ],
+      "unique": true
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "employee",
+      "date_from",
+      "job",
+      "department",
+      "state"
+    ]
+  }
+}

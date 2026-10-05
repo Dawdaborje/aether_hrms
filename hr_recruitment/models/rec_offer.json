@@ -1,0 +1,161 @@
+{
+  "model_id": "mdl_7qrs77givh",
+  "name": "rec_offer",
+  "label": "%rec_offer%",
+  "plural_label": "%rec_offers%",
+  "icon": "mail",
+  "title_field": "application",
+  "fields": [
+    {
+      "id": "fld_dgnsrdt7jd",
+      "name": "application",
+      "label": "%application%",
+      "type": "link",
+      "target": "rec_application",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_kzqkii476q",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_mec7d3xjmv",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_xzcohpxquf",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_nfxlxwfnzb",
+          "value": "sent",
+          "label": "%sent%"
+        },
+        {
+          "id": "opt_lpjh727ri2",
+          "value": "accepted",
+          "label": "%accepted%"
+        },
+        {
+          "id": "opt_cuwrftcgj7",
+          "value": "declined",
+          "label": "%declined%"
+        },
+        {
+          "id": "opt_pea7ldcbnp",
+          "value": "expired",
+          "label": "%expired%"
+        },
+        {
+          "id": "opt_5u3kq5vmax",
+          "value": "withdrawn",
+          "label": "%withdrawn%"
+        }
+      ]
+    },
+    {
+      "id": "fld_3z2xyelo6e",
+      "name": "position",
+      "label": "%position%",
+      "type": "link",
+      "target": "hr.position",
+      "target_id": "mdl_6aaww7ql2l"
+    },
+    {
+      "id": "fld_efloegm7d2",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "hr.department",
+      "target_id": "mdl_2wk5bl6ddu"
+    },
+    {
+      "id": "fld_fjlrlpn6xj",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_y22wmz5zao",
+      "name": "salary",
+      "label": "%salary%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_qdb7zlyavd",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_7rns5fmzmx",
+      "name": "terms",
+      "label": "%terms%",
+      "type": "text"
+    },
+    {
+      "id": "fld_w2hz5lkkgx",
+      "name": "valid_until",
+      "label": "%valid_until%",
+      "type": "date"
+    },
+    {
+      "id": "fld_3cdolu7rup",
+      "name": "override_reason",
+      "label": "%override_reason%",
+      "type": "text",
+      "help": "Why the salary is outside the opening's band."
+    },
+    {
+      "id": "fld_5pmev4uqfr",
+      "name": "created_by",
+      "label": "%created_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_rblfxr3knr",
+      "name": "approved_by",
+      "label": "%approved_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_kneh7c3yfr",
+      "name": "responded_on",
+      "label": "%responded_on%",
+      "type": "date"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "application",
+      "status",
+      "start_date",
+      "salary"
+    ]
+  }
+}

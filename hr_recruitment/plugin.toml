@@ -1,0 +1,84 @@
+[plugin]
+name = "hr_recruitment"
+label = "Recruitment"
+version = "0.1.0"
+description = "Openings, applications, interviews, feedback and offers, ending in a hire."
+long_description = """
+Openings are for seats of a position and open only when the position has free seats that no other open
+opening has already promised; the check is made again when an offer goes out. A candidate is one person in
+the directory, so an application is just that person and an opening. Interviews have a panel with no
+overlapping bookings and rate a round's criteria; feedback is blind until the interview has its outcome,
+which is worked out from the feedback in, not typed. Offers need a second person's approval and stay inside
+the opening's salary band unless someone says why. The hire itself is done by HR through the HR plugin, so
+its holds and checks apply. Built from a reading of Odoo 19 and Frappe HRMS. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "party", "currency"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+access_models = [
+  { name = "rec_stage", permissions = ["read", "write"] },
+  { name = "rec_reject_reason", permissions = ["read", "write"] },
+  { name = "rec_opening", permissions = ["read", "write"] },
+  { name = "rec_application", permissions = ["read", "write"] },
+  { name = "rec_round", permissions = ["read", "write"] },
+  { name = "rec_interview", permissions = ["read", "write"] },
+  { name = "rec_feedback", permissions = ["read", "write"] },
+  { name = "rec_offer", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "recruiter"
+label = "Recruiter"
+description = "Sees every application; moves, rejects and schedules; drafts offers"
+
+[[roles]]
+name = "recruit_manager"
+label = "Recruitment manager"
+description = "Everything a recruiter does, sets up stages and rounds, opens openings, approves offers, sends applications back"
+
+[[roles]]
+name = "recruit_corrector"
+label = "Recruitment record corrector"
+description = "May delete feedback. Nobody should hold this in normal use."
+
+[[events]]
+name = "opening_opened"
+
+[[events]]
+name = "application_stage_changed"
+
+[[events]]
+name = "interview_reminder"
+
+[[events]]
+name = "interview_outcome_ready"
+
+[[events]]
+name = "offer_sent"
+
+[[events]]
+name = "offer_accepted"
+
+[[events]]
+name = "candidate_hired"
+
+# Reveal feedback and decide interviews that have enough of it; remind panels; close expired openings.
+[[schedule]]
+name = "recruitment-tick"
+function = "recruitment_tick"
+every = "10m"
+
+[app]
+icon = "user-plus"
+route = "/hr/recruitment"
+description = "Openings, candidates and interviews"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

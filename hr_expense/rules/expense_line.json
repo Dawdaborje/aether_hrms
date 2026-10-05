@@ -1,0 +1,42 @@
+{
+  "model": "expense_line",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "finance",
+      "roles": [
+        "expense_finance",
+        "expense_admin"
+      ],
+      "operations": [
+        "read",
+        "write",
+        "create",
+        "delete"
+      ]
+    }
+  ]
+}

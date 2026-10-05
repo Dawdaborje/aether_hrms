@@ -1,0 +1,209 @@
+{
+  "model_id": "mdl_tov58trcas",
+  "name": "perf_appraisal",
+  "label": "%perf_appraisal%",
+  "plural_label": "%perf_appraisals%",
+  "icon": "clipboard-check",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_spw71bfy3l",
+      "name": "cycle",
+      "label": "%cycle%",
+      "type": "link",
+      "target": "perf_cycle",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_ul021ytgqf",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_7vak1i2184",
+      "name": "manager",
+      "label": "%manager%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_5difn24hb5",
+      "name": "kras",
+      "label": "%kras%",
+      "type": "json",
+      "required": true,
+      "help": "The template's key result areas when this was made."
+    },
+    {
+      "id": "fld_wzxc8uyu62",
+      "name": "criteria",
+      "label": "%criteria%",
+      "type": "json",
+      "required": true,
+      "help": "The template's criteria when this was made."
+    },
+    {
+      "id": "fld_gjgnjadq0u",
+      "name": "self_ratings",
+      "label": "%self_ratings%",
+      "type": "json"
+    },
+    {
+      "id": "fld_hgc67rju5z",
+      "name": "reflection",
+      "label": "%reflection%",
+      "type": "text"
+    },
+    {
+      "id": "fld_m0qibg7kyq",
+      "name": "self_done",
+      "label": "%self_done%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_ia0yebq28t",
+      "name": "goal_score",
+      "label": "%goal_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_eesf7l9oqe",
+      "name": "self_score",
+      "label": "%self_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_uw5r4qrlc8",
+      "name": "manager_score",
+      "label": "%manager_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_nmuq79znwm",
+      "name": "peer_score",
+      "label": "%peer_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_mbj0axp93t",
+      "name": "computed_score",
+      "label": "%computed_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_kwh7nc7vg0",
+      "name": "final_score",
+      "label": "%final_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_q00mhfkvh3",
+      "name": "final_rating",
+      "label": "%final_rating%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "The final score on the cycle's own scale."
+    },
+    {
+      "id": "fld_bnuz87y6bk",
+      "name": "missing",
+      "label": "%missing%",
+      "type": "json"
+    },
+    {
+      "id": "fld_10iv3nl5o0",
+      "name": "calibrated",
+      "label": "%calibrated%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_rr3eoigri5",
+      "name": "calibration_reason",
+      "label": "%calibration_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_wp5q8h64mm",
+      "name": "published_on",
+      "label": "%published_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_jabe1v80at",
+      "name": "phase",
+      "label": "%phase%",
+      "type": "select",
+      "index": "plain",
+      "default": "draft",
+      "options": [
+        {
+          "id": "opt_zblj01j5te",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_147kgr7yqy",
+          "value": "goal_setting",
+          "label": "%goal_setting%"
+        },
+        {
+          "id": "opt_kbcpip13z6",
+          "value": "self_review",
+          "label": "%self_review%"
+        },
+        {
+          "id": "opt_a8h6vizraj",
+          "value": "manager_review",
+          "label": "%manager_review%"
+        },
+        {
+          "id": "opt_f5o2vbfo14",
+          "value": "calibration",
+          "label": "%calibration%"
+        },
+        {
+          "id": "opt_4eghwvhjg6",
+          "value": "published",
+          "label": "%published%"
+        },
+        {
+          "id": "opt_1ovt4l9pi3",
+          "value": "closed",
+          "label": "%closed%"
+        }
+      ]
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_19070dzpn8",
+      "fields": [
+        "cycle",
+        "employee"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "cycle",
+      "employee",
+      "final_rating"
+    ]
+  }
+}

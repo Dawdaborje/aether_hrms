@@ -1,0 +1,185 @@
+{
+  "model_id": "mdl_bvhc3kykp7",
+  "name": "employee_private",
+  "label": "%employee_private%",
+  "plural_label": "%employee_privates%",
+  "icon": "lock",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_sov7zx7qjj",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "employee",
+      "required": true,
+      "index": "unique"
+    },
+    {
+      "id": "fld_pkwf6grhxr",
+      "name": "legal_name",
+      "label": "%legal_name%",
+      "type": "string",
+      "max_length": 200
+    },
+    {
+      "id": "fld_oqs2p7bt6e",
+      "name": "date_of_birth",
+      "label": "%date_of_birth%",
+      "type": "date"
+    },
+    {
+      "id": "fld_hjnflhegnu",
+      "name": "place_of_birth",
+      "label": "%place_of_birth%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_7gfu4n5jtq",
+      "name": "marital_status",
+      "label": "%marital_status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_xxgvrrzcla",
+          "value": "single",
+          "label": "%single%"
+        },
+        {
+          "id": "opt_vhxltedlxe",
+          "value": "married",
+          "label": "%married%"
+        },
+        {
+          "id": "opt_op2eqjw5jt",
+          "value": "divorced",
+          "label": "%divorced%"
+        },
+        {
+          "id": "opt_qt3lefgju4",
+          "value": "widowed",
+          "label": "%widowed%"
+        }
+      ]
+    },
+    {
+      "id": "fld_vxjmdsgfbx",
+      "name": "nationality",
+      "label": "%nationality%",
+      "type": "link",
+      "target": "country.country",
+      "target_id": "mdl_dmwfn6k2au"
+    },
+    {
+      "id": "fld_bklhpn77nn",
+      "name": "national_id",
+      "label": "%national_id%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain"
+    },
+    {
+      "id": "fld_ycllxznkar",
+      "name": "passport_no",
+      "label": "%passport_no%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_fe4ybnlnmy",
+      "name": "passport_expiry",
+      "label": "%passport_expiry%",
+      "type": "date"
+    },
+    {
+      "id": "fld_nku32jxj7m",
+      "name": "visa_no",
+      "label": "%visa_no%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_zrsihp62tw",
+      "name": "work_permit_expiry",
+      "label": "%work_permit_expiry%",
+      "type": "date"
+    },
+    {
+      "id": "fld_u3unnadyba",
+      "name": "private_email",
+      "label": "%private_email%",
+      "type": "string",
+      "max_length": 254
+    },
+    {
+      "id": "fld_vjqwgpbq56",
+      "name": "private_phone",
+      "label": "%private_phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_4pq45dxin7",
+      "name": "private_address",
+      "label": "%private_address%",
+      "type": "text"
+    },
+    {
+      "id": "fld_k7kxn242x6",
+      "name": "emergency_name",
+      "label": "%emergency_name%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_aikleta73p",
+      "name": "emergency_relation",
+      "label": "%emergency_relation%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_w3uwsvan43",
+      "name": "emergency_phone",
+      "label": "%emergency_phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_rvff3csdwr",
+      "name": "education_level",
+      "label": "%education_level%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_pucud6cn2g",
+      "name": "study_field",
+      "label": "%study_field%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_w2jztwuokp",
+      "name": "bank_account_no",
+      "label": "%bank_account_no%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_ijoi4xg5sy",
+      "name": "bank_name",
+      "label": "%bank_name%",
+      "type": "string",
+      "max_length": 120
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  }
+}

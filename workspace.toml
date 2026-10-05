@@ -6,3 +6,13 @@ description = "A Human Resource Management System for managing employee data, pa
 long_description = """
 The Human Resource Management System (HRMS) is a comprehensive software solution designed to streamline and automate various human resource management processes. It provides tools for managing employee information, tracking attendance, processing payroll, and handling other HR-related tasks efficiently. The system aims to improve productivity, reduce administrative overhead, and enhance the overall employee experience within an organization.
 """
+
+# Member plugins: each is a folder with its own plugin.toml, models and (for Rust) Cargo.toml.
+[workspace.plugins]
+hr = { path = "./hr" }
+hr_leave = { path = "./hr_leave" }
+hr_attendance = { path = "./hr_attendance" }
+hr_expense = { path = "./hr_expense" }
+hr_recruitment = { path = "./hr_recruitment" }
+hr_onboarding = { path = "./hr_onboarding" }
+hr_performance = { path = "./hr_performance" }

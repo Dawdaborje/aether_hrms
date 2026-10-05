@@ -1,0 +1,229 @@
+{
+  "model_id": "mdl_dmxpuj3eep",
+  "name": "leave_request",
+  "label": "%leave_request%",
+  "plural_label": "%leave_requests%",
+  "icon": "calendar-check",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_tlri5epmeh",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_ys2dnjjy5w",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "track": true,
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_oo5objhid3",
+      "name": "leave_type",
+      "label": "%leave_type%",
+      "type": "link",
+      "target": "leave_type",
+      "required": true
+    },
+    {
+      "id": "fld_j45njdlpho",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true,
+      "track": true
+    },
+    {
+      "id": "fld_vmsvlqzvzh",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true,
+      "track": true
+    },
+    {
+      "id": "fld_6brtnb765h",
+      "name": "half_day",
+      "label": "%half_day%",
+      "type": "select",
+      "default": "none",
+      "options": [
+        {
+          "id": "opt_bhpuip3ik7",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_sm4fzpnhss",
+          "value": "morning",
+          "label": "%morning%"
+        },
+        {
+          "id": "opt_j2mbymm2jm",
+          "value": "afternoon",
+          "label": "%afternoon%"
+        }
+      ],
+      "help": "For a one-day request."
+    },
+    {
+      "id": "fld_j6pclvup32",
+      "name": "days",
+      "label": "%days%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "track": true
+    },
+    {
+      "id": "fld_sxpij5eif3",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_txlb7g4xya",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "submitted",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_3a7v6ssfw2",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_yqgrxo6qoh",
+          "value": "first_approved",
+          "label": "%first_approved%"
+        },
+        {
+          "id": "opt_3mpysbfsqv",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_6sd4tjkvmv",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_uum73uaxlo",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        },
+        {
+          "id": "opt_rsoocu3m6b",
+          "value": "taken",
+          "label": "%taken%"
+        }
+      ]
+    },
+    {
+      "id": "fld_xxjoxoone4",
+      "name": "validation",
+      "label": "%validation%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_hsxci3bkca",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_rmnqwuqibx",
+          "value": "manager",
+          "label": "%manager%"
+        },
+        {
+          "id": "opt_6ezusk7bj3",
+          "value": "hr",
+          "label": "%hr%"
+        },
+        {
+          "id": "opt_5ftbd5tgfx",
+          "value": "both",
+          "label": "%both%"
+        }
+      ],
+      "help": "The approval flow, copied from the type when the request was made."
+    },
+    {
+      "id": "fld_auu4y6f3ze",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "help": "The requester's manager when it was made.",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_cb7scfwidq",
+      "name": "first_decided_by",
+      "label": "%first_decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_vu3vhp6iug",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_2wzn3etxy5",
+      "name": "decided_on",
+      "label": "%decided_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_uumklbhix4",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_nfo6i7tbgw",
+      "fields": [
+        "employee",
+        "state"
+      ]
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "reference",
+      "employee",
+      "leave_type",
+      "start_date",
+      "end_date",
+      "days",
+      "state"
+    ]
+  }
+}

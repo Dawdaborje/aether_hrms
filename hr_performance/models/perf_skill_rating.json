@@ -1,0 +1,81 @@
+{
+  "model_id": "mdl_u23xya1e6j",
+  "name": "perf_skill_rating",
+  "label": "%perf_skill_rating%",
+  "plural_label": "%perf_skill_ratings%",
+  "icon": "bar-chart",
+  "title_field": "skill",
+  "fields": [
+    {
+      "id": "fld_xjvs87trpv",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_d6sx669amt",
+      "name": "skill",
+      "label": "%skill%",
+      "type": "link",
+      "target": "perf_skill",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_2nkup3gjh5",
+      "name": "level",
+      "label": "%level%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_dor29zcx7s",
+      "name": "scale_max",
+      "label": "%scale_max%",
+      "type": "int",
+      "required": true,
+      "help": "The skill's scale when it was rated."
+    },
+    {
+      "id": "fld_k4us57zis5",
+      "name": "valid_from",
+      "label": "%valid_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_8fqogztgvg",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date",
+      "help": "Empty while this is the current level."
+    },
+    {
+      "id": "fld_y8d9177v08",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_i9ylm2uhdc",
+      "name": "rated_by",
+      "label": "%rated_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "skill",
+      "level",
+      "valid_from",
+      "valid_to"
+    ]
+  }
+}

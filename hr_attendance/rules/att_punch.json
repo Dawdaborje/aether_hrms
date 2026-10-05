@@ -1,0 +1,44 @@
+{
+  "model": "att_punch",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "att_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "nobody_edits",
+      "roles": [
+        "att_corrector"
+      ],
+      "operations": [
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

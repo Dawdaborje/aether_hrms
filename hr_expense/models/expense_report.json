@@ -1,0 +1,204 @@
+{
+  "model_id": "mdl_bwvdfuuxmt",
+  "name": "expense_report",
+  "label": "%expense_report%",
+  "plural_label": "%expense_reports%",
+  "icon": "receipt",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_3yw24zi63q",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_it6txg2nsd",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "track": true,
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_gbknyss6gb",
+      "name": "created_by",
+      "label": "%created_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_44z75qynay",
+      "name": "purpose",
+      "label": "%purpose%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_crrndi2waz",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_6sddz5a2ae",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_ggayhijxo4",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_66v45bt6ff",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_yd456psybw",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_uj4kxe3jt4",
+          "value": "closed",
+          "label": "%closed%"
+        },
+        {
+          "id": "opt_iccoto7plw",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_cnt4xzqw54",
+      "name": "settlement_currency",
+      "label": "%settlement_currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_k7inhhgtqa",
+      "name": "claimed_total",
+      "label": "%claimed_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_gpfm7oc77f",
+      "name": "approved_total",
+      "label": "%approved_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_hx7xnemhle",
+      "name": "advance_applied_total",
+      "label": "%advance_applied_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_f4tbcyqqbb",
+      "name": "net_payable",
+      "label": "%net_payable%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "help": "Approved less advances; negative: the person owes it back."
+    },
+    {
+      "id": "fld_mhlzrv66kx",
+      "name": "reimbursed_total",
+      "label": "%reimbursed_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_z7kcwxazme",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "help": "Resolved from the manager when submitted, then fixed.",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_xtf4p2cpbm",
+      "name": "submitted_on",
+      "label": "%submitted_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_yuanritoil",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_taoppfegi4",
+      "name": "decided_on",
+      "label": "%decided_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_bmoae467ue",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_ahwp2zy73n",
+      "name": "acknowledged_flags",
+      "label": "%acknowledged_flags%",
+      "type": "bool",
+      "default": false,
+      "help": "The approver saw the duplicate and policy flags."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_zy2uxcmca3",
+      "fields": [
+        "employee",
+        "state"
+      ]
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "number",
+      "employee",
+      "purpose",
+      "state",
+      "claimed_total"
+    ]
+  }
+}

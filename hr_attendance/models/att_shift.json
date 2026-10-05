@@ -1,0 +1,122 @@
+{
+  "model_id": "mdl_zzfxhjfd2c",
+  "name": "att_shift",
+  "label": "%att_shift%",
+  "plural_label": "%att_shifts%",
+  "icon": "clock",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_ddxt2lkte6",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 20,
+      "index": "unique"
+    },
+    {
+      "id": "fld_lq6yvixr3a",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_b3cldyflxv",
+      "name": "start_time",
+      "label": "%start_time%",
+      "type": "string",
+      "required": true,
+      "max_length": 5,
+      "help": "HH:MM on the wall clock of the place."
+    },
+    {
+      "id": "fld_yk3f62n4bi",
+      "name": "end_time",
+      "label": "%end_time%",
+      "type": "string",
+      "required": true,
+      "max_length": 5,
+      "help": "HH:MM; earlier than the start means it ends the next day."
+    },
+    {
+      "id": "fld_23tqih2am6",
+      "name": "utc_offset_min",
+      "label": "%utc_offset_min%",
+      "type": "int",
+      "default": 0,
+      "help": "Minutes east of UTC (Banjul 0, Lagos 60)."
+    },
+    {
+      "id": "fld_463mzpurcy",
+      "name": "early_window_min",
+      "label": "%early_window_min%",
+      "type": "int",
+      "default": 60,
+      "help": "A punch this long before the start still belongs to the shift."
+    },
+    {
+      "id": "fld_mli5pfkeij",
+      "name": "late_window_min",
+      "label": "%late_window_min%",
+      "type": "int",
+      "default": 60,
+      "help": "A punch this long after the end still belongs to the shift."
+    },
+    {
+      "id": "fld_efhdtdtf72",
+      "name": "break_min",
+      "label": "%break_min%",
+      "type": "int",
+      "default": 0,
+      "help": "The usual unpaid break, deducted when none is recorded."
+    },
+    {
+      "id": "fld_6zucwikbbx",
+      "name": "grace_late_min",
+      "label": "%grace_late_min%",
+      "type": "int",
+      "default": 10
+    },
+    {
+      "id": "fld_rqr77sufnb",
+      "name": "grace_early_min",
+      "label": "%grace_early_min%",
+      "type": "int",
+      "default": 10
+    },
+    {
+      "id": "fld_jw7trgii43",
+      "name": "half_day_below_min",
+      "label": "%half_day_below_min%",
+      "type": "int",
+      "default": 0,
+      "help": "Worked minutes below this count as half a day; 0: not used."
+    },
+    {
+      "id": "fld_jzbngfci3h",
+      "name": "absent_below_min",
+      "label": "%absent_below_min%",
+      "type": "int",
+      "default": 0,
+      "help": "Worked minutes below this count as absent; 0: not used."
+    },
+    {
+      "id": "fld_cae6eiiocz",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "start_time",
+      "end_time"
+    ]
+  }
+}

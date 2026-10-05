@@ -1,0 +1,56 @@
+{
+  "model": "att_day",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "att_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "locked_days_stay",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "exempt_roles": [
+        "att_corrector"
+      ],
+      "when": {
+        "locked": false
+      }
+    }
+  ]
+}

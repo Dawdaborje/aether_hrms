@@ -1,0 +1,22 @@
+{
+  "model": "expense_category",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "expense_admin"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

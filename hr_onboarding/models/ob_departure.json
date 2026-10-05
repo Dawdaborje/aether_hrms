@@ -1,0 +1,116 @@
+{
+  "model_id": "mdl_20bp1phq4o",
+  "name": "ob_departure",
+  "label": "%ob_departure%",
+  "plural_label": "%ob_departures%",
+  "icon": "log-out",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_pjxip63wi0",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_bexcg87gpp",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "link",
+      "target": "ob_departure_reason",
+      "required": true
+    },
+    {
+      "id": "fld_uwr32oa4xj",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_gbanpapm95",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_8uje61fezj",
+          "value": "notice",
+          "label": "%notice%"
+        },
+        {
+          "id": "opt_aajy0wp6ms",
+          "value": "clearance",
+          "label": "%clearance%"
+        },
+        {
+          "id": "opt_2xy2b6zg74",
+          "value": "closed",
+          "label": "%closed%"
+        },
+        {
+          "id": "opt_mgwdsk10l0",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "draft",
+      "index": "plain"
+    },
+    {
+      "id": "fld_sldcxzf7l4",
+      "name": "notice_date",
+      "label": "%notice_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_n6mev5xpks",
+      "name": "last_day",
+      "label": "%last_day%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_g2wam5fzrw",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    },
+    {
+      "id": "fld_6e94gwkser",
+      "name": "closed_on",
+      "label": "%closed_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_djynoalwkp",
+      "name": "prior_status",
+      "label": "%prior_status%",
+      "type": "string",
+      "max_length": 30
+    },
+    {
+      "id": "fld_2ejz405owm",
+      "name": "override_reason",
+      "label": "%override_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_lt7whsum3t",
+      "name": "cancel_reason",
+      "label": "%cancel_reason%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "reason",
+      "last_day",
+      "status"
+    ]
+  }
+}

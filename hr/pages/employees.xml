@@ -1,0 +1,13 @@
+<page route="/hr/employees" title="Employees" model="employee">
+  <view type="list" model="employee" source="list_employees" open="/hr/employees/{id}">
+    <search/>
+    <columns>
+      <column field="employee_no" label="No."/>
+      <column field="display_name" label="Name"/>
+      <column field="status" label="Status" fieldType="badge"/>
+      <column field="employment_type" label="Type" fieldType="badge"/>
+      <column field="hire_date" label="Hired" fieldType="date"/>
+    </columns>
+    <empty title="No employees yet" description="Hire the first person from the directory."/>
+  </view>
+</page>

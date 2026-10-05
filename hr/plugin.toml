@@ -1,0 +1,65 @@
+[plugin]
+name = "hr"
+label = "Human Resources"
+version = "0.1.0"
+description = "People, departments, positions and dated employment terms."
+long_description = """
+The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
+report to each other, their dependents and skills, and a dated history of employment terms. Nothing in it belongs to one country or
+employer. Other plugins (leave, attendance, recruitment, a government registry) build on it. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["party", "country", "currency", "company"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "department", permissions = ["read", "write"] },
+  { name = "job", permissions = ["read", "write"] },
+  { name = "position", permissions = ["read", "write"] },
+  { name = "employee", permissions = ["read", "write"] },
+  { name = "skill", permissions = ["read", "write"] },
+  { name = "dependent", permissions = ["read", "write"] },
+  { name = "employment", permissions = ["read", "write"] },
+  { name = "employee_private", permissions = ["read", "write"] },
+  { name = "work_location", permissions = ["read", "write"] },
+  { name = "hire_hold", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "hr_user"
+label = "HR officer"
+description = "Hires and updates people, departments, positions and employment terms"
+
+[[roles]]
+name = "hr_manager"
+label = "HR manager"
+description = "Everything an HR officer can do, and sees pay"
+
+[[events]]
+name = "employee_hired"
+
+[[events]]
+name = "employee_rehired"
+
+[[events]]
+name = "employee_status_changed"
+
+# Terms whose first day has come become current every night.
+[[schedule]]
+name = "apply-employment"
+function = "apply_due_employments"
+cron = "10 0 * * *"
+
+[app]
+icon = "users"
+route = "/hr/employees"
+description = "People and organization"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

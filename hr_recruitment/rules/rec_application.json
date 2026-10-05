@@ -1,0 +1,48 @@
+{
+  "model": "rec_application",
+  "access": [
+    {
+      "name": "recruiters",
+      "roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "panel",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "id": {
+          "in": "$my_applications"
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "expected_salary"
+      ],
+      "read_roles": [
+        "recruiter",
+        "recruit_manager"
+      ]
+    },
+    {
+      "fields": [
+        "notes"
+      ],
+      "read_roles": [
+        "recruiter",
+        "recruit_manager"
+      ]
+    }
+  ]
+}

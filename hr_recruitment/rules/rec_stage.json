@@ -1,0 +1,22 @@
+{
+  "model": "rec_stage",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "mgr",
+      "roles": [
+        "recruit_manager"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

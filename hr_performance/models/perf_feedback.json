@@ -1,0 +1,105 @@
+{
+  "model_id": "mdl_lxqv2d5cf5",
+  "name": "perf_feedback",
+  "label": "%perf_feedback%",
+  "plural_label": "%perf_feedbacks%",
+  "icon": "message-square",
+  "title_field": "appraisal",
+  "fields": [
+    {
+      "id": "fld_gw2l5kmdjl",
+      "name": "appraisal",
+      "label": "%appraisal%",
+      "type": "link",
+      "target": "perf_appraisal",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_ljv89kgils",
+      "name": "reviewer",
+      "label": "%reviewer%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_pjfh89xyu5",
+      "name": "role",
+      "label": "%role%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_e64xnm3xgo",
+          "value": "manager",
+          "label": "%manager%"
+        },
+        {
+          "id": "opt_977o8f32o9",
+          "value": "peer",
+          "label": "%peer%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_9umtm0gszo",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_fveao7iofq",
+          "value": "requested",
+          "label": "%requested%"
+        },
+        {
+          "id": "opt_wyq77sc280",
+          "value": "submitted",
+          "label": "%submitted%"
+        }
+      ],
+      "required": true,
+      "default": "requested"
+    },
+    {
+      "id": "fld_2r7fs9oig7",
+      "name": "ratings",
+      "label": "%ratings%",
+      "type": "json"
+    },
+    {
+      "id": "fld_6kei4wltgs",
+      "name": "score",
+      "label": "%score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_hgv8epdlrk",
+      "name": "comment",
+      "label": "%comment%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_tmfbqgrj70",
+      "fields": [
+        "appraisal",
+        "reviewer"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "appraisal",
+      "reviewer",
+      "role",
+      "status"
+    ]
+  }
+}

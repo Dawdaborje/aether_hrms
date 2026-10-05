@@ -1,0 +1,41 @@
+{
+  "model": "ob_task",
+  "access": [
+    {
+      "name": "officers",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ],
+      "roles": [
+        "ob_officer",
+        "ob_manager"
+      ]
+    },
+    {
+      "name": "mine",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "id": {
+          "in": "$my_tasks"
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "waive_reason"
+      ],
+      "read_roles": [
+        "ob_officer",
+        "ob_manager"
+      ]
+    }
+  ]
+}

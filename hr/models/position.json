@@ -1,0 +1,106 @@
+{
+  "model_id": "mdl_6aaww7ql2l",
+  "name": "position",
+  "label": "%position%",
+  "plural_label": "%positions%",
+  "icon": "layers",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_nv4asvkitb",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160,
+      "index": "plain"
+    },
+    {
+      "id": "fld_hxbrpjw6hh",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_f3jvct7742",
+      "name": "job",
+      "label": "%job%",
+      "type": "link",
+      "target": "job",
+      "required": true
+    },
+    {
+      "id": "fld_527whl3jzn",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "department",
+      "required": true
+    },
+    {
+      "id": "fld_7iok2om7qv",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "position",
+      "hierarchy": true,
+      "help": "The position this one reports to."
+    },
+    {
+      "id": "fld_3wd6ygpqnr",
+      "name": "headcount",
+      "label": "%headcount%",
+      "type": "int",
+      "default": 1,
+      "help": "How many people may hold the position."
+    },
+    {
+      "id": "fld_pqq73cifcy",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "default": "open",
+      "options": [
+        {
+          "id": "opt_zfamk3wkwp",
+          "value": "open",
+          "label": "%open%"
+        },
+        {
+          "id": "opt_dexaktf5it",
+          "value": "filled",
+          "label": "%filled%"
+        },
+        {
+          "id": "opt_5pro66xmka",
+          "value": "frozen",
+          "label": "%frozen%"
+        }
+      ]
+    },
+    {
+      "id": "fld_xznjrvwrgz",
+      "name": "grade",
+      "label": "%grade%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_aiq7de2b64",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "job",
+      "department",
+      "headcount",
+      "status"
+    ]
+  }
+}

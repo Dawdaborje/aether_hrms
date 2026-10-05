@@ -1,0 +1,67 @@
+{
+  "model_id": "mdl_rmmdux4u2h",
+  "name": "att_shift_assignment",
+  "label": "%att_shift_assignment%",
+  "plural_label": "%att_shift_assignments%",
+  "icon": "calendar-clock",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_fqmfqcsmap",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_pb5suxjk6i",
+      "name": "shift",
+      "label": "%shift%",
+      "type": "link",
+      "target": "att_shift",
+      "required": true
+    },
+    {
+      "id": "fld_jowb2fsvxq",
+      "name": "location",
+      "label": "%location%",
+      "type": "link",
+      "target": "att_location"
+    },
+    {
+      "id": "fld_gqg42a326o",
+      "name": "valid_from",
+      "label": "%valid_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_x2n3du7gg7",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date",
+      "help": "Empty: until changed."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_azehal4hhq",
+      "fields": [
+        "employee",
+        "valid_from"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "shift",
+      "valid_from",
+      "valid_to"
+    ]
+  }
+}

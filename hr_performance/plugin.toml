@@ -1,0 +1,61 @@
+[plugin]
+name = "hr_performance"
+label = "Performance"
+version = "0.1.0"
+description = "Appraisal cycles, goals that roll up, blind reviews and skills compared with what a job asks."
+long_description = """
+A cycle moves through goal setting, self review, the managers' review, calibration and publication, one
+phase at a time, and each phase allows its own writes. Every score is on one scale, computed exactly: a
+review's ratings against the template's weighted criteria, goals rolled up a tree by weight, and a final
+score that weighs goals, self, manager and peers under a missing-data rule the cycle states (leave out,
+count as zero, or refuse). Reviews are blind: an employee sees nothing between self review and publication.
+Skills keep a history of levels, who gave them and why, and are compared with a job's targets. Built from a
+reading of Frappe HRMS and Odoo 19. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "perf_skill", permissions = ["read", "write"] },
+  { name = "perf_skill_rating", permissions = ["read", "write"] },
+  { name = "perf_skill_requirement", permissions = ["read", "write"] },
+  { name = "perf_template", permissions = ["read", "write"] },
+  { name = "perf_cycle", permissions = ["read", "write"] },
+  { name = "perf_appraisal", permissions = ["read", "write"] },
+  { name = "perf_feedback", permissions = ["read", "write"] },
+  { name = "perf_goal", permissions = ["read", "write"] },
+  { name = "perf_checkin", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "perf_admin"
+label = "Performance administrator"
+description = "Sets up templates, skills and cycles, opens appraisals, moves cycles on, assigns peer reviewers, calibrates"
+
+[[events]]
+name = "performance_phase_changed"
+
+[[events]]
+name = "appraisal_published"
+
+[[events]]
+name = "performance_deadline"
+
+[[schedule]]
+name = "performance-tick"
+function = "performance_tick"
+every = "1h"
+
+[app]
+icon = "target"
+route = "/hr/performance"
+description = "Appraisals, goals and skills"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

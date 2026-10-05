@@ -1,0 +1,17 @@
+<page route="/hr/employees/{id}" title="Employee" model="employee">
+  <view type="form" source="get_employee" function="update_employee" submit="Save" success="Saved">
+    <field name="display_name" label="Name"/>
+    <field name="department" label="Department"/>
+    <field name="job" label="Job"/>
+    <field name="position" label="Position"/>
+    <field name="manager" label="Reports to"/>
+    <field name="employment_type" label="Employment type" fieldType="selection" options="permanent, contract, temporary, intern, casual"/>
+    <field name="work_email" label="Work email"/>
+    <field name="work_phone" label="Work phone"/>
+    <field name="work_location" label="Work location"/>
+    <field name="gender" label="Gender" fieldType="selection" options="male, female, other"/>
+    <field name="date_of_birth" label="Date of birth" fieldType="date"/>
+    <field name="marital_status" label="Marital status" fieldType="selection" options="single, married, divorced, widowed"/>
+    <field name="national_id" label="National ID"/>
+  </view>
+</page>

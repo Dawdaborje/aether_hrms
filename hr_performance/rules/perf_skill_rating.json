@@ -1,0 +1,38 @@
+{
+  "model": "perf_skill_rating",
+  "access": [
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "perf_admin"
+      ]
+    },
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "managers",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "model_id": "mdl_cy7upq44fv",
+  "name": "expense_advance_use",
+  "label": "%expense_advance_use%",
+  "plural_label": "%expense_advance_uses%",
+  "icon": "link",
+  "title_field": "advance",
+  "fields": [
+    {
+      "id": "fld_aniruosvzp",
+      "name": "advance",
+      "label": "%advance%",
+      "type": "link",
+      "target": "expense_advance",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_os6dhj6pgy",
+      "name": "report",
+      "label": "%report%",
+      "type": "link",
+      "target": "expense_report",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_flvulsrrhs",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_kg763k6pmb",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_jpuqpr4z64",
+      "fields": [
+        "advance",
+        "report"
+      ],
+      "unique": true
+    }
+  ]
+}

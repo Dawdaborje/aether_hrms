@@ -1,0 +1,122 @@
+{
+  "model_id": "mdl_qmvxwbispo",
+  "name": "expense_category",
+  "label": "%expense_category%",
+  "plural_label": "%expense_categorys%",
+  "icon": "tags",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_3dkcjkidvq",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_q324w7gmuo",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 100
+    },
+    {
+      "id": "fld_dfj7k75jlv",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "default": "receipt",
+      "options": [
+        {
+          "id": "opt_itrzvypsy6",
+          "value": "receipt",
+          "label": "%receipt%"
+        },
+        {
+          "id": "opt_hn67ubpti7",
+          "value": "mileage",
+          "label": "%mileage%"
+        },
+        {
+          "id": "opt_qzjgpey26u",
+          "value": "per_diem",
+          "label": "%per_diem%"
+        }
+      ]
+    },
+    {
+      "id": "fld_22g54qqfah",
+      "name": "unit",
+      "label": "%unit%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_klk6ylu62w",
+          "value": "km",
+          "label": "%km%"
+        },
+        {
+          "id": "opt_r5gynqjqgo",
+          "value": "day",
+          "label": "%day%"
+        }
+      ],
+      "help": "For mileage and per diem."
+    },
+    {
+      "id": "fld_23sqlhc7u6",
+      "name": "unit_rate",
+      "label": "%unit_rate%",
+      "type": "decimal",
+      "scale": 4,
+      "help": "Amount per unit, in the unit_currency."
+    },
+    {
+      "id": "fld_3m4qtd2tvo",
+      "name": "unit_currency",
+      "label": "%unit_currency%",
+      "type": "string",
+      "max_length": 3
+    },
+    {
+      "id": "fld_xqzyaumzyc",
+      "name": "receipt_required_over",
+      "label": "%receipt_required_over%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "A line above this needs a receipt; empty: never. In the settlement currency."
+    },
+    {
+      "id": "fld_bu3mygs3jy",
+      "name": "requires_note",
+      "label": "%requires_note%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_sd4pdjfitw",
+      "name": "accounting_tag",
+      "label": "%accounting_tag%",
+      "type": "string",
+      "max_length": 80,
+      "help": "An opaque tag a finance plugin may read; this plugin does not interpret it."
+    },
+    {
+      "id": "fld_6sjonifplb",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "kind"
+    ]
+  }
+}

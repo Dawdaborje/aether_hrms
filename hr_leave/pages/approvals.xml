@@ -1,0 +1,15 @@
+<page route="/hr/leave/approvals" title="Leave to approve" model="leave_request">
+  <view type="list" model="leave_request" source="leave_waiting_for_me">
+    <columns>
+      <column field="reference" label="Request"/>
+      <column field="employee" label="Employee"/>
+      <column field="start_date" label="From" fieldType="date"/>
+      <column field="end_date" label="To" fieldType="date"/>
+      <column field="days" label="Days"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_leave"/>
+    </actions>
+    <empty title="Nothing waiting" description="No one on your team has asked for leave."/>
+  </view>
+</page>

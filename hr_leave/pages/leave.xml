@@ -1,0 +1,22 @@
+<page route="/hr/leave" title="Leave" model="leave_request">
+  <view type="form" function="request_leave" submit="Ask for leave" success="Requested">
+    <field name="leave_type" label="Kind of leave (id)" required="true"/>
+    <field name="start_date" label="From" fieldType="date" required="true"/>
+    <field name="end_date" label="To" fieldType="date" required="true"/>
+    <field name="half_day" label="Half day" fieldType="selection" options="none, morning, afternoon"/>
+    <field name="reason" label="Reason" fieldType="text"/>
+  </view>
+  <view type="list" model="leave_request" source="my_leave_requests">
+    <columns>
+      <column field="reference" label="Request"/>
+      <column field="start_date" label="From" fieldType="date"/>
+      <column field="end_date" label="To" fieldType="date"/>
+      <column field="days" label="Days"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="cancel" label="Cancel" function="cancel_leave" confirm="Cancel this request?" danger="true"/>
+    </actions>
+    <empty title="No leave yet" description="Ask for leave above."/>
+  </view>
+</page>

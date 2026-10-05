@@ -1,0 +1,26 @@
+{
+  "model_id": "mdl_ax77dmp4l4",
+  "name": "counter",
+  "label": "%counter%",
+  "plural_label": "%counters%",
+  "icon": "hash",
+  "title_field": "key",
+  "fields": [
+    {
+      "id": "fld_42z3plcnrc",
+      "name": "key",
+      "label": "%key%",
+      "type": "string",
+      "required": true,
+      "max_length": 60,
+      "index": "unique"
+    },
+    {
+      "id": "fld_on3lewrxde",
+      "name": "next",
+      "label": "%next%",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

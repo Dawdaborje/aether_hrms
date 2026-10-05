@@ -1,0 +1,104 @@
+{
+  "model_id": "mdl_3q6fhwdlfd",
+  "name": "rec_feedback",
+  "label": "%rec_feedback%",
+  "plural_label": "%rec_feedbacks%",
+  "icon": "star",
+  "title_field": "interview",
+  "fields": [
+    {
+      "id": "fld_ccfmt6vtia",
+      "name": "interview",
+      "label": "%interview%",
+      "type": "link",
+      "target": "rec_interview",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_rlekpy6twa",
+      "name": "interviewer",
+      "label": "%interviewer%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_frynyprkie",
+      "name": "scores",
+      "label": "%scores%",
+      "type": "json",
+      "required": true
+    },
+    {
+      "id": "fld_e7mon7pksw",
+      "name": "weighted",
+      "label": "%weighted%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_v2x2qxlybp",
+      "name": "recommendation",
+      "label": "%recommendation%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_h3hqqmm6v4",
+          "value": "strong_yes",
+          "label": "%strong_yes%"
+        },
+        {
+          "id": "opt_hj6eewhgzz",
+          "value": "yes",
+          "label": "%yes%"
+        },
+        {
+          "id": "opt_m5tdkys4wi",
+          "value": "no",
+          "label": "%no%"
+        },
+        {
+          "id": "opt_yjeqejbx6w",
+          "value": "strong_no",
+          "label": "%strong_no%"
+        }
+      ]
+    },
+    {
+      "id": "fld_3zbquwb4g6",
+      "name": "comment",
+      "label": "%comment%",
+      "type": "text"
+    },
+    {
+      "id": "fld_afwunbd5fv",
+      "name": "revealed",
+      "label": "%revealed%",
+      "type": "bool",
+      "default": false,
+      "help": "Other interviewers may read it once the interview has its outcome."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_gmujmpkq6n",
+      "fields": [
+        "interview",
+        "interviewer"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "interview",
+      "interviewer",
+      "weighted",
+      "recommendation"
+    ]
+  }
+}

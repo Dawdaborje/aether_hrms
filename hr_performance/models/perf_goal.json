@@ -1,0 +1,121 @@
+{
+  "model_id": "mdl_yj9dharz0t",
+  "name": "perf_goal",
+  "label": "%perf_goal%",
+  "plural_label": "%perf_goals%",
+  "icon": "flag",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_lfabxb3uju",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_ee3zpfosl6",
+      "name": "cycle",
+      "label": "%cycle%",
+      "type": "link",
+      "target": "perf_cycle",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_zhbictfx3e",
+      "name": "kra",
+      "label": "%kra%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_6jcvrhahfn",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_iavi4p6fzq",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "perf_goal",
+      "hierarchy": true
+    },
+    {
+      "id": "fld_amxgbv62r5",
+      "name": "weight",
+      "label": "%weight%",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "id": "fld_jaeu72qoao",
+      "name": "target",
+      "label": "%target%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_mj2pqom8eh",
+      "name": "current",
+      "label": "%current%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_7j4i5a9dr2",
+      "name": "progress",
+      "label": "%progress%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_uiqx0cz5k1",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_tpg3zzf6rs",
+          "value": "open",
+          "label": "%open%"
+        },
+        {
+          "id": "opt_98yi6b9vfl",
+          "value": "done",
+          "label": "%done%"
+        },
+        {
+          "id": "opt_9s73tjtfvt",
+          "value": "archived",
+          "label": "%archived%"
+        }
+      ],
+      "required": true,
+      "default": "open"
+    },
+    {
+      "id": "fld_ieqg188nni",
+      "name": "is_group",
+      "label": "%is_group%",
+      "type": "bool",
+      "default": false
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "kra",
+      "progress",
+      "status"
+    ]
+  }
+}

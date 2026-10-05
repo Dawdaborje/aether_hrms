@@ -1,0 +1,22 @@
+{
+  "model": "leave_block",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "leave_admin"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

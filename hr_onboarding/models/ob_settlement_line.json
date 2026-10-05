@@ -1,0 +1,103 @@
+{
+  "model_id": "mdl_x10c11r1p3",
+  "name": "ob_settlement_line",
+  "label": "%ob_settlement_line%",
+  "plural_label": "%ob_settlement_lines%",
+  "icon": "calculator",
+  "title_field": "label",
+  "fields": [
+    {
+      "id": "fld_7ra0mqg617",
+      "name": "departure",
+      "label": "%departure%",
+      "type": "link",
+      "target": "ob_departure",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_vjmm91im6m",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_pj7h3xdcbp",
+          "value": "payable",
+          "label": "%payable%"
+        },
+        {
+          "id": "opt_eu6qxj293s",
+          "value": "receivable",
+          "label": "%receivable%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_h1x0emdeih",
+      "name": "label",
+      "label": "%label%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_rrcd73f5mm",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_o4l6n55c03",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 10
+    },
+    {
+      "id": "fld_e2zj560y0o",
+      "name": "source",
+      "label": "%source%",
+      "type": "string",
+      "max_length": 200,
+      "help": "What this comes from (a payslip, an advance, a report)."
+    },
+    {
+      "id": "fld_1g17zs8wit",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_1ycjuvg4tx",
+          "value": "open",
+          "label": "%open%"
+        },
+        {
+          "id": "opt_vabfumhde8",
+          "value": "settled",
+          "label": "%settled%"
+        }
+      ],
+      "required": true,
+      "default": "open"
+    },
+    {
+      "id": "fld_m910olsa9v",
+      "name": "override_reason",
+      "label": "%override_reason%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "label",
+      "kind",
+      "amount",
+      "status"
+    ]
+  }
+}

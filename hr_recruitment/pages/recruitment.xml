@@ -1,0 +1,12 @@
+<page route="/hr/recruitment" title="Openings" model="rec_opening">
+  <view type="list" model="rec_opening" source="list_openings">
+    <search/>
+    <columns>
+      <column field="title" label="Opening"/>
+      <column field="seats" label="Seats"/>
+      <column field="seats_filled" label="Filled"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No openings" description="A recruitment manager opens one for a position with a free seat."/>
+  </view>
+</page>

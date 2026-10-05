@@ -1,0 +1,146 @@
+{
+  "model_id": "mdl_iz36fa57zv",
+  "name": "expense_policy",
+  "label": "%expense_policy%",
+  "plural_label": "%expense_policys%",
+  "icon": "shield-check",
+  "title_field": "category",
+  "fields": [
+    {
+      "id": "fld_ov3dwgorgx",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "target": "expense_category",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_l57j53lytr",
+      "name": "scope_kind",
+      "label": "%scope_kind%",
+      "type": "select",
+      "default": "all",
+      "options": [
+        {
+          "id": "opt_y3kgi2bbwd",
+          "value": "all",
+          "label": "%all%"
+        },
+        {
+          "id": "opt_qqbmfm22md",
+          "value": "job",
+          "label": "%job%"
+        },
+        {
+          "id": "opt_uzupc7223x",
+          "value": "employee",
+          "label": "%employee%"
+        }
+      ]
+    },
+    {
+      "id": "fld_cy6plrz2f6",
+      "name": "scope_ref",
+      "label": "%scope_ref%",
+      "type": "string",
+      "max_length": 120,
+      "help": "The job or employee id, for those scopes."
+    },
+    {
+      "id": "fld_vx5bp567cz",
+      "name": "period",
+      "label": "%period%",
+      "type": "select",
+      "default": "per_item",
+      "options": [
+        {
+          "id": "opt_uvsy2h363g",
+          "value": "per_item",
+          "label": "%per_item%"
+        },
+        {
+          "id": "opt_r2nsjysber",
+          "value": "per_day",
+          "label": "%per_day%"
+        },
+        {
+          "id": "opt_whomdvvi2x",
+          "value": "per_report",
+          "label": "%per_report%"
+        },
+        {
+          "id": "opt_eyestocyzu",
+          "value": "per_month",
+          "label": "%per_month%"
+        }
+      ]
+    },
+    {
+      "id": "fld_z7d2iynbqf",
+      "name": "limit_amount",
+      "label": "%limit_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_bmageaqulw",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_yssqyflvbk",
+      "name": "enforcement",
+      "label": "%enforcement%",
+      "type": "select",
+      "default": "warn",
+      "options": [
+        {
+          "id": "opt_xf2vjrwxln",
+          "value": "warn",
+          "label": "%warn%"
+        },
+        {
+          "id": "opt_un7zscwlrj",
+          "value": "justify",
+          "label": "%justify%"
+        },
+        {
+          "id": "opt_5ardpjgxqd",
+          "value": "block",
+          "label": "%block%"
+        },
+        {
+          "id": "opt_nnwhel64k5",
+          "value": "cap",
+          "label": "%cap%"
+        }
+      ]
+    },
+    {
+      "id": "fld_rvhketow5c",
+      "name": "valid_from",
+      "label": "%valid_from%",
+      "type": "date"
+    },
+    {
+      "id": "fld_x5742z6enj",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date"
+    }
+  ],
+  "view": {
+    "list": [
+      "category",
+      "scope_kind",
+      "period",
+      "limit_amount",
+      "enforcement"
+    ]
+  }
+}

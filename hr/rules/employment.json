@@ -1,0 +1,40 @@
+{
+  "model": "employment",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$employee"
+      }
+    },
+    {
+      "name": "hr",
+      "roles": [
+        "hr_user",
+        "hr_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "wage",
+        "currency",
+        "pay_frequency",
+        "grade"
+      ],
+      "read_roles": [
+        "hr_manager"
+      ]
+    }
+  ]
+}

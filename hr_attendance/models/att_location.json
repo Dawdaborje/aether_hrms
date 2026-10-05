@@ -1,0 +1,73 @@
+{
+  "model_id": "mdl_m7hdpkd2r4",
+  "name": "att_location",
+  "label": "%att_location%",
+  "plural_label": "%att_locations%",
+  "icon": "map-pin",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_iyreqblcnz",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_ah3vceor5e",
+      "name": "latitude",
+      "label": "%latitude%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_5kn7rfks4p",
+      "name": "longitude",
+      "label": "%longitude%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_6aryuxdd3h",
+      "name": "radius_m",
+      "label": "%radius_m%",
+      "type": "int",
+      "default": 0,
+      "help": "How far from the point a punch still counts as being there; 0: no check."
+    },
+    {
+      "id": "fld_bttmjbydws",
+      "name": "geo_mode",
+      "label": "%geo_mode%",
+      "type": "select",
+      "default": "record",
+      "options": [
+        {
+          "id": "opt_sfuetfl4ra",
+          "value": "off",
+          "label": "%off%"
+        },
+        {
+          "id": "opt_dksredivis",
+          "value": "record",
+          "label": "%record%"
+        },
+        {
+          "id": "opt_uad33wnqyl",
+          "value": "enforce",
+          "label": "%enforce%"
+        }
+      ],
+      "help": "record: note whether the punch was inside; enforce: refuse a punch outside."
+    },
+    {
+      "id": "fld_qyvpvsnvm7",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

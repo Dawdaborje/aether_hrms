@@ -1,0 +1,214 @@
+{
+  "model_id": "mdl_3w2j5zvhuk",
+  "name": "expense_line",
+  "label": "%expense_line%",
+  "plural_label": "%expense_lines%",
+  "icon": "list",
+  "title_field": "description",
+  "fields": [
+    {
+      "id": "fld_oo2vne2neg",
+      "name": "report",
+      "label": "%report%",
+      "type": "link",
+      "target": "expense_report",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_2cjntw4kbo",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_taxf2jpqeq",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "target": "expense_category",
+      "required": true
+    },
+    {
+      "id": "fld_o3q35hrwbt",
+      "name": "date",
+      "label": "%date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_dg3echp4uq",
+      "name": "description",
+      "label": "%description%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_x4uhotmrdb",
+      "name": "merchant",
+      "label": "%merchant%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_q4cja25nux",
+      "name": "payer",
+      "label": "%payer%",
+      "type": "select",
+      "default": "employee",
+      "options": [
+        {
+          "id": "opt_goc4dw3wos",
+          "value": "employee",
+          "label": "%employee%"
+        },
+        {
+          "id": "opt_u27ijz6v3b",
+          "value": "company_card",
+          "label": "%company_card%"
+        }
+      ]
+    },
+    {
+      "id": "fld_leahu5kjo2",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "help": "As on the receipt."
+    },
+    {
+      "id": "fld_ds4yhvdpek",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_dfjwvwhbch",
+      "name": "quantity",
+      "label": "%quantity%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Kilometres or days."
+    },
+    {
+      "id": "fld_r2zfj6g2aa",
+      "name": "unit_rate",
+      "label": "%unit_rate%",
+      "type": "decimal",
+      "scale": 4,
+      "help": "The rate used, copied from the category when the line was made."
+    },
+    {
+      "id": "fld_7sxs7bnmsc",
+      "name": "rate",
+      "label": "%rate%",
+      "type": "decimal",
+      "scale": 9,
+      "help": "One unit of the receipt currency in the settlement currency, fixed when the line was made."
+    },
+    {
+      "id": "fld_ks3nq634xy",
+      "name": "rate_date",
+      "label": "%rate_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_hck6qoikrv",
+      "name": "claimed",
+      "label": "%claimed%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "help": "In the settlement currency, converted once."
+    },
+    {
+      "id": "fld_wwit5u26rp",
+      "name": "approved",
+      "label": "%approved%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "In the settlement currency; never more than claimed."
+    },
+    {
+      "id": "fld_farlebbqyq",
+      "name": "cap",
+      "label": "%cap%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Set at submission when a `cap` policy limits this line."
+    },
+    {
+      "id": "fld_nnnwteyrso",
+      "name": "receipts",
+      "label": "%receipts%",
+      "type": "string",
+      "max_length": 1000,
+      "help": "Storage keys of the receipt files, comma separated."
+    },
+    {
+      "id": "fld_hk5j5jebvn",
+      "name": "receipt_hashes",
+      "label": "%receipt_hashes%",
+      "type": "string",
+      "max_length": 1000,
+      "help": "Content hashes of those files, comma separated."
+    },
+    {
+      "id": "fld_ruiye535jk",
+      "name": "flags",
+      "label": "%flags%",
+      "type": "string",
+      "max_length": 300,
+      "help": "duplicate, over_limit, no_receipt... comma separated."
+    },
+    {
+      "id": "fld_g42s7ubpoh",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_62z46daivb",
+      "name": "dup_key",
+      "label": "%dup_key%",
+      "type": "string",
+      "max_length": 300,
+      "index": "plain"
+    },
+    {
+      "id": "fld_faczbgv2es",
+      "name": "sequence",
+      "label": "%sequence%",
+      "type": "int",
+      "default": 0,
+      "help": "The order lines were added in, so limits apply to the later claim."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_snmy5bi4hz",
+      "fields": [
+        "employee",
+        "category",
+        "date"
+      ]
+    }
+  ],
+  "view": {
+    "list": [
+      "report",
+      "category",
+      "date",
+      "claimed",
+      "approved"
+    ]
+  }
+}

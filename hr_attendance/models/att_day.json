@@ -1,0 +1,247 @@
+{
+  "model_id": "mdl_7x5za4ovxf",
+  "name": "att_day",
+  "label": "%att_day%",
+  "plural_label": "%att_days%",
+  "icon": "calendar-check",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_kzuaxtlphb",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_r5a36jqhdj",
+      "name": "work_date",
+      "label": "%work_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_z357jrwyd7",
+      "name": "shift",
+      "label": "%shift%",
+      "type": "link",
+      "target": "att_shift"
+    },
+    {
+      "id": "fld_s3lznyz6yt",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_g7kc53pv2a",
+          "value": "present",
+          "label": "%present%"
+        },
+        {
+          "id": "opt_xwc7haiyfa",
+          "value": "absent",
+          "label": "%absent%"
+        },
+        {
+          "id": "opt_lxr6tbfwbd",
+          "value": "half_day",
+          "label": "%half_day%"
+        },
+        {
+          "id": "opt_oxqm2v423b",
+          "value": "leave",
+          "label": "%leave%"
+        },
+        {
+          "id": "opt_orcp5qbqtr",
+          "value": "holiday",
+          "label": "%holiday%"
+        },
+        {
+          "id": "opt_g7qhjds7dz",
+          "value": "weekly_off",
+          "label": "%weekly_off%"
+        },
+        {
+          "id": "opt_w3rgbci36g",
+          "value": "unscheduled",
+          "label": "%unscheduled%"
+        },
+        {
+          "id": "opt_heddrdah53",
+          "value": "incomplete",
+          "label": "%incomplete%"
+        }
+      ]
+    },
+    {
+      "id": "fld_4c6uiz25sg",
+      "name": "first_in",
+      "label": "%first_in%",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_2nn7zdnvoy",
+      "name": "last_out",
+      "label": "%last_out%",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_n72mufpheq",
+      "name": "worked_min",
+      "label": "%worked_min%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_7qrbrx43yy",
+      "name": "break_min",
+      "label": "%break_min%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_5ulhxlwt53",
+      "name": "scheduled_min",
+      "label": "%scheduled_min%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_3g4pegqa2c",
+      "name": "late_min",
+      "label": "%late_min%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_4mkktmv2tw",
+      "name": "early_exit_min",
+      "label": "%early_exit_min%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_psl4rgb4x6",
+      "name": "overtime_min",
+      "label": "%overtime_min%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_4ftx5qybwv",
+      "name": "is_late",
+      "label": "%is_late%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_h7nhsmquqo",
+      "name": "is_early_exit",
+      "label": "%is_early_exit%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_so2cif3i3c",
+      "name": "review",
+      "label": "%review%",
+      "type": "string",
+      "max_length": 120,
+      "help": "Why a person should look at this day, comma separated; empty: nothing."
+    },
+    {
+      "id": "fld_j6nvoy3fuj",
+      "name": "inputs_hash",
+      "label": "%inputs_hash%",
+      "type": "string",
+      "max_length": 32,
+      "help": "Fingerprint of what the day was worked out from."
+    },
+    {
+      "id": "fld_3v5n7f3vet",
+      "name": "override_status",
+      "label": "%override_status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_w64qkndk2n",
+          "value": "present",
+          "label": "%present%"
+        },
+        {
+          "id": "opt_vmnr4hc3u3",
+          "value": "absent",
+          "label": "%absent%"
+        },
+        {
+          "id": "opt_vbxikyo7v3",
+          "value": "half_day",
+          "label": "%half_day%"
+        },
+        {
+          "id": "opt_6iukzkucni",
+          "value": "leave",
+          "label": "%leave%"
+        },
+        {
+          "id": "opt_zg2uz4ptvh",
+          "value": "holiday",
+          "label": "%holiday%"
+        },
+        {
+          "id": "opt_45z6mf3wl4",
+          "value": "weekly_off",
+          "label": "%weekly_off%"
+        }
+      ]
+    },
+    {
+      "id": "fld_unmlv2eiuc",
+      "name": "override_by",
+      "label": "%override_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ok3odx2ryl",
+      "name": "override_reason",
+      "label": "%override_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_nysbyla3gh",
+      "name": "locked",
+      "label": "%locked%",
+      "type": "bool",
+      "default": false,
+      "help": "Closed for payroll: never recomputed."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ykfuxuwnb6",
+      "fields": [
+        "employee",
+        "work_date"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "work_date",
+      "status",
+      "worked_min",
+      "review"
+    ]
+  }
+}

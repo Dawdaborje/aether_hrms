@@ -1,0 +1,65 @@
+[plugin]
+name = "hr_attendance"
+label = "Attendance"
+version = "0.1.0"
+description = "Shifts, punches, daily attendance and corrections."
+long_description = """
+Raw punches are kept as they came and never edited: a correction is a new punch that supersedes another.
+Each person and date has one derived day (present, absent, half day, leave, holiday, weekly off), worked
+out by a pure function from the shift's window, the paired punches, the holiday calendar and approved
+leave, and recomputed only when its inputs change. A punch that does not pair is flagged for review, never
+dropped; working on a day of leave is flagged, not hidden. Corrections are decided by the person's manager
+or an attendance administrator, never by the person. Built from a reading of Odoo 19 and Frappe HRMS.
+Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "calendar", "hr_leave"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "att_location", permissions = ["read", "write"] },
+  { name = "att_shift", permissions = ["read", "write"] },
+  { name = "att_shift_assignment", permissions = ["read", "write"] },
+  { name = "att_punch", permissions = ["read", "write"] },
+  { name = "att_day", permissions = ["read", "write"] },
+  { name = "att_correction", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "att_admin"
+label = "Attendance administrator"
+description = "Sets up shifts, locations and assignments; decides corrections; overrides days"
+
+[[roles]]
+name = "att_corrector"
+label = "Attendance record corrector"
+description = "May edit or delete punches and locked days. Nobody should hold this in normal use."
+
+[[events]]
+name = "punch_recorded"
+
+[[events]]
+name = "day_needs_review"
+
+[[events]]
+name = "correction_decided"
+
+# Yesterday's days are settled and missing days marked absent, once the day's window has closed.
+[[schedule]]
+name = "attendance-nightly"
+function = "attendance_nightly"
+cron = "40 0 * * *"
+
+[app]
+icon = "clock"
+route = "/hr/attendance"
+description = "Punch in and out, and see your days"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

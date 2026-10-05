@@ -1,0 +1,166 @@
+{
+  "model_id": "mdl_cepnze4gld",
+  "name": "expense_advance",
+  "label": "%expense_advance%",
+  "plural_label": "%expense_advances%",
+  "icon": "wallet",
+  "title_field": "purpose",
+  "fields": [
+    {
+      "id": "fld_tho4m4c7jw",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "track": true,
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ecapwdxvb5",
+      "name": "purpose",
+      "label": "%purpose%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_ihewsxttao",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_efeer5lpyb",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_lfxfimsren",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "requested",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_4b53gzpzve",
+          "value": "requested",
+          "label": "%requested%"
+        },
+        {
+          "id": "opt_mk7tyjj5cx",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_ttm72x6457",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_ioayys2jvb",
+          "value": "issued",
+          "label": "%issued%"
+        },
+        {
+          "id": "opt_4xbeithpyz",
+          "value": "partially_settled",
+          "label": "%partially_settled%"
+        },
+        {
+          "id": "opt_mubekau2sr",
+          "value": "settled",
+          "label": "%settled%"
+        },
+        {
+          "id": "opt_fvbo4dnx22",
+          "value": "returned",
+          "label": "%returned%"
+        }
+      ]
+    },
+    {
+      "id": "fld_2k7pnga24k",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_2h2gh3isf4",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_l6pf54d4yp",
+      "name": "issued_total",
+      "label": "%issued_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_26ka45nbgj",
+      "name": "settled_total",
+      "label": "%settled_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_eiuoag5xyt",
+      "name": "returned_total",
+      "label": "%returned_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_qwspiapkzw",
+      "name": "due_date",
+      "label": "%due_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_gsow4b4bip",
+      "name": "overdue_notified_on",
+      "label": "%overdue_notified_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_4aujta7cyt",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "employee",
+      "purpose",
+      "amount",
+      "state",
+      "due_date"
+    ]
+  }
+}

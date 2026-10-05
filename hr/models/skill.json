@@ -1,0 +1,33 @@
+{
+  "model_id": "mdl_d4os4mmwgk",
+  "name": "skill",
+  "label": "%skill%",
+  "plural_label": "%skills%",
+  "icon": "sparkles",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_b2kw53argx",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "unique"
+    },
+    {
+      "id": "fld_r3zj646l74",
+      "name": "category",
+      "label": "%category%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "category"
+    ]
+  }
+}

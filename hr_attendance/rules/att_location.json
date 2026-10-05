@@ -1,0 +1,22 @@
+{
+  "model": "att_location",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "att_admin"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

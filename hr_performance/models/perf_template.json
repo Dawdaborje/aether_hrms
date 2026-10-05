@@ -1,0 +1,47 @@
+{
+  "model_id": "mdl_mzipm8sdd1",
+  "name": "perf_template",
+  "label": "%perf_template%",
+  "plural_label": "%perf_templates%",
+  "icon": "file-text",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_t6tokjw6ei",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_qovfl9t14o",
+      "name": "kras",
+      "label": "%kras%",
+      "type": "json",
+      "required": true,
+      "help": "[{name, weight}] adding to 100."
+    },
+    {
+      "id": "fld_itef2gxdt8",
+      "name": "criteria",
+      "label": "%criteria%",
+      "type": "json",
+      "required": true,
+      "help": "[{name, weight}] adding to 100."
+    },
+    {
+      "id": "fld_t6hgvbjnab",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name"
+    ]
+  }
+}

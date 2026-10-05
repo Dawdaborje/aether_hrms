@@ -1,0 +1,66 @@
+[plugin]
+name = "hr_leave"
+label = "Leave"
+version = "0.2.0"
+description = "Leave types, a ledger of days, requests and approval."
+long_description = """
+Leave built from a reading of Odoo 19 and Frappe HRMS. Each type of leave carries its own rules (who
+approves, notice, sandwich, half days, negative balance, earned or yearly days, carry-forward). Days live
+in an append-only ledger: grants, accruals and carry-over add, requests hold and then spend, and a
+cancellation is a reversal, never an edit or a delete. A request costs working days by the person's
+holiday calendar, is held against the balance, and is decided by their manager, by HR, or both. A nightly
+job grants earned leave, lapses carried days and puts people on leave and back. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "calendar"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "leave_type", permissions = ["read", "write"] },
+  { name = "leave_ledger", permissions = ["read", "write"] },
+  { name = "leave_request", permissions = ["read", "write"] },
+  { name = "leave_block", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "leave_admin"
+label = "Leave administrator"
+description = "Sets up leave types, grants days, decides when HR approval is needed, overrides blocks"
+
+[[roles]]
+name = "ledger_corrector"
+label = "Ledger corrector"
+description = "May edit or delete ledger entries. Nobody should hold this in normal use."
+
+[[events]]
+name = "leave_requested"
+
+[[events]]
+name = "leave_approved"
+
+[[events]]
+name = "leave_rejected"
+
+[[schedule]]
+name = "leave-nightly"
+function = "leave_nightly"
+cron = "20 0 * * *"
+
+[[schedule]]
+name = "leave-yearly"
+function = "allocate_yearly"
+cron = "30 0 1 1 *"
+
+[app]
+icon = "calendar-check"
+route = "/hr/leave"
+description = "Leave requests and balances"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

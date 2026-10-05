@@ -1,0 +1,12 @@
+<page route="/hr/performance" title="Cycles" model="perf_cycle">
+  <view type="list" model="perf_cycle" source="list_cycles">
+    <search/>
+    <columns>
+      <column field="name" label="Cycle"/>
+      <column field="start_date" label="Starts"/>
+      <column field="end_date" label="Ends"/>
+      <column field="status" label="Phase" fieldType="badge"/>
+    </columns>
+    <empty title="No cycles" description="An administrator creates one from a template."/>
+  </view>
+</page>

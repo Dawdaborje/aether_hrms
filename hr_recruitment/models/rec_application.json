@@ -1,0 +1,165 @@
+{
+  "model_id": "mdl_mpwaijfdbm",
+  "name": "rec_application",
+  "label": "%rec_application%",
+  "plural_label": "%rec_applications%",
+  "icon": "user-check",
+  "title_field": "candidate",
+  "fields": [
+    {
+      "id": "fld_4nvru3jxwb",
+      "name": "candidate",
+      "label": "%candidate%",
+      "type": "link",
+      "target": "party.party",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_mr76tss5ic"
+    },
+    {
+      "id": "fld_nqe4sikgk2",
+      "name": "opening",
+      "label": "%opening%",
+      "type": "link",
+      "target": "rec_opening",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_gqlr23ra7x",
+      "name": "stage",
+      "label": "%stage%",
+      "type": "link",
+      "target": "rec_stage",
+      "required": true
+    },
+    {
+      "id": "fld_x2hoaxu4n2",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "default": "active",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_hpxdw3eg45",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_n27h7743lm",
+          "value": "hired",
+          "label": "%hired%"
+        },
+        {
+          "id": "opt_5cmyjfb3rf",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_wrb6zx6py3",
+          "value": "withdrawn",
+          "label": "%withdrawn%"
+        }
+      ]
+    },
+    {
+      "id": "fld_32grbxmtrn",
+      "name": "kanban_state",
+      "label": "%kanban_state%",
+      "type": "select",
+      "default": "ok",
+      "options": [
+        {
+          "id": "opt_ykfuxs5m2x",
+          "value": "ok",
+          "label": "%ok%"
+        },
+        {
+          "id": "opt_zveqw5gpk4",
+          "value": "waiting",
+          "label": "%waiting%"
+        },
+        {
+          "id": "opt_rtpopz3h3g",
+          "value": "blocked",
+          "label": "%blocked%"
+        }
+      ]
+    },
+    {
+      "id": "fld_vnme5us7oh",
+      "name": "source",
+      "label": "%source%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_nit6xrnk5k",
+      "name": "referrer",
+      "label": "%referrer%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_g2osvmlc7u",
+      "name": "expected_salary",
+      "label": "%expected_salary%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_juqm5nnalj",
+      "name": "reject_reason",
+      "label": "%reject_reason%",
+      "type": "link",
+      "target": "rec_reject_reason"
+    },
+    {
+      "id": "fld_zfhvwk6csu",
+      "name": "stage_changed_on",
+      "label": "%stage_changed_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_xhwrtarnuw",
+      "name": "hired_on",
+      "label": "%hired_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_5mjhb2sl37",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_s2iccve3bg",
+      "fields": [
+        "candidate",
+        "opening"
+      ],
+      "unique": true
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "candidate",
+      "opening",
+      "stage",
+      "status"
+    ]
+  }
+}

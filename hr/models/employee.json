@@ -1,0 +1,296 @@
+{
+  "model_id": "mdl_3h5vuhedxt",
+  "name": "employee",
+  "label": "%employee%",
+  "plural_label": "%employees%",
+  "icon": "users",
+  "title_field": "display_name",
+  "fields": [
+    {
+      "id": "fld_yjyzfahqns",
+      "name": "employee_no",
+      "label": "%employee_no%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_yrmfenizuq",
+      "name": "party",
+      "label": "%party%",
+      "type": "link",
+      "target": "party.party",
+      "required": true,
+      "index": "unique",
+      "track": true,
+      "target_id": "mdl_mr76tss5ic"
+    },
+    {
+      "id": "fld_fjsg7cu42o",
+      "name": "display_name",
+      "label": "%display_name%",
+      "type": "string",
+      "max_length": 320,
+      "index": "plain",
+      "help": "Kept up to date from the party's name."
+    },
+    {
+      "id": "fld_423efjvamr",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "department",
+      "track": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_r5hy6337oe",
+      "name": "job",
+      "label": "%job%",
+      "type": "link",
+      "target": "job",
+      "track": true
+    },
+    {
+      "id": "fld_aujsmsunsf",
+      "name": "position",
+      "label": "%position%",
+      "type": "link",
+      "target": "position",
+      "track": true
+    },
+    {
+      "id": "fld_5epkfnde2d",
+      "name": "manager",
+      "label": "%manager%",
+      "type": "link",
+      "target": "employee",
+      "hierarchy": true,
+      "track": true,
+      "help": "Who this person reports to."
+    },
+    {
+      "id": "fld_zs23gsxxnz",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "default": "active",
+      "required": true,
+      "track": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_e4yhbyajt5",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_se7ravzrnx",
+          "value": "probation",
+          "label": "%probation%"
+        },
+        {
+          "id": "opt_64azq55pvn",
+          "value": "on_leave",
+          "label": "%on_leave%"
+        },
+        {
+          "id": "opt_dhgs45f627",
+          "value": "suspended",
+          "label": "%suspended%"
+        },
+        {
+          "id": "opt_cn5pukcg2e",
+          "value": "resigned",
+          "label": "%resigned%"
+        },
+        {
+          "id": "opt_74ej3nz6pc",
+          "value": "terminated",
+          "label": "%terminated%"
+        },
+        {
+          "id": "opt_xmtd65llvq",
+          "value": "retired",
+          "label": "%retired%"
+        },
+        {
+          "id": "opt_naddaek7gc",
+          "value": "deceased",
+          "label": "%deceased%"
+        }
+      ]
+    },
+    {
+      "id": "fld_rw3ssfwwia",
+      "name": "employment_type",
+      "label": "%employment_type%",
+      "type": "select",
+      "default": "permanent",
+      "options": [
+        {
+          "id": "opt_ma6gr5hhwk",
+          "value": "permanent",
+          "label": "%permanent%"
+        },
+        {
+          "id": "opt_i5pxf3556b",
+          "value": "contract",
+          "label": "%contract%"
+        },
+        {
+          "id": "opt_a3ycv27frr",
+          "value": "temporary",
+          "label": "%temporary%"
+        },
+        {
+          "id": "opt_zgaqewbwg7",
+          "value": "intern",
+          "label": "%intern%"
+        },
+        {
+          "id": "opt_uveqd4cr3b",
+          "value": "casual",
+          "label": "%casual%"
+        }
+      ],
+      "track": true
+    },
+    {
+      "id": "fld_vby2j6stlk",
+      "name": "hire_date",
+      "label": "%hire_date%",
+      "type": "date",
+      "track": true
+    },
+    {
+      "id": "fld_mrlo24i5un",
+      "name": "probation_end",
+      "label": "%probation_end%",
+      "type": "date"
+    },
+    {
+      "id": "fld_rcbpenxdqy",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "track": true
+    },
+    {
+      "id": "fld_hboidoo6gm",
+      "name": "gender",
+      "label": "%gender%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_27xwft5g6a",
+          "value": "male",
+          "label": "%male%"
+        },
+        {
+          "id": "opt_2gfj7scbij",
+          "value": "female",
+          "label": "%female%"
+        },
+        {
+          "id": "opt_gkfrohzkkh",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_mwsandn6uy",
+      "name": "work_email",
+      "label": "%work_email%",
+      "type": "string",
+      "max_length": 254
+    },
+    {
+      "id": "fld_zv2nlyquxf",
+      "name": "work_phone",
+      "label": "%work_phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_l74bn3ow7h",
+      "name": "work_location",
+      "label": "%work_location%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_wvziqtagmg",
+      "name": "skills",
+      "label": "%skills%",
+      "type": "many2many",
+      "target": "skill"
+    },
+    {
+      "id": "fld_zkdk7i46dm",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_qtm5vcwdvm",
+      "name": "user",
+      "label": "%user%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain",
+      "help": "The login account of this person, so the system knows who is acting."
+    },
+    {
+      "id": "fld_m5ldlmtfdf",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "target": "company.company",
+      "index": "plain",
+      "track": true,
+      "target_id": "mdl_d7q6tyyshp"
+    },
+    {
+      "id": "fld_6noadlr5a6",
+      "name": "notice_days",
+      "label": "%notice_days%",
+      "type": "int"
+    },
+    {
+      "id": "fld_goythbma2o",
+      "name": "first_hire_date",
+      "label": "%first_hire_date%",
+      "type": "date",
+      "help": "The first time this person joined; hire_date is the latest."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_2s4l2dwuyl",
+      "fields": [
+        "department",
+        "status"
+      ]
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "employee_no",
+      "display_name",
+      "department",
+      "job",
+      "status"
+    ]
+  }
+}

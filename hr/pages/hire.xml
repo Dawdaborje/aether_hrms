@@ -1,0 +1,12 @@
+<page route="/hr/employees/hire" title="Hire someone" model="employee">
+  <view type="form" function="hire_employee" submit="Hire" success="Hired" redirect="/hr/employees">
+    <field name="party" label="Person (directory id)" required="true"/>
+    <field name="department" label="Department"/>
+    <field name="job" label="Job"/>
+    <field name="position" label="Position"/>
+    <field name="manager" label="Reports to"/>
+    <field name="employment_type" label="Employment type" fieldType="selection" options="permanent, contract, temporary, intern, casual"/>
+    <field name="hire_date" label="Hire date" fieldType="date"/>
+    <field name="probation_end" label="Probation ends" fieldType="date"/>
+  </view>
+</page>

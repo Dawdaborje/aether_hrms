@@ -1,0 +1,130 @@
+{
+  "model_id": "mdl_699pdta5xr",
+  "name": "ob_run",
+  "label": "%ob_run%",
+  "plural_label": "%ob_runs%",
+  "icon": "play",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_54i32x039v",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_b9x3bjm3vn",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_4lri4iyzle",
+          "value": "onboard",
+          "label": "%onboard%"
+        },
+        {
+          "id": "opt_rxgc3cjkow",
+          "value": "offboard",
+          "label": "%offboard%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_mrhc5pf5al",
+      "name": "template",
+      "label": "%template%",
+      "type": "link",
+      "target": "ob_template",
+      "required": true
+    },
+    {
+      "id": "fld_obpartyr01",
+      "name": "party",
+      "label": "%party%",
+      "type": "link",
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_ddc81hsxa6",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_hd3fntqo05",
+      "name": "departure",
+      "label": "%departure%",
+      "type": "link",
+      "target": "ob_departure"
+    },
+    {
+      "id": "fld_n53pemv7o8",
+      "name": "anchor_date",
+      "label": "%anchor_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_1ln38xqo25",
+      "name": "owner",
+      "label": "%owner%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_am1tetppp3",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_nrq94opnko",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_hzsef1l7m6",
+          "value": "in_process",
+          "label": "%in_process%"
+        },
+        {
+          "id": "opt_i51g7zkai1",
+          "value": "done",
+          "label": "%done%"
+        },
+        {
+          "id": "opt_hvz5bjox5a",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "pending",
+      "index": "plain"
+    },
+    {
+      "id": "fld_p4ae96jtym",
+      "name": "cancel_reason",
+      "label": "%cancel_reason%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "kind",
+      "anchor_date",
+      "status"
+    ]
+  }
+}

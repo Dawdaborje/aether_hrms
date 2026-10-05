@@ -1,0 +1,11 @@
+<page route="/hr/onboarding" title="My tasks" model="ob_task">
+  <view type="list" model="ob_task" source="my_tasks">
+    <search/>
+    <columns>
+      <column field="name" label="Task"/>
+      <column field="due_end" label="Due"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <empty title="Nothing to do" description="Tasks from onboarding and offboarding checklists appear here."/>
+  </view>
+</page>

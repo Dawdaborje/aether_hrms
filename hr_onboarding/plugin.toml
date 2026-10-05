@@ -1,0 +1,77 @@
+[plugin]
+name = "hr_onboarding"
+label = "Onboarding and offboarding"
+version = "0.1.0"
+description = "Checklists for joining and leaving, and a departure that ends the employment only when the checklist is clear."
+long_description = """
+One template engine for both directions. A template is a list of steps, each counted from an anchor day (the
+start day, the last day or the notice date) with a signed offset, rolled to a working day through the
+calendar. Each step goes to the person, their manager, their manager's manager, a named user, a role or the
+owner of the run, with the fallback that was used written on the task. A hire step holds the hire in HR until
+it is done or waived; a departure closes only when its blocking tasks are done, its items are returned and
+its settlement lines are settled (or a manager says why not), and it then ends the employment through HR.
+Tasks are never deleted: cancelling a run voids them. Built from a reading of Odoo 19 and Frappe HRMS.
+Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "party", "calendar"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "ob_template", permissions = ["read", "write"] },
+  { name = "ob_step", permissions = ["read", "write"] },
+  { name = "ob_departure_reason", permissions = ["read", "write"] },
+  { name = "ob_departure", permissions = ["read", "write"] },
+  { name = "ob_run", permissions = ["read", "write"] },
+  { name = "ob_task", permissions = ["read", "write"] },
+  { name = "ob_return_item", permissions = ["read", "write"] },
+  { name = "ob_settlement_line", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "ob_officer"
+label = "Onboarding officer"
+description = "Starts onboarding, records and confirms departures, keeps their checklists, reassigns tasks"
+
+[[roles]]
+name = "ob_manager"
+label = "Onboarding manager"
+description = "Everything an officer does, sets up templates, waives tasks and items, closes departures"
+
+[[events]]
+name = "onboarding_run_started"
+
+[[events]]
+name = "onboarding_task_done"
+
+[[events]]
+name = "onboarding_run_completed"
+
+[[events]]
+name = "onboarding_task_overdue"
+
+[[events]]
+name = "departure_clearance_due"
+
+[[events]]
+name = "employee_departed"
+
+# Move departures whose last day has come to clearance; announce tasks past their day.
+[[schedule]]
+name = "onboarding-tick"
+function = "onboarding_tick"
+every = "1h"
+
+[app]
+icon = "door-open"
+route = "/hr/onboarding"
+description = "Joining and leaving checklists"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"
