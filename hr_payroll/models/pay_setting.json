@@ -1,0 +1,18 @@
+{
+  "model_id": "mdl_mvhadqe2n6",
+  "name": "pay_setting",
+  "label": "%pay_setting%",
+  "plural_label": "%pay_settings%",
+  "icon": "settings",
+  "title_field": "allow_unverified_rules",
+  "fields": [
+    {
+      "id": "fld_e33qoazcl4",
+      "name": "allow_unverified_rules",
+      "label": "%allow_unverified_rules%",
+      "type": "bool",
+      "default": false,
+      "help": "Let a run be approved although its structure uses a rule pack nobody has verified: for test organisations only."
+    }
+  ]
+}

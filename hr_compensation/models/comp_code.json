@@ -1,0 +1,54 @@
+{
+  "model_id": "mdl_samxskb9gw",
+  "name": "comp_code",
+  "label": "%comp_code%",
+  "plural_label": "%comp_codes%",
+  "icon": "tag",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_rx4wsn4z4w",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique",
+      "help": "Names the pay input `adj_<code>` of a salary structure."
+    },
+    {
+      "id": "fld_pnf2b8cobg",
+      "name": "label",
+      "label": "%label%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_hjanrt4bv7",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_2tkc296247",
+          "value": "earning",
+          "label": "%earning%"
+        },
+        {
+          "id": "opt_e5afkdtq5t",
+          "value": "deduction",
+          "label": "%deduction%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_25gizn3zj8",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

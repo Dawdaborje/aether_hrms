@@ -1,0 +1,211 @@
+{
+  "model_id": "mdl_hl6y71m6ao",
+  "name": "pay_run",
+  "label": "%pay_run%",
+  "plural_label": "%pay_runs%",
+  "icon": "play-circle",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_mz111fotpi",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_2v67l0pfo5",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_pe4eig5bno",
+      "name": "period_start",
+      "label": "%period_start%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_ielm0846nc",
+      "name": "period_end",
+      "label": "%period_end%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_2vt9ak83ji",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_qkid2l960v",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_ybf2t9qsyz",
+          "value": "calculating",
+          "label": "%calculating%"
+        },
+        {
+          "id": "opt_liszf8d15e",
+          "value": "calculated",
+          "label": "%calculated%"
+        },
+        {
+          "id": "opt_f2hxmkjggz",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_xj9q1bzjz6",
+          "value": "paid",
+          "label": "%paid%"
+        },
+        {
+          "id": "opt_wx5c0cpyjb",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        },
+        {
+          "id": "opt_nubgf66hug",
+          "value": "failed",
+          "label": "%failed%"
+        }
+      ],
+      "required": true,
+      "default": "draft",
+      "index": "plain"
+    },
+    {
+      "id": "fld_4a2iv6ctc5",
+      "name": "batch_size",
+      "label": "%batch_size%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_4a6pk0an0k",
+      "name": "attempt",
+      "label": "%attempt%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_izqyvt0y36",
+      "name": "group",
+      "label": "%group%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_jdd9wgw0f3",
+      "name": "planning_done",
+      "label": "%planning_done%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_r0gg59vrwp",
+      "name": "planned_employees",
+      "label": "%planned_employees%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_4v7mp35unl",
+      "name": "batches_total",
+      "label": "%batches_total%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_4wh3flkn8u",
+      "name": "finalized",
+      "label": "%finalized%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_2bv4tzxj4f",
+      "name": "error_count",
+      "label": "%error_count%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_7n7618hdq7",
+      "name": "totals",
+      "label": "%totals%",
+      "type": "json"
+    },
+    {
+      "id": "fld_lzlsgwhspp",
+      "name": "created_by",
+      "label": "%created_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_4hy8mxsgf7",
+      "name": "approved_by",
+      "label": "%approved_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_7vuz7tclwk",
+      "name": "approved_on",
+      "label": "%approved_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_osv584a9gg",
+      "name": "payment_ref",
+      "label": "%payment_ref%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_omvzr44l7q",
+      "name": "paid_on",
+      "label": "%paid_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_9l4hupku4n",
+      "name": "failure",
+      "label": "%failure%",
+      "type": "string",
+      "max_length": 400
+    },
+    {
+      "id": "fld_ormxqsdbkd",
+      "name": "retries",
+      "label": "%retries%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_mhlo56oy0q",
+      "name": "started",
+      "label": "%started%",
+      "type": "string",
+      "max_length": 40
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "name",
+      "period_end",
+      "status"
+    ]
+  }
+}

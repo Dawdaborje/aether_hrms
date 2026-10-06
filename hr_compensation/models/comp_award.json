@@ -1,0 +1,112 @@
+{
+  "model_id": "mdl_v7sk7rzo8b",
+  "name": "comp_award",
+  "label": "%comp_award%",
+  "plural_label": "%comp_awards%",
+  "icon": "trophy",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_o1xv3512yn",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_ryptmwgbnt",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_9vi7hm9f1l",
+          "value": "incentive",
+          "label": "%incentive%"
+        },
+        {
+          "id": "opt_xxe8mayncs",
+          "value": "retention",
+          "label": "%retention%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_os25g6dby6",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_g1wpp19eqj",
+      "name": "pay_date",
+      "label": "%pay_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_e1amem35vt",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_dnh13rubqr",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_pt7kseil55",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_vo3r0t7w1m",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_gjbdhui5sw",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_9tgtai3fh4",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "pending",
+      "index": "plain"
+    },
+    {
+      "id": "fld_920sgjmkem",
+      "name": "requested_by",
+      "label": "%requested_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_50t7n0uhee",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_ny3e858abk",
+      "name": "adjustment",
+      "label": "%adjustment%",
+      "type": "link",
+      "target": "comp_adjustment"
+    }
+  ]
+}

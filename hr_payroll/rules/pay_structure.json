@@ -1,0 +1,27 @@
+{
+  "model": "pay_structure",
+  "access": [
+    {
+      "name": "staff",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "payroll_admin"
+      ]
+    }
+  ]
+}

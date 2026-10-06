@@ -16,3 +16,4 @@ hr_expense = { path = "./hr_expense" }
 hr_recruitment = { path = "./hr_recruitment" }
 hr_onboarding = { path = "./hr_onboarding" }
 hr_performance = { path = "./hr_performance" }
+hr_payroll = { path = "./hr_payroll" }

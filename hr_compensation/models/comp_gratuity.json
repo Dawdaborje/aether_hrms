@@ -1,0 +1,123 @@
+{
+  "model_id": "mdl_8vvur9lzut",
+  "name": "comp_gratuity",
+  "label": "%comp_gratuity%",
+  "plural_label": "%comp_gratuitys%",
+  "icon": "gift",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_sbn6kof6hh",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_wtxbys72x9",
+      "name": "rule",
+      "label": "%rule%",
+      "type": "link",
+      "target": "comp_gratuity_rule",
+      "required": true
+    },
+    {
+      "id": "fld_bk4jin2kxe",
+      "name": "joining_date",
+      "label": "%joining_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_sz00mn30fy",
+      "name": "relieving_date",
+      "label": "%relieving_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_wk254fnjtd",
+      "name": "unpaid_days",
+      "label": "%unpaid_days%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_wytyb82gvf",
+      "name": "years",
+      "label": "%years%",
+      "type": "decimal",
+      "scale": 4
+    },
+    {
+      "id": "fld_zunina0pdd",
+      "name": "base_amount",
+      "label": "%base_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_rkkif213c6",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_v9t6u5dkd8",
+      "name": "pay_date",
+      "label": "%pay_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_gtq4xrlqyk",
+      "name": "snapshot",
+      "label": "%snapshot%",
+      "type": "json"
+    },
+    {
+      "id": "fld_3lnqnpy97u",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_msav9ndoy7",
+          "value": "calculated",
+          "label": "%calculated%"
+        },
+        {
+          "id": "opt_lqgc80rcv1",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_jmih5qsp4t",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "calculated"
+    },
+    {
+      "id": "fld_q7c7j0krmb",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_si2igdjv13",
+      "name": "adjustment",
+      "label": "%adjustment%",
+      "type": "link",
+      "target": "comp_adjustment"
+    }
+  ]
+}

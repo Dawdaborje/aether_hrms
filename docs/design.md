@@ -353,3 +353,103 @@ Decisions:
   job requirements with targets and weights; a gap report.
 * Deferred: grievances (own plugin), training links and development plans, anonymous peer aggregation beyond
   blindness, automatic skill changes from appraisals, goal metric definitions.
+
+## `hr_payroll` (payroll on the Swift engine)
+
+Engine: `swift_projects/swift_payroll_engine` (`sp_engine`, built for WebAssembly without threads). Compared with
+the sources: Odoo computes a payslip by running Python rules in `sequence` order over rule categories; ERPNext by
+evaluating earning and deduction rows with formulas that may name each other. Both depend on the order the rows
+are written in and use floating point. Here a salary structure is data, compiled once per batch into dependency
+order, in exact decimals, and a payslip records which structure and which hash of it produced it.
+
+What it does:
+* **Structures** are saved once and never changed (a change is a new version); every payslip stores the code, version
+  and hash. Rounding must be two digits so a payslip can store what the engine computed.
+* **Assignments** put a structure on a person for dates, with their own inputs (allowances, a loan); payroll fills in
+  `base_salary` (from the person's HR employment terms on the last day of the period), `period_days`, `days_worked`
+  (hire and last day) and `periods_per_year`. Pay in another currency than the structure's is an error for that person.
+* **Runs** (`create_pay_run` -> `start_pay_run`) are planned in pages of 100 assignments, calculated in parallel batches
+  of 20 people (`aether_sdk::parallel`), and finalised by adding the batch totals in pages. A person who cannot be
+  calculated gets an error row (not a payslip) and a run with an error cannot be approved. One-off inputs
+  (`set_run_input`) override per person for one run.
+* **Attempts**: each calculation writes its own payslips; an earlier attempt's stay as the record of what was
+  calculated then. A batch writes its payslips, its errors and its report in one transaction, so repeating it is safe.
+* **Approval** by someone other than the person who made the run; the event `payroll_run_approved` carries the totals
+  by component for the ledger (`gl` turns it into one entry through a posting rule with `where` on the component kind).
+  Employees read their own payslips only once the run is approved. A finance role records the payment.
+* **Failure handling**: a job that fails for good leaves nothing in the run, so `watch_pay_runs` (every minute) polls
+  the jobs of runs still calculating; a failed batch restarts the run with half the batch size, twice; a run still
+  calculating after 20 minutes is marked failed.
+
+Limits found by running it (see `projects/cspr/BREAKS.md` 39 to 45): one call may spend 50 million instructions and
+10 seconds. With the demo structure 25 people per call fit and 50 do not; a call that reads 700 records fits and one
+that reads 1000 does not. Hence batches of 20 (never more than 40) and pages of 100. The first big run found a bug no
+small test could: batch numbers collided between planning pages, so most batches of a multi-page run were skipped
+as "already done".
+
+Rule packs and inputs (added after the first version):
+* **Rule packs** (tax, social security) are stored in `pay_rule_pack` through `import_rule_pack`: the pack's own tests
+  must pass, an edition (`gm.paye.demo`, later `gm.paye.2025`) is never changed. A structure names the packs it uses
+  and which formulas feed each pack's inputs; they are expanded into the structure when it is saved, so the stored
+  structure (and its hash) is everything a payslip needs, and its `packs` list says which editions and whether each
+  was verified.
+* **Unverified packs cannot pay anyone**: approving a run whose structure uses a pack with `verified: false` is
+  refused unless the organisation's `allow_unverified_rules` setting (admin only, off by default) is on. The
+  Gambian packs in `swift_tax_rules/countries/example/` are demonstrations with invented figures.
+* **Leave and attendance**: a structure that declares `unpaid_leave_days` and/or `overtime_hours` gets them from
+  `hr_leave.payroll_leave_summary` (unpaid days inside the period, by the person's calendar; a request that crosses an
+  edge is recounted for the days inside) and `hr_attendance.payroll_attendance_summary` (overtime minutes as hours).
+  A clerk can correct them for one person in one run; the other four standard inputs cannot be changed.
+
+Not built: arrears and retro pay, payslip PDF and bank file, several currencies in one run, loans as their own
+ledger, a Gambian pack from the real schedule.
+
+---
+
+# Completing the HRMS: plan and findings from the second round of source studies
+
+Studied (read-only): Frappe HRMS `hr/doctype/*` and `payroll/doctype/*`, Odoo 19 `hr`, `hr_holidays`, `hr_holidays_attendance`,
+`hr_attendance`, `hr_work_entry`, `hr_presence`, `hr_skills_*`, `hr_maintenance`, `hr_fleet`, `maintenance`, `hr_expense`.
+
+## What the sources got wrong, collected (what every new plugin avoids)
+
+* **Floats and silent rounding everywhere** (`flt`, `rounded()`, a per-day rate rounded before it is multiplied).
+* **Status set by hand or never moved**: Frappe's FnF "Settled" and "Returned" ticks, an exit interview that never
+  changes the employee, a referral whose status resets on every save, a training result that writes `status` where the
+  field is `event_status`, a requisition marked Filled when one of five seats is hired.
+* **Counts instead of ledgers**: asset custody by counting movements, headcount recomputed live, leave state kept on
+  the allocation row (Odoo `lastcall`/`nextcall`), a vehicle odometer cancelled by subtraction.
+* **No guards**: two open promotions, two overlapping staffing plans, a result for an absent trainee, an approver who is
+  the requester, a deduction that takes net pay below zero, a loan deduction with no cap.
+* **Revert by overwriting** (promotion/transfer cancel) and **side effects while drafting** (a draft slip accrues loan interest).
+
+## The plugins (all Rust, all in this workspace) and the order they are built in
+
+| # | Plugin | What | Built from |
+|---|---|---|---|
+| 1 | `hr_compensation` | The one funnel for extra pay: adjustments (one-off, recurring, override), incentives, retention bonuses, salary withholding, gratuity rules and calculation, arrears and payroll corrections as signed deltas, period lock | Frappe `additional_salary`, `arrear`, `payroll_correction`, `retention_bonus`, `employee_incentive`, `salary_withholding`, `gratuity*` |
+| 2 | `hr_leave` 0.3 | Leave periods, policies and assignments, accrual plans with tenure levels and caps, encashment, compensatory leave lots, adjustments, approver chain by department | Frappe `leave_*`, Odoo `hr.leave.accrual.plan` |
+| 3 | `hr_attendance` 0.2 | Overtime rule table and day-level approval, attendance (regularization) requests, shift requests, rotations, device keys and PIN lockout | Odoo `hr.time.rule`, Frappe `overtime_*`, `shift_*`, `attendance_request` |
+| 4 | `hr_career` | Promotion, transfer and grade change as typed, approval-gated change sets that write dated employment; appointment letters from templates; grade ladders | Frappe `employee_promotion/transfer`, Odoo `hr.version` |
+| 5 | `hr_workforce` | Staffing plans by period and position, job requisitions that carry seats and fill counts, tied to `hr_recruitment` openings | Frappe `staffing_plan`, `job_requisition` |
+| 6 | `hr_training` | Course catalog linked to skills, sessions, enrolments, results that append skill ratings, certification expiry, budgets | Frappe `training_*`, Odoo `hr_skills_*` |
+| 7 | `hr_grievance` | Case management: state machine, investigator conflict check, SLA and escalation, confidentiality, append-only case log | Frappe `employee_grievance` (extended) |
+| 8 | `hr_travel` | Travel requests, itinerary, costing, per diem policy, advance on approval, link to expense reports | Frappe `travel_request` (extended) |
+| 9 | `hr_assets` | Append-only custody ledger for equipment and vehicles (odometer ledger), return items for departures | Odoo `hr_maintenance`, `hr_fleet` |
+| 10 | `hr_loan` | Loan products, schedules, ledger events, deductions through payroll with a cap, foreclosure quote, reversal | designed from first principles (neither source has an engine) |
+| 11 | `hr_benefits` | Benefit plans and ceilings, claims, accrual ledger, health insurance enrolment | Frappe `employee_benefit_*`, `employee_health_insurance` |
+| 12 | `hr_referral` | Referral state machine with a rule-defined bonus gated on tenure | Frappe `employee_referral` (fixed) |
+| 13 | `hr_documents` | Identification documents with expiry sweeps, emergency contacts, bank accounts with salary split | Odoo `hr` private fields |
+| 14 | `hr_onboarding` 0.2 | Exit interview (one per departure, confidential), final settlement lines generated from loans, leave encashment, gratuity and asset returns | Frappe `exit_interview`, `full_and_final_statement` |
+
+Glue: `gl_hrms` (done) hands payroll and expense events to the ledger.
+
+## How extra amounts reach payroll (decision)
+
+Frappe funnels everything through one doctype, Additional Salary, overloaded by `ref_doctype`. Here `hr_compensation`
+owns `pay_adjustment` (employee, code, kind earning or deduction, amount, one-off date or recurring from/to, a source
+plugin and reference with an idempotency key, an explicit `override` flag) and is the **only** thing payroll asks
+(`payroll_adjustments`, like leave and attendance). Loans, benefits, referrals, leave encashment, travel advances and
+gratuity push adjustments into it by source. A structure picks them up with inputs named `adj_<code>`. Payroll locks
+a period in `hr_compensation` when it approves a run, so an adjustment dated inside an approved period cannot change:
+a correction is a new adjustment in a later period.

@@ -1,0 +1,43 @@
+{
+  "model": "payslip",
+  "access": [
+    {
+      "name": "staff",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    },
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "id": {
+          "in": "$my_payslips"
+        }
+      }
+    }
+  ],
+  "restrict": [
+    {
+      "name": "written_by_the_calculation_only",
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ],
+      "when": {
+        "gross": {
+          "lt": -1000000000000
+        }
+      }
+    }
+  ]
+}

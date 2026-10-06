@@ -1,0 +1,64 @@
+{
+  "model": "pay_run",
+  "access": [
+    {
+      "name": "staff",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    },
+    {
+      "name": "work",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    },
+    {
+      "name": "approved_runs_are_known",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "status": {
+          "in": [
+            "approved",
+            "paid"
+          ]
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "totals",
+        "created_by",
+        "approved_by",
+        "error_count",
+        "group",
+        "payment_ref",
+        "planned_employees",
+        "batches_total"
+      ],
+      "read_roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    }
+  ]
+}

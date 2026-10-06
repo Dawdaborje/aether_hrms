@@ -1,0 +1,90 @@
+{
+  "model_id": "mdl_3b8vktsffj",
+  "name": "pay_structure",
+  "label": "%pay_structure%",
+  "plural_label": "%pay_structures%",
+  "icon": "layers",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_h81i7a249e",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 60,
+      "index": "plain"
+    },
+    {
+      "id": "fld_s9we9xpr1s",
+      "name": "version",
+      "label": "%version%",
+      "type": "string",
+      "required": true,
+      "max_length": 20
+    },
+    {
+      "id": "fld_03saimvk8i",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_wgcum8ust0",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 10
+    },
+    {
+      "id": "fld_4lltf94oek",
+      "name": "definition",
+      "label": "%definition%",
+      "type": "json",
+      "required": true,
+      "help": "The salary structure the engine runs; never changed once made: a new version is a new row."
+    },
+    {
+      "id": "fld_15mnajhfoc",
+      "name": "hash",
+      "label": "%hash%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_ebsh211wgm",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_uafkctd6zb",
+      "name": "packs",
+      "label": "%packs%",
+      "type": "json",
+      "help": "The rule packs this structure uses: id, hash and whether each was verified."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_tuv33kcow2",
+      "fields": [
+        "code",
+        "version"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "version",
+      "name"
+    ]
+  }
+}

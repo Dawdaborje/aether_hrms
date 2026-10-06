@@ -1,0 +1,137 @@
+{
+  "model_id": "mdl_utlxif25wx",
+  "name": "payslip",
+  "label": "%payslip%",
+  "plural_label": "%payslips%",
+  "icon": "receipt",
+  "title_field": "employee_name",
+  "fields": [
+    {
+      "id": "fld_j98htw4nsk",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "pay_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_h51oxgtpra",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_c45l46ibq9",
+      "name": "employee_name",
+      "label": "%employee_name%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_jd8wth14et",
+      "name": "structure_code",
+      "label": "%structure_code%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_b144wn5hy7",
+      "name": "structure_version",
+      "label": "%structure_version%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_ur7ukipw4e",
+      "name": "structure_hash",
+      "label": "%structure_hash%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_82pt47z45l",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 10
+    },
+    {
+      "id": "fld_s3lziec6zy",
+      "name": "gross",
+      "label": "%gross%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_uczkzt0cwo",
+      "name": "deductions",
+      "label": "%deductions%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_s0jwkbhzp5",
+      "name": "net",
+      "label": "%net%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_gkf3jk7sd1",
+      "name": "employer_cost",
+      "label": "%employer_cost%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_0xkubyxlt4",
+      "name": "shortfall",
+      "label": "%shortfall%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_geqqpchwd4",
+      "name": "lines",
+      "label": "%lines%",
+      "type": "json",
+      "required": true
+    },
+    {
+      "id": "fld_4k4a3u4ins",
+      "name": "attempt",
+      "label": "%attempt%",
+      "type": "int",
+      "required": true,
+      "index": "plain"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_et1x46uudx",
+      "fields": [
+        "run",
+        "attempt",
+        "employee"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "employee_name",
+      "gross",
+      "deductions",
+      "net"
+    ]
+  }
+}

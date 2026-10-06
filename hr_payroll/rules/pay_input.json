@@ -1,0 +1,28 @@
+{
+  "model": "pay_input",
+  "access": [
+    {
+      "name": "staff",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    },
+    {
+      "name": "clerk",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk"
+      ]
+    }
+  ]
+}

@@ -325,7 +325,51 @@ fn thirty() -> u32 {
     30
 }
 
+#[derive(Deserialize)]
+struct Snapshot {
+    employees: Vec<String>,
+    on: String,
+}
+
+/// For many people at once: who they are and the terms in force on a day, for something that works
+/// through a whole payroll in batches (one call, not one per person). At most 300 people.
+fn snapshot(input: Snapshot) -> Result<Value> {
+    if input.employees.is_empty() || input.employees.len() > 300 {
+        return Err(Error::msg("ask for 1 to 300 people at a time"));
+    }
+    let on = format_date(parse_date(&input.on)?);
+    let people: Vec<Record> = db::find("employee").matching(Filter::one_of("id", input.employees.clone())).limit(300).all()?;
+    let terms: Vec<Record> = db::find::<Record>("employment")
+        .matching(Filter::one_of("employee", input.employees.clone()).and(Filter::lte("date_from", on.as_str())))
+        .order_by("-date_from")
+        .limit(1000)
+        .all()?;
+    if terms.len() >= 1000 {
+        return Err(Error::msg("too much history for one call: ask for fewer people"));
+    }
+    let mut out = serde_json::Map::new();
+    for person in &people {
+        let id = id_of(person)?;
+        // Newest first: the first record of this person is the terms in force.
+        let current = terms.iter().find(|t| text(t, "employee") == Some(id));
+        out.insert(
+            id.to_string(),
+            json!({
+                "display_name": person["display_name"], "status": person["status"], "hire_date": person["hire_date"], "end_date": person["end_date"],
+                "department": person["department"], "job": person["job"], "user": person["user"],
+                "terms": current.map(|t| json!({ "date_from": t["date_from"], "wage": t["wage"], "currency": t["currency"], "pay_frequency": t["pay_frequency"], "employment_type": t["employment_type"] })),
+            }),
+        );
+    }
+    Ok(Value::Object(out))
+}
+
 handler! {
+    /// The people and their terms on a day, for a batch.
+    fn employment_snapshot(input: Snapshot) -> Value {
+        snapshot(input)
+    }
+
     /// New terms for an employee from a day: promotion, transfer, pay change, renewal.
     fn add_employment(input: New) -> Record {
         add(input)

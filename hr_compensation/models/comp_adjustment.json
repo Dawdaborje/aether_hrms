@@ -1,0 +1,169 @@
+{
+  "model_id": "mdl_jk3xceexlf",
+  "name": "comp_adjustment",
+  "label": "%comp_adjustment%",
+  "plural_label": "%comp_adjustments%",
+  "icon": "plus-circle",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_x4tfu4b0ww",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_xzs0c9lrna",
+      "name": "code_ref",
+      "label": "%code_ref%",
+      "type": "link",
+      "target": "comp_code",
+      "required": true
+    },
+    {
+      "id": "fld_dpwe0m37x0",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "plain"
+    },
+    {
+      "id": "fld_nx114kur2y",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_f6hk8sw8xu",
+          "value": "earning",
+          "label": "%earning%"
+        },
+        {
+          "id": "opt_kp2ynhm0cq",
+          "value": "deduction",
+          "label": "%deduction%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_50gv4ckfzn",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_egdq5hspkj",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_1zcdxcwr8n",
+          "value": "one_off",
+          "label": "%one_off%"
+        },
+        {
+          "id": "opt_2ygkffwp5l",
+          "value": "recurring",
+          "label": "%recurring%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_g52biolxu1",
+      "name": "pay_date",
+      "label": "%pay_date%",
+      "type": "date",
+      "index": "plain",
+      "help": "One-off: the day it is paid with."
+    },
+    {
+      "id": "fld_36a5fxb0ca",
+      "name": "date_from",
+      "label": "%date_from%",
+      "type": "date"
+    },
+    {
+      "id": "fld_3a7a1mlaek",
+      "name": "date_to",
+      "label": "%date_to%",
+      "type": "date",
+      "help": "Recurring: empty means until ended."
+    },
+    {
+      "id": "fld_tnki4ft11p",
+      "name": "prorate",
+      "label": "%prorate%",
+      "type": "bool",
+      "default": false,
+      "help": "Recurring: pay only the share of the period it covers."
+    },
+    {
+      "id": "fld_9bfbtinj03",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_k83jvpobn3",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_271309jvry",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "active",
+      "index": "plain"
+    },
+    {
+      "id": "fld_l2atu5lrn9",
+      "name": "source_plugin",
+      "label": "%source_plugin%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_rk5yi9aw4s",
+      "name": "source_ref",
+      "label": "%source_ref%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_9aufilci6p",
+      "name": "idem_key",
+      "label": "%idem_key%",
+      "type": "string",
+      "required": true,
+      "max_length": 200,
+      "index": "unique"
+    },
+    {
+      "id": "fld_0ujkx7or02",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_ts778fdhxt",
+      "name": "created_by",
+      "label": "%created_by%",
+      "type": "string",
+      "max_length": 80
+    }
+  ]
+}

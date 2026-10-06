@@ -1,0 +1,94 @@
+{
+  "model_id": "mdl_l7l8ref0tz",
+  "name": "comp_gratuity_rule",
+  "label": "%comp_gratuity_rule%",
+  "plural_label": "%comp_gratuity_rules%",
+  "icon": "award",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_46uqa0yqeo",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_ir96m0y3yz",
+      "name": "years_method",
+      "label": "%years_method%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_3vif0qiakq",
+          "value": "exact",
+          "label": "%exact%"
+        },
+        {
+          "id": "opt_je961qgy0u",
+          "value": "round",
+          "label": "%round%"
+        },
+        {
+          "id": "opt_3k8m69zwdv",
+          "value": "floor",
+          "label": "%floor%"
+        }
+      ],
+      "required": true,
+      "default": "exact"
+    },
+    {
+      "id": "fld_jlrb3n2hmt",
+      "name": "days_per_year",
+      "label": "%days_per_year%",
+      "type": "int",
+      "default": 365
+    },
+    {
+      "id": "fld_2f9y4bvuy6",
+      "name": "min_years",
+      "label": "%min_years%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "1.00"
+    },
+    {
+      "id": "fld_wz4u7d3g3a",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_ddma956z47",
+          "value": "current_slab",
+          "label": "%current_slab%"
+        },
+        {
+          "id": "opt_oyo0oxrjuz",
+          "value": "cumulative",
+          "label": "%cumulative%"
+        }
+      ],
+      "required": true,
+      "default": "current_slab"
+    },
+    {
+      "id": "fld_c88qn6lw9s",
+      "name": "slabs",
+      "label": "%slabs%",
+      "type": "json",
+      "required": true,
+      "help": "[{from, to (empty: open), fraction}] in years, half-open, contiguous from 0."
+    },
+    {
+      "id": "fld_4mim3raph4",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

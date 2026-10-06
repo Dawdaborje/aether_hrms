@@ -1,0 +1,87 @@
+[plugin]
+name = "hr_payroll"
+label = "Payroll"
+version = "0.1.0"
+description = "Pay runs calculated by the Swift payroll engine in parallel batches, approved by a second person."
+long_description = """
+A salary structure is a list of components with exact-decimal formulas (the Swift payroll engine): earnings,
+deductions, employer contributions and working figures, in the order their formulas need. Structures are
+never changed, a new version is a new structure, and each payslip records the structure and its hash. A run
+for a period is planned in pages and calculated in parallel batches of background jobs, because one call has
+a fixed budget of work; every step is safe to repeat. A person's pay comes from their HR employment terms, the
+days they were employed in the period are worked out for the structure, and one-off figures (overtime, a
+bonus) are entered per run. A run with an employee that could not be calculated cannot be approved; the
+approver is not the person who made the run; approval announces the totals by component for the ledger.
+Employees read their own payslips once the run is approved. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "currency", "hr_leave", "hr_attendance"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "scheduler::enqueue"]
+access_models = [
+  { name = "pay_structure", permissions = ["read", "write"] },
+  { name = "pay_assignment", permissions = ["read", "write"] },
+  { name = "pay_input", permissions = ["read", "write"] },
+  { name = "pay_run", permissions = ["read", "write"] },
+  { name = "pay_plan", permissions = ["read", "write"] },
+  { name = "pay_batch", permissions = ["read", "write"] },
+  { name = "payslip", permissions = ["read", "write"] },
+  { name = "pay_error", permissions = ["read", "write"] },
+  { name = "pay_rule_pack", permissions = ["read", "write"] },
+  { name = "pay_setting", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "payroll_admin"
+label = "Payroll administrator"
+description = "Sets up salary structures and who is on which, and may do everything a clerk and finance do"
+
+[[roles]]
+name = "payroll_clerk"
+label = "Payroll clerk"
+description = "Makes runs, enters one-off inputs, calculates and cancels runs"
+
+[[roles]]
+name = "payroll_approver"
+label = "Payroll approver"
+description = "Approves a calculated run (never one they made)"
+
+[[roles]]
+name = "payroll_finance"
+label = "Payroll finance"
+description = "Records that an approved run was paid"
+
+[[events]]
+name = "payroll_run_calculated"
+
+[[events]]
+name = "payroll_run_approved"
+
+[[events]]
+name = "payroll_run_paid"
+
+[[events]]
+name = "payroll_run_failed"
+
+[[events]]
+name = "payroll_run_restarted"
+
+# A batch job that fails for good leaves nothing in its run: look for them.
+[[schedule]]
+name = "watch-pay-runs"
+function = "watch_pay_runs"
+every = "1m"
+
+[app]
+icon = "banknote"
+route = "/hr/payroll"
+description = "Pay runs and payslips"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

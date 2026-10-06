@@ -1,0 +1,73 @@
+{
+  "model_id": "mdl_gq8aynzna5",
+  "name": "comp_withholding",
+  "label": "%comp_withholding%",
+  "plural_label": "%comp_withholdings%",
+  "icon": "hand",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_qqoifmo1wa",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_dv1x733da3",
+      "name": "date_from",
+      "label": "%date_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_vqeo1lwo71",
+      "name": "cycles",
+      "label": "%cycles%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_m86m246uww",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_q69nbc99mb",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_7rsnk9mwwx",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_hv6uzdabfx",
+          "value": "released",
+          "label": "%released%"
+        },
+        {
+          "id": "opt_kpav30t26h",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "active"
+    },
+    {
+      "id": "fld_c801jba7kb",
+      "name": "created_by",
+      "label": "%created_by%",
+      "type": "string",
+      "max_length": 80
+    }
+  ]
+}

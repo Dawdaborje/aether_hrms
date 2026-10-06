@@ -589,7 +589,65 @@ fn leave_on(input: OnDate) -> Result<Value> {
     Ok(json!({ "cover": cover, "requests": found.iter().filter_map(|r| text(r, "reference")).collect::<Vec<_>>() }))
 }
 
+#[derive(Deserialize)]
+struct Summary {
+    employees: Vec<String>,
+    from: String,
+    to: String,
+}
+
+/// For payroll: the leave days of many people inside a period, split into unpaid and paid. A request that
+/// lies wholly inside counts as asked (half days too); one that crosses an edge of the period is counted again
+/// for just the days inside, by the person's calendar, as whole days.
+fn payroll_summary(input: Summary) -> Result<Value> {
+    if !is_admin()? && !matches!(context::current()?.actor.kind, aether_sdk::context::ActorKind::System) {
+        return Err(Error::msg("leave summaries are for leave administrators and for payroll"));
+    }
+    if input.employees.is_empty() || input.employees.len() > 300 {
+        return Err(Error::msg("ask for 1 to 300 people at a time"));
+    }
+    let (from, to) = (parse_date(&input.from)?, parse_date(&input.to)?);
+    let types: Vec<Record> = db::find("leave_type").limit(500).all()?;
+    let requests: Vec<Record> = db::find::<Record>("leave_request")
+        .matching(
+            Filter::one_of("employee", input.employees.clone())
+                .and(Filter::one_of("state", ["approved", "taken"]))
+                .and(Filter::lte("start_date", format_date(to)))
+                .and(Filter::gte("end_date", format_date(from))),
+        )
+        .limit(1000)
+        .all()?;
+    let mut people: HashMap<String, (Decimal, Decimal)> = HashMap::new();
+    for request in &requests {
+        let kind = types.iter().find(|t| text(t, "id") == text(request, "leave_type")).ok_or_else(|| Error::msg("a request has no leave type"))?;
+        let (start, end) = (date_of(request, "start_date")?, date_of(request, "end_date")?);
+        let days = if start >= from && end <= to {
+            decimal_of(request, "days")?
+        } else {
+            let person = employee(text(request, "employee").unwrap_or_default())?;
+            let calendar = calendar_for(&person, start.max(from), end.min(to))?;
+            leave_days(&calendar, start.max(from), end.min(to), Half::Whole, kind.get("count_all_days") == Some(&json!(true)))?
+        };
+        let entry = people.entry(text(request, "employee").unwrap_or_default().to_string()).or_insert((Decimal::zero(2), Decimal::zero(2)));
+        if kind.get("is_paid") == Some(&json!(false)) {
+            entry.0 = entry.0 + days.with_scale(2)?;
+        } else {
+            entry.1 = entry.1 + days.with_scale(2)?;
+        }
+    }
+    let mut out = serde_json::Map::new();
+    for (id, (unpaid, paid)) in people {
+        out.insert(id, json!({ "unpaid_days": unpaid, "paid_days": paid }));
+    }
+    Ok(Value::Object(out))
+}
+
 handler! {
+    /// Unpaid and paid leave days of many people within a period, for payroll.
+    fn payroll_leave_summary(input: Summary) -> Value {
+        payroll_summary(input)
+    }
+
     /// Whether a person is on approved leave on a day (for attendance).
     fn leave_on_date(input: OnDate) -> Value {
         leave_on(input)

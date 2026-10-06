@@ -1,0 +1,45 @@
+{
+  "model_id": "mdl_irj4j67dnx",
+  "name": "pay_input",
+  "label": "%pay_input%",
+  "plural_label": "%pay_inputs%",
+  "icon": "edit",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_py508cmny2",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "pay_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_c3198ja3zi",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true
+    },
+    {
+      "id": "fld_srdmlkjhh4",
+      "name": "variables",
+      "label": "%variables%",
+      "type": "json",
+      "required": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ov9wp4ufn6",
+      "fields": [
+        "run",
+        "employee"
+      ],
+      "unique": true
+    }
+  ]
+}

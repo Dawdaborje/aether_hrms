@@ -1,0 +1,12 @@
+<page route="/hr/payroll" title="Pay runs" model="pay_run">
+  <view type="list" model="pay_run" source="list_pay_runs">
+    <search/>
+    <columns>
+      <column field="number" label="Run"/>
+      <column field="name" label="Name"/>
+      <column field="period_end" label="Period end"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No pay runs" description="A payroll clerk creates one for a period."/>
+  </view>
+</page>

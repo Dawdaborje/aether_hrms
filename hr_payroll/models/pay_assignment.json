@@ -1,0 +1,57 @@
+{
+  "model_id": "mdl_egykhwr6u5",
+  "name": "pay_assignment",
+  "label": "%pay_assignment%",
+  "plural_label": "%pay_assignments%",
+  "icon": "user-check",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_of07zgdi5t",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_e1zusy3mmy",
+      "name": "structure",
+      "label": "%structure%",
+      "type": "link",
+      "target": "pay_structure",
+      "required": true
+    },
+    {
+      "id": "fld_5jw68o2xl6",
+      "name": "valid_from",
+      "label": "%valid_from%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_dsq5aceg54",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date"
+    },
+    {
+      "id": "fld_hzy7s66nnd",
+      "name": "variables",
+      "label": "%variables%",
+      "type": "json",
+      "help": "The structure's inputs for this person (allowances, a loan): not the ones payroll fills in."
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "structure",
+      "valid_from",
+      "valid_to"
+    ]
+  }
+}

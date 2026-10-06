@@ -5,7 +5,7 @@ use aether_sdk::dates::{format_date, format_datetime, parse_date, parse_datetime
 use aether_sdk::db::Filter;
 use aether_sdk::prelude::*;
 
-use crate::common::{day_kind, employed_on, employee, id_of, leave_cover, my_employee, require, require_admin, text, today_date, Record};
+use crate::common::{day_kind, employed_on, employee, id_of, is_admin, leave_cover, my_employee, require_admin, text, today_date, Record};
 use crate::rules::{compute, inputs_hash, Direction, Facts, Punch, Status};
 use crate::setup::{assignment_on, shift_of};
 
@@ -308,7 +308,42 @@ fn lock(input: Lock) -> Result<Value> {
     Ok(json!({ "locked": rows.len() }))
 }
 
+#[derive(Deserialize)]
+struct Summary {
+    employees: Vec<String>,
+    from: String,
+    to: String,
+}
+
+/// For payroll: overtime, lateness and the days recorded of many people in a period.
+fn payroll_summary(input: Summary) -> Result<Value> {
+    if !is_admin()? && !matches!(context::current()?.actor.kind, aether_sdk::context::ActorKind::System) {
+        return Err(Error::msg("attendance summaries are for administrators and for payroll"));
+    }
+    if input.employees.is_empty() || input.employees.len() > 300 {
+        return Err(Error::msg("ask for 1 to 300 people at a time"));
+    }
+    let (from, to) = (parse_date(&input.from)?, parse_date(&input.to)?);
+    let rows = db::find::<Record>("att_day")
+        .matching(Filter::one_of("employee", input.employees).and(Filter::gte("work_date", format_date(from))).and(Filter::lte("work_date", format_date(to))))
+        .aggregate(
+            &["employee"],
+            &[("overtime", aether_sdk::db::Figure::sum("overtime_min")), ("late", aether_sdk::db::Figure::sum("late_min")), ("days", aether_sdk::db::Figure::sum("worked_min"))],
+        )?;
+    let mut out = serde_json::Map::new();
+    for row in rows {
+        let id = row["employee"].as_str().unwrap_or_default().to_string();
+        out.insert(id, json!({ "overtime_minutes": row["overtime"], "late_minutes": row["late"], "worked_minutes": row["days"] }));
+    }
+    Ok(Value::Object(out))
+}
+
 handler! {
+    /// Overtime and lateness of many people within a period, for payroll.
+    fn payroll_attendance_summary(input: Summary) -> Value {
+        payroll_summary(input)
+    }
+
     /// The caller's own days between two dates.
     fn my_days(input: Option<Range>) -> Vec<Record> {
         let Some(me) = my_employee()? else { return Ok(Vec::new()) };
@@ -330,7 +365,6 @@ handler! {
     /// Work a day out again (a manager for their team, an administrator for anyone).
     fn recompute_day(input: OnDay) -> Option<Record> {
         let person = employee(&input.employee)?;
-        require("employee", id_of(&person)?, "employee")?;
         recompute(&person, parse_date(&input.date)?)
     }
 

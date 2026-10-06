@@ -1,0 +1,27 @@
+{
+  "model": "pay_rule_pack",
+  "access": [
+    {
+      "name": "staff",
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "payroll_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ]
+}
