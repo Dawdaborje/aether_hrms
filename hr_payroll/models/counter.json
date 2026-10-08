@@ -1,5 +1,4 @@
 {
-  "model_id": "mdl_gtfvjbswwn",
   "name": "counter",
   "label": "%counter%",
   "plural_label": "%counters%",
@@ -7,7 +6,6 @@
   "title_field": "key",
   "fields": [
     {
-      "id": "fld_4p4yu4epbm",
       "name": "key",
       "label": "%key%",
       "type": "string",
@@ -16,7 +14,6 @@
       "index": "unique"
     },
     {
-      "id": "fld_c3lwrdkxju",
       "name": "next",
       "label": "%next%",
       "type": "int",

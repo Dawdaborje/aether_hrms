@@ -7,7 +7,8 @@ use aether_sdk::prelude::*;
 
 use crate::common::{day_kind, employed_on, employee, id_of, is_admin, leave_cover, my_employee, require_admin, text, today_date, Record};
 use crate::rules::{compute, inputs_hash, Direction, Facts, Punch, Status};
-use crate::setup::{assignment_on, shift_of};
+use crate::rules::DayKind;
+use crate::setup::{assignment_on, rotation_day_off, shift_of};
 
 #[derive(Deserialize)]
 struct Range {
@@ -86,12 +87,29 @@ pub fn gather(person: &Record, date: NaiveDate) -> Result<(Facts, Option<Record>
         }
         None => (date.and_hms_opt(0, 0, 0).unwrap_or_default(), date.and_hms_opt(23, 59, 59).unwrap_or_default()),
     };
+    let mut punches = punches_between(person_id, from, to)?;
+    let mut kind = day_kind(person, date)?;
+    if shift.is_none() {
+        // With no shift the window is the calendar day, so a punch that really ends a neighbouring
+        // night shift (its morning out) must not be counted twice: leave out what a neighbour's
+        // shift window already holds.
+        for neighbour in [date - Duration::days(1), date + Duration::days(1)] {
+            if let Some((_, record)) = assignment_on(person_id, neighbour)? {
+                let window = shift_of(&record)?.window(neighbour);
+                punches.retain(|p| !(p.at >= window.from && p.at <= window.to));
+            }
+        }
+        // A day off in the person's rotation is a weekly off (a holiday stays a holiday).
+        if kind == DayKind::Working && rotation_day_off(person_id, date)? {
+            kind = DayKind::WeeklyOff;
+        }
+    }
     let facts = Facts {
         work_date: date,
         shift,
-        kind: day_kind(person, date)?,
+        kind,
         leave: leave_cover(person_id, date)?,
-        punches: punches_between(person_id, from, to)?,
+        punches,
     };
     Ok((facts, shift_record))
 }
@@ -136,6 +154,7 @@ pub fn recompute(person: &Record, date: NaiveDate) -> Result<Option<Record>> {
         return Ok(existing);
     }
     let written = write_day(person_id, date, &day, shift_record.as_ref(), &hash)?;
+    crate::overtime::settle(person_id, date, facts.kind, day.overtime)?;
     if !day.review.is_empty() {
         events::emit("day_needs_review", &json!({ "employee": person_id, "date": format_date(date), "review": text(&written, "review") }))?;
     }
@@ -325,15 +344,22 @@ fn payroll_summary(input: Summary) -> Result<Value> {
     }
     let (from, to) = (parse_date(&input.from)?, parse_date(&input.to)?);
     let rows = db::find::<Record>("att_day")
-        .matching(Filter::one_of("employee", input.employees).and(Filter::gte("work_date", format_date(from))).and(Filter::lte("work_date", format_date(to))))
+        .matching(Filter::one_of("employee", input.employees.clone()).and(Filter::gte("work_date", format_date(from))).and(Filter::lte("work_date", format_date(to))))
         .aggregate(
             &["employee"],
             &[("overtime", aether_sdk::db::Figure::sum("overtime_min")), ("late", aether_sdk::db::Figure::sum("late_min")), ("days", aether_sdk::db::Figure::sum("worked_min"))],
         )?;
     let mut out = serde_json::Map::new();
+    let approved = crate::overtime::payroll_overtime(&input.employees, from, to)?;
     for row in rows {
         let id = row["employee"].as_str().unwrap_or_default().to_string();
-        out.insert(id, json!({ "overtime_minutes": row["overtime"], "late_minutes": row["late"], "worked_minutes": row["days"] }));
+        let claim = approved.get(&id).cloned().unwrap_or_else(|| json!({}));
+        out.insert(id, json!({
+            "overtime_minutes": row["overtime"], "late_minutes": row["late"], "worked_minutes": row["days"],
+            "approved_overtime_weighted_minutes": claim.get("approved_weighted_minutes").cloned().unwrap_or(json!(0)),
+            "approved_overtime_minutes": claim.get("approved_minutes").cloned().unwrap_or(json!(0)),
+            "pending_overtime_minutes": claim.get("pending_minutes").cloned().unwrap_or(json!(0)),
+        }));
     }
     Ok(Value::Object(out))
 }

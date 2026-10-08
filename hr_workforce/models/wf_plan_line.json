@@ -1,0 +1,58 @@
+{
+  "model_id": "mdl_xclqdpsdln",
+  "name": "wf_plan_line",
+  "label": "%wf_plan_line%",
+  "plural_label": "%wf_plan_lines%",
+  "icon": "list",
+  "title_field": "position",
+  "fields": [
+    {
+      "id": "fld_gc4qeku7fq",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "wf_plan"
+    },
+    {
+      "id": "fld_lvrmmymuaq",
+      "name": "position",
+      "label": "%position%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_3zrsrri7k2",
+      "name": "planned_hires",
+      "label": "%planned_hires%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_x4khu7ajg7",
+      "name": "cost_per_hire",
+      "label": "%cost_per_hire%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_xwhuktwywr",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "string",
+      "max_length": 300
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_hw4yiic55u",
+      "fields": [
+        "plan",
+        "position"
+      ],
+      "unique": true
+    }
+  ]
+}

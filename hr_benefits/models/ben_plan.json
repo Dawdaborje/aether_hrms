@@ -1,0 +1,132 @@
+{
+  "model_id": "mdl_hfss2cbrp4",
+  "name": "ben_plan",
+  "label": "%ben_plan%",
+  "plural_label": "%ben_plans%",
+  "icon": "heart-pulse",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_bzm4iomotx",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_yt3bi5yqkz",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_rm3is244qv",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_swnjbvbltd",
+          "value": "allowance",
+          "label": "%allowance%"
+        },
+        {
+          "id": "opt_enhvaxjhfk",
+          "value": "insurance",
+          "label": "%insurance%"
+        }
+      ]
+    },
+    {
+      "id": "fld_g5syc6exq2",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_k7vcmg46hf",
+      "name": "annual_ceiling",
+      "label": "%annual_ceiling%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "What accrues per year (allowance); for insurance, the most claimable per year."
+    },
+    {
+      "id": "fld_jteo6vtoia",
+      "name": "per_claim_max",
+      "label": "%per_claim_max%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_vjpd7fh3xg",
+      "name": "waiting_months",
+      "label": "%waiting_months%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_bdsdmfeksj",
+      "name": "carry_over",
+      "label": "%carry_over%",
+      "type": "bool",
+      "help": "An unused balance survives the new year."
+    },
+    {
+      "id": "fld_ko5ujs7ano",
+      "name": "receipt_required",
+      "label": "%receipt_required%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_y3em7s7ufu",
+      "name": "self_enrol",
+      "label": "%self_enrol%",
+      "type": "bool",
+      "help": "Employees can enrol themselves."
+    },
+    {
+      "id": "fld_xjcqdu6qcw",
+      "name": "monthly_premium",
+      "label": "%monthly_premium%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_h73ia5lbst",
+      "name": "employer_percent",
+      "label": "%employer_percent%",
+      "type": "int",
+      "default": 100
+    },
+    {
+      "id": "fld_2kmq3ppn3y",
+      "name": "max_dependants",
+      "label": "%max_dependants%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_ex752i564e",
+      "name": "child_age_limit",
+      "label": "%child_age_limit%",
+      "type": "int",
+      "default": 25
+    },
+    {
+      "id": "fld_sxazw2rxpi",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

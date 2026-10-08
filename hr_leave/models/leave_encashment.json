@@ -1,0 +1,107 @@
+{
+  "model_id": "mdl_2nhjgdo53k",
+  "name": "leave_encashment",
+  "label": "%leave_encashment%",
+  "plural_label": "%leave_encashments%",
+  "icon": "banknote",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_hwjumqlte3",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_5tup4jr6eo",
+      "name": "leave_type",
+      "label": "%leave_type%",
+      "type": "link",
+      "required": true,
+      "target": "leave_type"
+    },
+    {
+      "id": "fld_oe6xnife7z",
+      "name": "days",
+      "label": "%days%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_njnndfovog",
+      "name": "daily_rate",
+      "label": "%daily_rate%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_mtevt77gt5",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_yuy7g6zcgq",
+      "name": "date",
+      "label": "%date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_23sbn3wjr3",
+      "name": "pay_date",
+      "label": "%pay_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_tqmmkgvuli",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_oij6h57i5q",
+          "value": "done",
+          "label": "%done%"
+        },
+        {
+          "id": "opt_52wemrf6fn",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_r6igmxsljf",
+      "name": "ledger_key",
+      "label": "%ledger_key%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_t5uv6a7q63",
+      "name": "adjustment",
+      "label": "%adjustment%",
+      "type": "string",
+      "max_length": 120,
+      "help": "The pay adjustment this created in hr_compensation."
+    },
+    {
+      "id": "fld_k2cvrcdcik",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 120
+    }
+  ]
+}

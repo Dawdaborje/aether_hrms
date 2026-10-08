@@ -1,0 +1,105 @@
+{
+  "model_id": "mdl_r5vcumd4w5",
+  "name": "loan_product",
+  "label": "%loan_product%",
+  "plural_label": "%loan_products%",
+  "icon": "landmark",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_efp54rcznn",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_ybrsyjwvbg",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_xjdllqs3fw",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_utxhxx4ojq",
+      "name": "max_amount",
+      "label": "%max_amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_wlfbblxlxn",
+      "name": "max_months",
+      "label": "%max_months%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_3fqfx6wfuu",
+      "name": "annual_bps",
+      "label": "%annual_bps%",
+      "type": "int",
+      "default": 0,
+      "help": "Yearly rate in hundredths of a percent."
+    },
+    {
+      "id": "fld_k7y7gqush5",
+      "name": "method",
+      "label": "%method%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_pu4e6hqwrq",
+          "value": "reducing",
+          "label": "%reducing%"
+        },
+        {
+          "id": "opt_fswbx7phdk",
+          "value": "flat",
+          "label": "%flat%"
+        }
+      ]
+    },
+    {
+      "id": "fld_hhptnxz43p",
+      "name": "max_deduction_percent",
+      "label": "%max_deduction_percent%",
+      "type": "int",
+      "default": 30,
+      "help": "Payroll takes at most this share of what is available."
+    },
+    {
+      "id": "fld_ycs75gvchv",
+      "name": "min_tenure_months",
+      "label": "%min_tenure_months%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_bpykc3lksz",
+      "name": "allow_multiple",
+      "label": "%allow_multiple%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_eeqq6ziopn",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

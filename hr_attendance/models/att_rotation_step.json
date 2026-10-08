@@ -1,0 +1,45 @@
+{
+  "model_id": "mdl_dua5rtevm3",
+  "name": "att_rotation_step",
+  "label": "%att_rotation_step%",
+  "plural_label": "%att_rotation_steps%",
+  "icon": "list-ordered",
+  "title_field": "position",
+  "fields": [
+    {
+      "id": "fld_gegkhrou2x",
+      "name": "rotation",
+      "label": "%rotation%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "att_rotation"
+    },
+    {
+      "id": "fld_a5pij737ml",
+      "name": "position",
+      "label": "%position%",
+      "type": "int",
+      "required": true,
+      "min": 1
+    },
+    {
+      "id": "fld_jbrjun5vzx",
+      "name": "shift",
+      "label": "%shift%",
+      "type": "link",
+      "target": "att_shift",
+      "help": "Empty: a day off in the rotation."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_nxrphezp44",
+      "fields": [
+        "rotation",
+        "position"
+      ],
+      "unique": true
+    }
+  ]
+}

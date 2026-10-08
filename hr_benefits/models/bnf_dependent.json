@@ -1,0 +1,67 @@
+{
+  "model_id": "mdl_6qhj4k66jb",
+  "name": "bnf_dependent",
+  "label": "%bnf_dependent%",
+  "plural_label": "%bnf_dependents%",
+  "icon": "users",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_3hxw2ptanl",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "bnf_enrolment"
+    },
+    {
+      "id": "fld_pcnwsz46rp",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_pnak6zlq2u",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_zsdtzvac54",
+      "name": "relation",
+      "label": "%relation%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_vzh7viebcy",
+          "value": "spouse",
+          "label": "%spouse%"
+        },
+        {
+          "id": "opt_n4mvihyv6p",
+          "value": "child",
+          "label": "%child%"
+        },
+        {
+          "id": "opt_hd2a53sz57",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_iqc232xpmp",
+      "name": "born",
+      "label": "%born%",
+      "type": "date"
+    }
+  ]
+}

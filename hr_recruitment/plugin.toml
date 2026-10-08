@@ -1,7 +1,7 @@
 [plugin]
 name = "hr_recruitment"
 label = "Recruitment"
-version = "0.1.0"
+version = "0.1.1"
 description = "Openings, applications, interviews, feedback and offers, ending in a hire."
 long_description = """
 Openings are for seats of a position and open only when the position has free seats that no other open

@@ -1,0 +1,106 @@
+{
+  "model_id": "mdl_hnmyvowg64",
+  "name": "ben_entry",
+  "label": "%ben_entry%",
+  "plural_label": "%ben_entrys%",
+  "icon": "scroll-text",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_le5ippehxt",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ben_enrolment"
+    },
+    {
+      "id": "fld_3aagvb5q3d",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_7zxbtudy3t",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_jku5o6houw",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_7tyhdnzrfj",
+          "value": "accrual",
+          "label": "%accrual%"
+        },
+        {
+          "id": "opt_mceswb46hx",
+          "value": "claim",
+          "label": "%claim%"
+        },
+        {
+          "id": "opt_xrxqcn2kmv",
+          "value": "reversal",
+          "label": "%reversal%"
+        },
+        {
+          "id": "opt_dim5jaxaxc",
+          "value": "expiry",
+          "label": "%expiry%"
+        }
+      ]
+    },
+    {
+      "id": "fld_p23dez5mhk",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2,
+      "help": "Positive adds to the balance, negative takes from it."
+    },
+    {
+      "id": "fld_h6pgidod7c",
+      "name": "on_date",
+      "label": "%on_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_fgjg6b7g54",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 200,
+      "index": "unique"
+    },
+    {
+      "id": "fld_lc2i5b7x4y",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_hfyu377xog",
+      "fields": [
+        "enrolment",
+        "seq"
+      ],
+      "unique": true
+    }
+  ]
+}

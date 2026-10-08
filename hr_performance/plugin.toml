@@ -1,7 +1,7 @@
 [plugin]
 name = "hr_performance"
 label = "Performance"
-version = "0.1.0"
+version = "0.1.1"
 description = "Appraisal cycles, goals that roll up, blind reviews and skills compared with what a job asks."
 long_description = """
 A cycle moves through goal setting, self review, the managers' review, calibration and publication, one

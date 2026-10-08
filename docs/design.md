@@ -453,3 +453,105 @@ plugin and reference with an idempotency key, an explicit `override` flag) and i
 gratuity push adjustments into it by source. A structure picks them up with inputs named `adj_<code>`. Payroll locks
 a period in `hr_compensation` when it approves a run, so an adjustment dated inside an approved period cannot change:
 a correction is a new adjustment in a later period.
+
+* **hr_compensation 0.1.0** adjustment codes, one-off and recurring adjustments (idempotent by source, refused on or
+  before the payroll lock), the forward-only payroll lock, award requests with a different approver, withholding,
+  gratuity with a stored rule snapshot. Loaded on a scratch kernel with `hr`: idempotent replay, payroll summary
+  (`adj_bonus`) and the lock refusal verified over HTTP. Withholding and gratuity paths are compiled and unit
+  tested but not yet exercised on a kernel. `hr_payroll` now calls `payroll_adjustments` and `lock_through`; that
+  edit is **not compile-checked** because the external `sp_engine` path crate is absent on this machine.
+* **hr_leave 0.3.1** accrual plans with service levels (the level in force on each grant day, yearly and total caps,
+  idempotent keys per assignment and period, no overlapping plan for one type), encashment (type limits, days leave
+  the ledger and the money goes to `hr_compensation` by source key; cancelling cancels the payment first, refused once
+  payroll closed the period) and compensatory leave claims (only real days off on the person's calendar count, no
+  overlap, claim window, decided by someone else, lapsing grants). Verified over HTTP on a scratch kernel; 19 native
+  tests. Still not built: mandatory/stress days, approver up the department tree, policy assignments by grade,
+  start-half/end-half flags. A claim is not yet checked against attendance (hr_attendance 0.2 will feed it).
+* **hr_attendance 0.2.0** overtime bands per kind of day (a table of from/to minutes and a multiplier, overlapping
+  bands refused, uncovered minutes count once), one overtime claim per person and day that is pending until the
+  manager or an administrator decides it (never the person), sent back to pending with a note if the day is later
+  recomputed to different minutes; payroll summary now also returns approved weighted, approved and pending
+  overtime. Shift rotations (a cycle of shifts and days off from an anchor day, assigned like a shift). Verified over
+  HTTP: 360 minutes on a weekly off cut 240 at 1.5 and 120 at 2 = 600 weighted; a rotation gave Day, Night and an
+  off day on the right dates; 17 native tests. 0.2.1 fixed two limits: a rotation day off counts as a weekly off (so overtime is banded as one), and on a day with no shift a punch that belongs to a neighbouring night shift's window is not counted again (no false `odd_punches`). A person who works on such a day still shows status `unscheduled` (they had no shift), with all minutes as overtime. Not built: shift-change requests, devices with their own keys, PIN lockout.
+* **hr_career 0.1.0** promotion, demotion, transfer, grade change and pay change as requests (by the person's manager or
+  a career administrator, never for oneself), checked against the current terms and a grade ladder (a promotion must
+  go up, a demotion down, a pay change touches only the wage, a wage must sit in its grade's band unless the
+  exception is stated), decided by a career administrator who is neither the person nor the requester, and written on
+  approval as a **dated employment record** in `hr` (history kept; a change not yet in force can be withdrawn and its
+  record removed; one in force is corrected by a new change). Refuses dates on or before the payroll lock. Letter
+  templates with `{{placeholders}}` that fail on a missing value. `hr` 0.1.2 grants `via:hr_career` access to
+  employment and its pay fields. Verified over HTTP with two administrators; 4 native tests.
+* **hr_workforce 0.1.0** staffing plans (period, positions, planned hires, cost per hire; draft until a second planner
+  approves; no two approved plans cover one position on the same day) and hiring requisitions: growth must fit the
+  seats the position has free net of seats other approved requisitions hold, and the plan line covering its date
+  (no plan: allowed, marked `unplanned`); replacement and temporary skip both checks; decided by someone other than
+  the requester; `start_hiring` creates the draft opening in `hr_recruitment`; withdrawing closes that opening;
+  fills and time-to-fill are read back from the opening nightly. Verified over HTTP (overlap refused, plan room used
+  up, self-decision refused, opening created and closed); 3 native tests. The read-back of a real fill (hire completed
+  in recruitment) was not exercised. Not built: budgets rolled up the department tree (Frappe's parent-company cap).
+  Also fixed: several plugins shared one `counter` model id, which the kernel refuses; recruitment, onboarding and
+  payroll now get fresh ids on sync.
+* **hr_training 0.1.0** courses (skill and level they build, pass score, certificate validity, seat price, mandatory),
+  sessions with capacity, enrolment by the person, their manager or a planner, a waiting list promoted oldest first when
+  a seat frees (someone the budget cannot cover keeps their place), no two overlapping bookings, no second seat while a
+  certificate is valid and not about to lapse; seat price copied at booking and charged to the person's department
+  against a yearly budget that refuses overspending unless a planner states a reason; results recorded once by a
+  planner and never for themselves; a pass issues one certificate (expiry from the course) and credits the skill in
+  `hr_performance` (new `credit_skill` in hr_performance 0.1.1: raise-only, for perf or training admins); expiring
+  certificates warned at 30, 7 and 0 days; mandatory gaps listed. Verified over HTTP (waitlist and promotion, budget
+  refusal and override, pass and fail, skill level 3 credited, gaps shrinking); 5 native tests. Not built: prerequisites
+  between courses, trainer feedback forms, a failed skill credit is recorded on the certificate but not retried.
+* **hr_grievance 0.1.0** (new): confidential cases. States submitted, investigating, findings submitted, resolved,
+  appealed, closed, withdrawn (a table of moves, nothing else is allowed). The investigator may not be a party, nor
+  the manager or report of one, nor have investigated the case before; a case manager who is a party is recused;
+  the investigator proposes findings and a different case manager decides. Category fixes the time limit, copied to
+  the case; nightly job escalates overdue cases once per level (1 overdue, 2 overdue twice the limit) and closes
+  decided cases after the 14-day appeal window; one appeal, to someone new. The log is append-only (no rule allows
+  edit or delete), numbered on the case, internal or shared; an anonymous complainant is hidden from the
+  investigator, in the case and in the log. Verified over HTTP; 4 native tests. Not built: witnesses, attachments,
+  escalation contacts by department (the event is emitted; nothing routes it yet).
+* **hr_travel 0.1.0** (new): trips with legs and cost lines, a policy per destination class (daily allowance, meal
+  deduction, lodging cap, approval limit, advance share) whose figures are copied onto the trip. Dates frame the
+  legs; no two live trips for one person on a day; lodging over the cap needs a reason; the manager approves, and a
+  travel administrator other than the first approver gives a second approval above the limit; never one's own trip.
+  An approved trip asks hr_expense for an advance (a share of the estimate, once) and opens its expense report
+  (once, from the first day); completion needs the report or a statement of no expenses; unsettled trips are
+  flagged nightly. Verified over HTTP (allowance 175 with two meal days, estimate 1035, advance 621, overlap and
+  second-approval refusals); 6 native tests. Not built: foreign-currency trips (one currency per trip), checking
+  approved leave against the dates, booking integrations.
+* **hr_assets 0.1.0** (new): equipment and vehicles in custody. One ledger (`asset_event`, never edited, numbered on
+  the asset) records created, assigned, acknowledged, returned (good, damaged, lost), maintenance, retired and
+  odometer; the asset's state and holder are the result of the moves (a table of moves, 2 tests). One holder at a
+  time, who must be working and who acknowledges receipt (unacknowledged for a week: flagged once); a damaged
+  return goes to maintenance, a lost one retires the asset; an odometer never goes backwards and the history
+  reports distance under the current holder; `outstanding_assets` lists what a leaver must hand back, for the
+  departure checklist. Verified over HTTP. Not built: scheduled maintenance, fuel and service costs, insurance
+  and licence expiry on vehicles, wiring the departure list into hr_onboarding (next, with 0.2).
+* **hr_loan 0.1.0** (new): products (limit, term, rate, reducing or flat, tenure, payroll cap), requests with the whole
+  schedule made at once, approval by manager or loan admin (never the borrower), disbursement by a third person.
+  Money moves only as ledger entries (disbursement, repayment, reversal), each applied once per reference; a repayment
+  is spread over the oldest unpaid instalments and records exactly what it did, so a reversal undoes exactly that
+  (including a foreclosure's waived interest). `payroll_loan_plan` says what to deduct, capped by the pay available,
+  the rest stays due; `payroll_loan_report` records what payroll took, once per run and loan. Foreclosure quote
+  charges no interest on instalments not yet due (922.05 against 942.35 scheduled in the test). `leaver_loan_balance`
+  feeds the final settlement. Verified over HTTP; 7 native tests (schedules to the cent, allocation, cap,
+  foreclosure). Not built: wiring into hr_payroll (its crate cannot be built here), loans in mixed currencies for one
+  person, rescheduling, top-ups, a guarantor.
+* **hr_benefits 0.1.0** (new): plans with a yearly ceiling and a way of paying (accrue then claim, claim against the
+  ceiling, or payroll); an append-only ledger of accrual, claims and reversals, remaining never below zero and never
+  above the ceiling. A claim that would go over is refused (no one-claim-per-month workaround). Manager or benefits
+  admin approves, never the claimant; an approved claim becomes an hr_compensation adjustment once. Nightly accrual
+  is one entry per person, plan and month (idempotent). Health insurance is an enrolment with a window of dependents
+  (spouse, children), one active window per plan, no overlap. Verified over HTTP (ceiling 1200, claim 400 leaving
+  800, accrue October to 1000, reverse restoring 1200); 5 native tests. Not built: receipts as attachments, prorating
+  the ceiling for a mid-year join, family claims against the employee's pot, a carrier API.
+* **hr_referral 0.1.0** (new): refer a candidate (never yourself; email unique), accept copies the bonus policy onto
+  the referral and opens one application in hr_recruitment (`source: referral`, via:hr_referral create). States:
+  submitted → in_process → hired → bonus_due → paid (or rejected / withdrawn / forfeited). The bonus waits the
+  policy's days after hire and is forfeited if the hire leaves; payment is an hr_compensation adjustment once.
+  `record_referral_hire` and nightly catch-up from the application; Frappe reset status to Pending and never paid.
+  Verified over HTTP (accept → application, 90-day gate, pay 500.00 as adj_refbonus, forfeit, reject); 3 native
+  tests. hr_recruitment 0.1.1: referral apply without recruiter when source=referral. Not built: listening to
+  candidate_hired instead of polling, different bonuses by job, a public referral form.
+* **Not started:** documents.

@@ -1,0 +1,135 @@
+{
+  "model_id": "mdl_4ixkzsz72x",
+  "name": "ben_claim",
+  "label": "%ben_claim%",
+  "plural_label": "%ben_claims%",
+  "icon": "receipt-text",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_z5o3xmxpyw",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_y2garay7yf",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_vhvpt5xfmc",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ben_enrolment"
+    },
+    {
+      "id": "fld_castcbatek",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "target": "ben_plan"
+    },
+    {
+      "id": "fld_ohlbyoabdf",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_fa4l7px2t7",
+      "name": "incurred_on",
+      "label": "%incurred_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_jq3dbj333e",
+      "name": "description",
+      "label": "%description%",
+      "type": "string",
+      "max_length": 300
+    },
+    {
+      "id": "fld_kt2wkbtlrz",
+      "name": "receipt",
+      "label": "%receipt%",
+      "type": "string",
+      "max_length": 300
+    },
+    {
+      "id": "fld_3m25pkcamm",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_qgqznyjakm",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_nym63k5g3q",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_zirweino26",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_5mzh5jjhiz",
+          "value": "paid",
+          "label": "%paid%"
+        },
+        {
+          "id": "opt_75unjxvcaa",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        },
+        {
+          "id": "opt_un3vgwdych",
+          "value": "reversed",
+          "label": "%reversed%"
+        }
+      ]
+    },
+    {
+      "id": "fld_wzdcr4vyx6",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_wwig4e3l2y",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_a6sgd5djju",
+      "name": "paid_run",
+      "label": "%paid_run%",
+      "type": "string",
+      "max_length": 120
+    }
+  ]
+}

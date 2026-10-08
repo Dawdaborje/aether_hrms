@@ -1,0 +1,142 @@
+{
+  "model_id": "mdl_ehspxudkv5",
+  "name": "asset_event",
+  "label": "%asset_event%",
+  "plural_label": "%asset_events%",
+  "icon": "history",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_lyqcszk7h5",
+      "name": "asset",
+      "label": "%asset%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "asset"
+    },
+    {
+      "id": "fld_v3mxvcingp",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_c2gl7kfsbk",
+      "name": "on_date",
+      "label": "%on_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_sxoicc5eft",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_ydnnhvzgvi",
+          "value": "created",
+          "label": "%created%"
+        },
+        {
+          "id": "opt_wom7447bfb",
+          "value": "assigned",
+          "label": "%assigned%"
+        },
+        {
+          "id": "opt_z3pvfimwsl",
+          "value": "acknowledged",
+          "label": "%acknowledged%"
+        },
+        {
+          "id": "opt_dn7onkirbr",
+          "value": "returned",
+          "label": "%returned%"
+        },
+        {
+          "id": "opt_zhi4mrw72t",
+          "value": "maintenance_started",
+          "label": "%maintenance_started%"
+        },
+        {
+          "id": "opt_g32kzcyoll",
+          "value": "maintenance_finished",
+          "label": "%maintenance_finished%"
+        },
+        {
+          "id": "opt_4pqpzdwym4",
+          "value": "retired",
+          "label": "%retired%"
+        },
+        {
+          "id": "opt_2fi25ghpxq",
+          "value": "odometer",
+          "label": "%odometer%"
+        }
+      ]
+    },
+    {
+      "id": "fld_4txnbh4pvh",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_l3pciaqbxt",
+      "name": "condition",
+      "label": "%condition%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_grxfxw75m5",
+          "value": "good",
+          "label": "%good%"
+        },
+        {
+          "id": "opt_zzplv36nuf",
+          "value": "damaged",
+          "label": "%damaged%"
+        },
+        {
+          "id": "opt_g4ulj4lr2g",
+          "value": "lost",
+          "label": "%lost%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ww7otdoljr",
+      "name": "odometer",
+      "label": "%odometer%",
+      "type": "int"
+    },
+    {
+      "id": "fld_beaxic5ktc",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_67cyqorxl6",
+      "name": "actor",
+      "label": "%actor%",
+      "type": "string",
+      "max_length": 120
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_cdclnsg5t5",
+      "fields": [
+        "asset",
+        "seq"
+      ],
+      "unique": true
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+[plugin]
+name = "hr_assets"
+label = "Assets in custody"
+version = "0.1.0"
+description = "Equipment and vehicles held by employees, with an append-only custody ledger and odometer."
+long_description = """
+Every asset has one holder at most. Assigning, acknowledging receipt, returning (good, damaged or lost), maintenance,
+retiring and odometer readings are entries in a ledger that is never edited; the asset's state and holder only
+follow the last entries. A damaged return goes to maintenance and a lost one retires the asset. An odometer cannot go
+backwards. `outstanding_assets` lists what a leaver still holds, for the departure checklist. Built from a reading of
+Odoo hr_maintenance and hr_fleet and Frappe asset movement, extended. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "asset_category", permissions = ["read", "write"] },
+  { name = "asset", permissions = ["read", "write"] },
+  { name = "asset_event", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "asset_admin"
+label = "Asset administrator"
+description = "Registers assets, assigns and takes them back, maintains and retires them."
+
+[[events]]
+name = "asset_assigned"
+
+[[events]]
+name = "asset_returned"
+
+[[events]]
+name = "asset_unacknowledged"
+
+[[schedule]]
+name = "assets-nightly"
+function = "assets_nightly"
+cron = "30 1 * * *"
+
+[app]
+icon = "laptop"
+route = "/hr/assets"
+description = "What you hold, and what the company holds"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

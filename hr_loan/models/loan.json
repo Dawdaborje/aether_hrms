@@ -1,0 +1,199 @@
+{
+  "model_id": "mdl_lqwvqvyixx",
+  "name": "loan",
+  "label": "%loan%",
+  "plural_label": "%loans%",
+  "icon": "hand-coins",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_gropgjhlel",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_lwkyhozj42",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_k5iqoipre6",
+      "name": "product",
+      "label": "%product%",
+      "type": "link",
+      "required": true,
+      "target": "loan_product"
+    },
+    {
+      "id": "fld_jhxgruqqcb",
+      "name": "purpose",
+      "label": "%purpose%",
+      "type": "string",
+      "max_length": 300
+    },
+    {
+      "id": "fld_lv2lf2iecb",
+      "name": "principal",
+      "label": "%principal%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_nkl4khzy6a",
+      "name": "months",
+      "label": "%months%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_7khu5pqtig",
+      "name": "annual_bps",
+      "label": "%annual_bps%",
+      "type": "int"
+    },
+    {
+      "id": "fld_cpc43dot4r",
+      "name": "method",
+      "label": "%method%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_dix7ubhyl7",
+          "value": "reducing",
+          "label": "%reducing%"
+        },
+        {
+          "id": "opt_vsjohj5ofp",
+          "value": "flat",
+          "label": "%flat%"
+        }
+      ]
+    },
+    {
+      "id": "fld_cyyouo7oxj",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 3
+    },
+    {
+      "id": "fld_qmcabjw26e",
+      "name": "max_deduction_percent",
+      "label": "%max_deduction_percent%",
+      "type": "int"
+    },
+    {
+      "id": "fld_opfobqfdka",
+      "name": "first_due",
+      "label": "%first_due%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_h7p24xdmr7",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_65utldax37",
+          "value": "requested",
+          "label": "%requested%"
+        },
+        {
+          "id": "opt_ksqk4kjitj",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_5pajegvvx4",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_2nk6g7x7mp",
+          "value": "disbursed",
+          "label": "%disbursed%"
+        },
+        {
+          "id": "opt_m5q6nau4rl",
+          "value": "closed",
+          "label": "%closed%"
+        },
+        {
+          "id": "opt_gj7qmbdtlv",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_7ivd7ie7yz",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_g3jyihyd5u",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_llr6h6cnif",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_h7m7nit6pg",
+      "name": "paid_total",
+      "label": "%paid_total%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_c3w5z46473",
+      "name": "interest_waived",
+      "label": "%interest_waived%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_x5unv7r25k",
+      "name": "disbursed_on",
+      "label": "%disbursed_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_iam2n3omw5",
+      "name": "closed_on",
+      "label": "%closed_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_br6wgks4n2",
+      "name": "entry_seq",
+      "label": "%entry_seq%",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

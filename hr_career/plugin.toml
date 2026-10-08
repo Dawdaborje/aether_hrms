@@ -1,0 +1,45 @@
+[plugin]
+name = "hr_career"
+label = "Career"
+version = "0.1.0"
+description = "Promotions, transfers and pay changes as approved change sets, grade ladders and letters."
+long_description = """
+A career move is a request, not an edit: a promotion, demotion, transfer, grade change or pay change names the
+person, the day it takes effect and the new terms, and waits for a decision. Nobody decides their own change,
+and the person who asked cannot be the one who approves. Approval writes dated employment in `hr` (the history is
+kept, nothing is overwritten) and a pending change that is still in the future can be withdrawn again. A grade
+ladder makes a promotion actually go up and keeps a wage inside its grade's band unless the exception is stated.
+Letters are made from templates with placeholders and a missing value is an error, not a blank. Built from a
+reading of Frappe HRMS employee promotion, transfer and grade, and Odoo 19's dated employee versions. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_compensation"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "career_grade", permissions = ["read", "write"] },
+  { name = "career_change", permissions = ["read", "write"] },
+  { name = "career_letter_template", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "career_admin"
+label = "Career administrator"
+description = "Sets up grades and letter templates, requests and decides career changes"
+
+[[events]]
+name = "career_change_approved"
+
+[app]
+icon = "arrow-up-right"
+route = "/hr/career"
+description = "Promotions, transfers and pay changes"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

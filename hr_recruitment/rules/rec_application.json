@@ -23,6 +23,16 @@
           "in": "$my_applications"
         }
       }
+    },
+    {
+      "name": "referral",
+      "roles": [
+        "via:hr_referral"
+      ],
+      "operations": [
+        "read",
+        "create"
+      ]
     }
   ],
   "fields": [

@@ -1,0 +1,38 @@
+{
+  "model": "comp_gratuity_rule",
+  "access": [
+    {
+      "name": "read",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "slabs",
+        "years_method",
+        "mode",
+        "days_per_year",
+        "min_years"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

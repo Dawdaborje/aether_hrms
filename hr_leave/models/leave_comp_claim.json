@@ -1,0 +1,105 @@
+{
+  "model_id": "mdl_6grrglymzr",
+  "name": "leave_comp_claim",
+  "label": "%leave_comp_claim%",
+  "plural_label": "%leave_comp_claims%",
+  "icon": "clock-plus",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_ffhb6xmswh",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_npds64uwfb",
+      "name": "leave_type",
+      "label": "%leave_type%",
+      "type": "link",
+      "required": true,
+      "target": "leave_type"
+    },
+    {
+      "id": "fld_pdb3ss4v5z",
+      "name": "work_from",
+      "label": "%work_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_phe56bui4c",
+      "name": "work_to",
+      "label": "%work_to%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_433f6ka3bm",
+      "name": "half_day",
+      "label": "%half_day%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_qzgu76d4i5",
+      "name": "days",
+      "label": "%days%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2,
+      "help": "Counted by the system: days off worked."
+    },
+    {
+      "id": "fld_ddlwoiay6d",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_euskixewyl",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_5r3niv5abj",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_gc54jiig6p",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_sdirxb2gki",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_x4y3cuwhqx",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_5gs3q33tk6",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_vvtdvj6z32",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ]
+}

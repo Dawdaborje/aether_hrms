@@ -1,0 +1,41 @@
+{
+  "model_id": "mdl_qyklptuk6m",
+  "name": "leave_plan_assignment",
+  "label": "%leave_plan_assignment%",
+  "plural_label": "%leave_plan_assignments%",
+  "icon": "user-check",
+  "title_field": "plan",
+  "fields": [
+    {
+      "id": "fld_6vzlmpbk67",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_cytbw4o2cu",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "target": "leave_plan"
+    },
+    {
+      "id": "fld_rgd4brelgh",
+      "name": "date_from",
+      "label": "%date_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_o63ge3t7ao",
+      "name": "date_to",
+      "label": "%date_to%",
+      "type": "date"
+    }
+  ]
+}

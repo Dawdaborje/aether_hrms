@@ -1,0 +1,11 @@
+<page route="/hr/assets" title="Assets" model="asset">
+  <view type="list" model="asset" source="my_assets">
+    <columns>
+      <column field="tag" label="Tag"/>
+      <column field="name" label="Asset"/>
+      <column field="state" label="State"/>
+      <column field="assigned_on" label="Since" fieldType="date"/>
+    </columns>
+    <empty title="Nothing in your custody" description="Assets assigned to you appear here."/>
+  </view>
+</page>

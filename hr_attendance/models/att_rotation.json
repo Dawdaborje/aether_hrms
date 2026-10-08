@@ -1,0 +1,34 @@
+{
+  "model_id": "mdl_pxjlw2p3kt",
+  "name": "att_rotation",
+  "label": "%att_rotation%",
+  "plural_label": "%att_rotations%",
+  "icon": "repeat",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_vqbfcn2umq",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_qo5njiyjse",
+      "name": "anchor_date",
+      "label": "%anchor_date%",
+      "type": "date",
+      "required": true,
+      "help": "The day step 1 falls on."
+    },
+    {
+      "id": "fld_k3p4f6xvi5",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

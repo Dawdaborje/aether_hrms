@@ -1,0 +1,127 @@
+{
+  "model_id": "mdl_ejetfaseaq",
+  "name": "asset",
+  "label": "%asset%",
+  "plural_label": "%assets%",
+  "icon": "laptop",
+  "title_field": "tag",
+  "fields": [
+    {
+      "id": "fld_afiuwlerit",
+      "name": "tag",
+      "label": "%tag%",
+      "type": "string",
+      "required": true,
+      "max_length": 60,
+      "index": "unique"
+    },
+    {
+      "id": "fld_7af3rtnolr",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_6fnfbclkvl",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "asset_category"
+    },
+    {
+      "id": "fld_qb4phn5i6a",
+      "name": "serial",
+      "label": "%serial%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_jw4bf552bp",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_6vabgrctqf",
+          "value": "available",
+          "label": "%available%"
+        },
+        {
+          "id": "opt_4d5dhslqne",
+          "value": "assigned",
+          "label": "%assigned%"
+        },
+        {
+          "id": "opt_qolyehrui3",
+          "value": "maintenance",
+          "label": "%maintenance%"
+        },
+        {
+          "id": "opt_22qzsnkxuj",
+          "value": "retired",
+          "label": "%retired%"
+        }
+      ]
+    },
+    {
+      "id": "fld_gmn6bs67yl",
+      "name": "holder",
+      "label": "%holder%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_5pc32sffwe",
+      "name": "assigned_on",
+      "label": "%assigned_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_axfhephmwb",
+      "name": "acknowledged",
+      "label": "%acknowledged%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_ez2hfcd2bh",
+      "name": "unacknowledged_notified",
+      "label": "%unacknowledged_notified%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_5xp7ze6dy4",
+      "name": "odometer",
+      "label": "%odometer%",
+      "type": "int",
+      "help": "Last reading, vehicles only."
+    },
+    {
+      "id": "fld_5pglmxsze5",
+      "name": "purchase_date",
+      "label": "%purchase_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_6wp35zf3ku",
+      "name": "purchase_cost",
+      "label": "%purchase_cost%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_eqnpqmc3wb",
+      "name": "event_seq",
+      "label": "%event_seq%",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

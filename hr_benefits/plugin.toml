@@ -1,0 +1,55 @@
+[plugin]
+name = "hr_benefits"
+label = "Benefits"
+version = "0.1.0"
+description = "Benefit plans with yearly ceilings, an accrual ledger, claims, and health-insurance enrolment."
+long_description = """
+A plan has a yearly ceiling and a way of paying: accrue a share each month then claim, claim against the ceiling from
+day one, or pay through payroll. Accrual, claims and reversals are ledger entries that are never deleted; a claim
+that would go over the remaining balance is refused, so Frappe's one-claim-per-month workaround is not needed. The
+manager (or a benefits administrator) approves a claim, never the claimant, and an approved claim becomes a payroll
+adjustment once. Health insurance is a separate enrolment with a window of dependents (spouse, children), one active
+enrolment per plan and year, no overlapping windows. Built from a reading of Frappe HRMS employee benefit application,
+claim and ledger, and employee health insurance. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_compensation", "currency"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "bnf_plan", permissions = ["read", "write"] },
+  { name = "bnf_enrolment", permissions = ["read", "write"] },
+  { name = "bnf_dependent", permissions = ["read", "write"] },
+  { name = "bnf_claim", permissions = ["read", "write"] },
+  { name = "bnf_entry", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "benefits_admin"
+label = "Benefits administrator"
+description = "Sets up plans, enrols people, approves claims and runs accrual."
+
+[[events]]
+name = "benefit_claimed"
+
+[[events]]
+name = "benefit_approved"
+
+[[schedule]]
+name = "benefits-nightly"
+function = "benefits_nightly"
+cron = "50 1 * * *"
+
+[app]
+icon = "gift"
+route = "/hr/benefits"
+description = "Plans, claims and insurance"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

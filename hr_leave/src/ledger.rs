@@ -208,7 +208,7 @@ fn grant(input: Grant, kind: &str) -> Result<Record> {
 }
 
 /// The people the yearly and nightly runs work for.
-fn present_employees() -> Result<Vec<Record>> {
+pub fn present_employees() -> Result<Vec<Record>> {
     let mut all = Vec::new();
     let mut offset = 0u32;
     loop {
@@ -378,8 +378,9 @@ fn record_expiry(today: NaiveDate) -> Result<u64> {
 /// What the nightly job did, for the log.
 pub fn nightly_ledger(today: NaiveDate) -> Result<Value> {
     let accrued = accrue(today)?;
+    let planned = crate::plan::run(today)?;
     let expired = record_expiry(today)?;
-    Ok(json!({ "accrued": accrued, "expired": expired }))
+    Ok(json!({ "accrued": accrued, "planned": planned, "expired": expired }))
 }
 
 handler! {

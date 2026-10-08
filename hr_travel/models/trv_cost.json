@@ -1,0 +1,78 @@
+{
+  "model_id": "mdl_frb3knbauz",
+  "name": "trv_cost",
+  "label": "%trv_cost%",
+  "plural_label": "%trv_costs%",
+  "icon": "receipt",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_o4rh226gft",
+      "name": "trip",
+      "label": "%trip%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "trv_trip"
+    },
+    {
+      "id": "fld_n7325m7zgg",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_xn4vfinvw7",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_oiyiu7h6pk",
+          "value": "lodging",
+          "label": "%lodging%"
+        },
+        {
+          "id": "opt_652t3tc6yu",
+          "value": "registration",
+          "label": "%registration%"
+        },
+        {
+          "id": "opt_qskovqtrmg",
+          "value": "visa",
+          "label": "%visa%"
+        },
+        {
+          "id": "opt_znt4mixrpv",
+          "value": "insurance",
+          "label": "%insurance%"
+        },
+        {
+          "id": "opt_qfvju4qg3n",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_mzy23phh24",
+      "name": "description",
+      "label": "%description%",
+      "type": "string",
+      "max_length": 200
+    },
+    {
+      "id": "fld_zjce5jopsc",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    }
+  ]
+}

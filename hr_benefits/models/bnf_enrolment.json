@@ -1,0 +1,100 @@
+{
+  "model_id": "mdl_nwwza7rxsb",
+  "name": "bnf_enrolment",
+  "label": "%bnf_enrolment%",
+  "plural_label": "%bnf_enrolments%",
+  "icon": "heart-pulse",
+  "title_field": "plan",
+  "fields": [
+    {
+      "id": "fld_sfok7vdlkp",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "bnf_plan"
+    },
+    {
+      "id": "fld_lakq36sfgy",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_qc7ca7jape",
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_qo5go6jik6",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_xvphz6jsuq",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_ttipgru72t",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_cucnxo45bw",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_7tt4jzbawd",
+          "value": "ended",
+          "label": "%ended%"
+        }
+      ]
+    },
+    {
+      "id": "fld_pknhs742qu",
+      "name": "policy_number",
+      "label": "%policy_number%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_vgfgynnbk6",
+      "name": "carrier",
+      "label": "%carrier%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_tyrlsupxef",
+      "name": "premium",
+      "label": "%premium%",
+      "type": "decimal",
+      "scale": 2
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_gx2n6ydtrn",
+      "fields": [
+        "plan",
+        "employee",
+        "year"
+      ],
+      "unique": true
+    }
+  ]
+}

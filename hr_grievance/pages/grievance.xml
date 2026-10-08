@@ -1,0 +1,12 @@
+<page route="/hr/grievances" title="Grievances" model="grv_case">
+  <view type="list" model="grv_case" source="list_grievances">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="subject" label="Subject"/>
+      <column field="severity" label="Severity"/>
+      <column field="state" label="State"/>
+      <column field="due_date" label="Due" fieldType="date"/>
+    </columns>
+    <empty title="No cases" description="Grievances you may see appear here."/>
+  </view>
+</page>

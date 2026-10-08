@@ -1,0 +1,100 @@
+{
+  "model_id": "mdl_5rdfjhwi2p",
+  "name": "loan_instalment",
+  "label": "%loan_instalment%",
+  "plural_label": "%loan_instalments%",
+  "icon": "calendar-clock",
+  "title_field": "n",
+  "fields": [
+    {
+      "id": "fld_klcsbxo2c2",
+      "name": "loan",
+      "label": "%loan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "loan"
+    },
+    {
+      "id": "fld_lkboqsd3fz",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_tvprcnuwno",
+      "name": "n",
+      "label": "%n%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_eraacxfozi",
+      "name": "due_date",
+      "label": "%due_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_fxo7z6e4n7",
+      "name": "principal",
+      "label": "%principal%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_s56zfaaxcb",
+      "name": "interest",
+      "label": "%interest%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_ozzyl2l2il",
+      "name": "paid",
+      "label": "%paid%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_wbmwblt5be",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_xzcd25giay",
+          "value": "due",
+          "label": "%due%"
+        },
+        {
+          "id": "opt_b5u2dmucci",
+          "value": "paid",
+          "label": "%paid%"
+        }
+      ]
+    },
+    {
+      "id": "fld_nywicmu43u",
+      "name": "overdue_notified",
+      "label": "%overdue_notified%",
+      "type": "bool"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_yqifv44oxb",
+      "fields": [
+        "loan",
+        "n"
+      ],
+      "unique": true
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "model_id": "mdl_td4fxquaf6",
+  "name": "ben_enrolment",
+  "label": "%ben_enrolment%",
+  "plural_label": "%ben_enrolments%",
+  "icon": "shield-check",
+  "title_field": "plan",
+  "fields": [
+    {
+      "id": "fld_w5ngrixyob",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_v73s6z5pec",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ben_plan"
+    },
+    {
+      "id": "fld_3hprlm545h",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_cqrohlaaga",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_2m4kv5myr5",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_f6j6slho7o",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_pdpovoxkpj",
+          "value": "ended",
+          "label": "%ended%"
+        }
+      ]
+    },
+    {
+      "id": "fld_wn6vrgvlk5",
+      "name": "covered",
+      "label": "%covered%",
+      "type": "string",
+      "max_length": 800,
+      "help": "Ids of covered dependants, comma separated."
+    },
+    {
+      "id": "fld_tk3j7z4uco",
+      "name": "entry_seq",
+      "label": "%entry_seq%",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

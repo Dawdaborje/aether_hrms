@@ -1,0 +1,245 @@
+{
+  "model_id": "mdl_qu5jlk7zud",
+  "name": "career_change",
+  "label": "%career_change%",
+  "plural_label": "%career_changes%",
+  "icon": "arrow-up-right",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_2o7tytkcbf",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_rcqax7gjjt",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_zhfedubcoe",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_zi56vi4zhl",
+          "value": "promotion",
+          "label": "%promotion%"
+        },
+        {
+          "id": "opt_kchslhvl4s",
+          "value": "demotion",
+          "label": "%demotion%"
+        },
+        {
+          "id": "opt_7itcbmm26z",
+          "value": "transfer",
+          "label": "%transfer%"
+        },
+        {
+          "id": "opt_32uihozis7",
+          "value": "grade_change",
+          "label": "%grade_change%"
+        },
+        {
+          "id": "opt_cxpwn6yjew",
+          "value": "pay_change",
+          "label": "%pay_change%"
+        }
+      ]
+    },
+    {
+      "id": "fld_h24s6u6emw",
+      "name": "effective_date",
+      "label": "%effective_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_jmslktwrnn",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_5esslzkrwf",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_6czkgbx4nj",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_3nsgxcryyc",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_vp3homyzdz",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_zp77uj7yan",
+      "name": "department",
+      "label": "%department%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_gq53t5qihw",
+      "name": "job",
+      "label": "%job%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_btkmxlodun",
+      "name": "position",
+      "label": "%position%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_caf4hoif7g",
+      "name": "manager",
+      "label": "%manager%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_m75nka2vzb",
+      "name": "work_location",
+      "label": "%work_location%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_6okcbiy3fc",
+      "name": "employment_type",
+      "label": "%employment_type%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_n6ieeaiasz",
+      "name": "grade",
+      "label": "%grade%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_sg5mzejagb",
+      "name": "wage",
+      "label": "%wage%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_ufgojmtzma",
+      "name": "from_grade",
+      "label": "%from_grade%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_rpna57z2vp",
+      "name": "from_wage",
+      "label": "%from_wage%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_e6bykjige7",
+      "name": "from_job",
+      "label": "%from_job%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_posw6wfx77",
+      "name": "from_department",
+      "label": "%from_department%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_tsnabss5yu",
+      "name": "from_manager",
+      "label": "%from_manager%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_q2xcg7kv3r",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_s4bacrdzlq",
+      "name": "band_exception",
+      "label": "%band_exception%",
+      "type": "bool",
+      "help": "The wage is outside the grade's band, on purpose."
+    },
+    {
+      "id": "fld_rln3iucgr3",
+      "name": "requested_by",
+      "label": "%requested_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_dtql3fb2vf",
+      "name": "requested_by_employee",
+      "label": "%requested_by_employee%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_fszjry3jhe",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_lnhpys4hyu",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_xcqpvafj2o",
+      "name": "employment",
+      "label": "%employment%",
+      "type": "string",
+      "max_length": 120,
+      "help": "The employment record this created in hr."
+    },
+    {
+      "id": "fld_j75ca6mmag",
+      "name": "letter",
+      "label": "%letter%",
+      "type": "text"
+    }
+  ]
+}

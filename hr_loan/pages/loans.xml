@@ -1,0 +1,11 @@
+<page route="/hr/loans" title="Staff loans" model="loan">
+  <view type="list" model="loan" source="my_loans">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="principal" label="Principal"/>
+      <column field="months" label="Months"/>
+      <column field="state" label="State"/>
+    </columns>
+    <empty title="No loans" description="Ask for a loan to see it here."/>
+  </view>
+</page>

@@ -1,0 +1,54 @@
+[plugin]
+name = "hr_workforce"
+label = "Workforce planning"
+version = "0.1.0"
+description = "Staffing plans by period and position, and hiring requisitions that draw on them."
+long_description = """
+A staffing plan says how many people to hire into which positions over a period and what each hire is budgeted at.
+A requisition asks for seats against a position: it must fit the seats the position really has free, net of seats
+other requisitions already hold, and it is counted against the plan that covers its date (a request outside any plan
+is allowed but marked unplanned, so the exception is visible). Someone other than the requester decides; approval can
+open the hiring in `hr_recruitment`, and fills and time-to-fill are read back from the opening, never typed. Plans
+refuse overlapping approved plans for one position. Built from a reading of Frappe HRMS staffing plan and job
+requisition. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_recruitment"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "wf_plan", permissions = ["read", "write"] },
+  { name = "wf_plan_line", permissions = ["read", "write"] },
+  { name = "wf_requisition", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "workforce_admin"
+label = "Workforce planner"
+description = "Makes and approves staffing plans, decides requisitions"
+
+[[events]]
+name = "requisition_approved"
+
+[[events]]
+name = "requisition_filled"
+
+# Reads fills back from the openings.
+[[schedule]]
+name = "workforce-nightly"
+function = "workforce_nightly"
+cron = "50 0 * * *"
+
+[app]
+icon = "users-round"
+route = "/hr/workforce"
+description = "Staffing plans and hiring requisitions"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

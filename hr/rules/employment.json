@@ -22,6 +22,18 @@
         "write",
         "delete"
       ]
+    },
+    {
+      "name": "career",
+      "roles": [
+        "via:hr_career"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
     }
   ],
   "fields": [
@@ -33,7 +45,8 @@
         "grade"
       ],
       "read_roles": [
-        "hr_manager"
+        "hr_manager",
+        "via:hr_career"
       ]
     }
   ]

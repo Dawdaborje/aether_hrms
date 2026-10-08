@@ -1,7 +1,7 @@
 [plugin]
 name = "hr_attendance"
 label = "Attendance"
-version = "0.1.0"
+version = "0.2.1"
 description = "Shifts, punches, daily attendance and corrections."
 long_description = """
 Raw punches are kept as they came and never edited: a correction is a new punch that supersedes another.
@@ -22,6 +22,10 @@ access_models = [
   { name = "att_punch", permissions = ["read", "write"] },
   { name = "att_day", permissions = ["read", "write"] },
   { name = "att_correction", permissions = ["read", "write"] },
+  { name = "att_overtime_rule", permissions = ["read", "write"] },
+  { name = "att_overtime", permissions = ["read", "write"] },
+  { name = "att_rotation", permissions = ["read", "write"] },
+  { name = "att_rotation_step", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false

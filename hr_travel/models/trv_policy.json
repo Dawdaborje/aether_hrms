@@ -1,0 +1,102 @@
+{
+  "model_id": "mdl_t52ryv5tek",
+  "name": "trv_policy",
+  "label": "%trv_policy%",
+  "plural_label": "%trv_policys%",
+  "icon": "plane",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_2q6ueuduu2",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_63cvz4vomf",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_36yuogvl4h",
+      "name": "destination_class",
+      "label": "%destination_class%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_ztqlzac2j4",
+          "value": "domestic",
+          "label": "%domestic%"
+        },
+        {
+          "id": "opt_iqopnwmr5q",
+          "value": "regional",
+          "label": "%regional%"
+        },
+        {
+          "id": "opt_ja66vfx5yl",
+          "value": "international",
+          "label": "%international%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ra7qgzm4zw",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_36bufnounp",
+      "name": "per_diem",
+      "label": "%per_diem%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_vcse7ctmbf",
+      "name": "meal_deduction_percent",
+      "label": "%meal_deduction_percent%",
+      "type": "int",
+      "default": 25
+    },
+    {
+      "id": "fld_7etobdknyj",
+      "name": "lodging_cap_per_night",
+      "label": "%lodging_cap_per_night%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_cmrpcfyvzy",
+      "name": "approval_limit",
+      "label": "%approval_limit%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_s3vnqjhkn5",
+      "name": "advance_percent",
+      "label": "%advance_percent%",
+      "type": "int",
+      "default": 70
+    },
+    {
+      "id": "fld_72rhtgaixv",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

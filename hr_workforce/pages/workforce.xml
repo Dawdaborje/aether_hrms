@@ -1,0 +1,16 @@
+<page route="/hr/workforce" title="Workforce planning" model="wf_requisition">
+  <view type="list" model="wf_requisition" source="list_requisitions">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="position" label="Position"/>
+      <column field="seats" label="Seats"/>
+      <column field="seats_filled" label="Filled"/>
+      <column field="state" label="State"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_requisition"/>
+      <action name="reject" label="Reject" function="reject_requisition"/>
+    </actions>
+    <empty title="No requisitions" description="Requests to hire appear here."/>
+  </view>
+</page>

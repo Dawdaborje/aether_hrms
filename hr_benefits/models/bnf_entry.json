@@ -1,0 +1,124 @@
+{
+  "model_id": "mdl_t7viedjirl",
+  "name": "bnf_entry",
+  "label": "%bnf_entry%",
+  "plural_label": "%bnf_entrys%",
+  "icon": "scroll-text",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_ulevy5eqf7",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "bnf_plan"
+    },
+    {
+      "id": "fld_ofoslb47wa",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_d4mzlw5blo",
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_wq3or644f2",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_i3bndfvwnv",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_etsjfrufbv",
+          "value": "accrual",
+          "label": "%accrual%"
+        },
+        {
+          "id": "opt_dieo3s2c44",
+          "value": "claim",
+          "label": "%claim%"
+        },
+        {
+          "id": "opt_egfcyui7pw",
+          "value": "reversal",
+          "label": "%reversal%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ccb7onrjiz",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_axapvktaxk",
+      "name": "on_date",
+      "label": "%on_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_dkbpdlnoib",
+      "name": "source",
+      "label": "%source%",
+      "type": "string",
+      "max_length": 200,
+      "index": "unique"
+    },
+    {
+      "id": "fld_5ynakvot6k",
+      "name": "claim",
+      "label": "%claim%",
+      "type": "link",
+      "target": "bnf_claim"
+    },
+    {
+      "id": "fld_ndo567yhwc",
+      "name": "reverses",
+      "label": "%reverses%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_2ddm3grnyj",
+      "name": "actor",
+      "label": "%actor%",
+      "type": "string",
+      "max_length": 120
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_q4scubiit2",
+      "fields": [
+        "plan",
+        "employee",
+        "year",
+        "seq"
+      ],
+      "unique": true
+    }
+  ]
+}

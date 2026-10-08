@@ -1,0 +1,120 @@
+{
+  "model_id": "mdl_x747njsy54",
+  "name": "att_overtime",
+  "label": "%att_overtime%",
+  "plural_label": "%att_overtimes%",
+  "icon": "timer",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_vjerqte5ri",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_axetu5axhb",
+      "name": "work_date",
+      "label": "%work_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_ac2kpndj6l",
+      "name": "day_kind",
+      "label": "%day_kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_4d4bdc5lmp",
+          "value": "working",
+          "label": "%working%"
+        },
+        {
+          "id": "opt_su4g4tlept",
+          "value": "weekly_off",
+          "label": "%weekly_off%"
+        },
+        {
+          "id": "opt_ikme6uafyk",
+          "value": "holiday",
+          "label": "%holiday%"
+        }
+      ]
+    },
+    {
+      "id": "fld_dhrumcp7yd",
+      "name": "minutes",
+      "label": "%minutes%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_ks4ywncjsd",
+      "name": "weighted_min",
+      "label": "%weighted_min%",
+      "type": "int",
+      "required": true,
+      "help": "Minutes times each band's multiplier."
+    },
+    {
+      "id": "fld_5bkztfezr5",
+      "name": "bands",
+      "label": "%bands%",
+      "type": "string",
+      "max_length": 500
+    },
+    {
+      "id": "fld_mfedhyghde",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_bc4hd32pyd",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_lkt3ozoio4",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_ckj5up7ias",
+          "value": "rejected",
+          "label": "%rejected%"
+        }
+      ]
+    },
+    {
+      "id": "fld_w4jd2s5r6i",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_yzmtqsf6kf",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_c6atkghyfu",
+      "fields": [
+        "employee",
+        "work_date"
+      ],
+      "unique": true
+    }
+  ]
+}

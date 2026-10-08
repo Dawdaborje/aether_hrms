@@ -1,0 +1,129 @@
+{
+  "model_id": "mdl_ukvoufztjc",
+  "name": "trv_leg",
+  "label": "%trv_leg%",
+  "plural_label": "%trv_legs%",
+  "icon": "route",
+  "title_field": "mode",
+  "fields": [
+    {
+      "id": "fld_i5tvjhm477",
+      "name": "trip",
+      "label": "%trip%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "trv_trip"
+    },
+    {
+      "id": "fld_q6n54mtts4",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_2pkynqkany",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_atpndkvaxz",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_su2lk6es5s",
+          "value": "flight",
+          "label": "%flight%"
+        },
+        {
+          "id": "opt_abkewebzdg",
+          "value": "train",
+          "label": "%train%"
+        },
+        {
+          "id": "opt_povdp6in3l",
+          "value": "bus",
+          "label": "%bus%"
+        },
+        {
+          "id": "opt_zg42laybiz",
+          "value": "car",
+          "label": "%car%"
+        },
+        {
+          "id": "opt_3ewcgpxyl6",
+          "value": "ferry",
+          "label": "%ferry%"
+        },
+        {
+          "id": "opt_ahtgjy5zgb",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_fwsniyn4ja",
+      "name": "from_place",
+      "label": "%from_place%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_imkpxhaawi",
+      "name": "to_place",
+      "label": "%to_place%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_ryznf2ynlg",
+      "name": "depart_on",
+      "label": "%depart_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_6mvsuncdvu",
+      "name": "arrive_on",
+      "label": "%arrive_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_okwt6jm52d",
+      "name": "cost",
+      "label": "%cost%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_calxlne7bw",
+      "name": "booking_ref",
+      "label": "%booking_ref%",
+      "type": "string",
+      "max_length": 80
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_qrh2eae6uw",
+      "fields": [
+        "trip",
+        "seq"
+      ],
+      "unique": true
+    }
+  ]
+}

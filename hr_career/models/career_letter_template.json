@@ -1,0 +1,81 @@
+{
+  "model_id": "mdl_jm3lzo4xor",
+  "name": "career_letter_template",
+  "label": "%career_letter_template%",
+  "plural_label": "%career_letter_templates%",
+  "icon": "file-text",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_pu6i7uhzij",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_odj4sg6ds2",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_nauvpegjn6",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_sbx2547w4s",
+          "value": "promotion",
+          "label": "%promotion%"
+        },
+        {
+          "id": "opt_atmoe2khdz",
+          "value": "demotion",
+          "label": "%demotion%"
+        },
+        {
+          "id": "opt_tfnod7z3rj",
+          "value": "transfer",
+          "label": "%transfer%"
+        },
+        {
+          "id": "opt_kyr4udgaxs",
+          "value": "grade_change",
+          "label": "%grade_change%"
+        },
+        {
+          "id": "opt_iabn6lj4mt",
+          "value": "pay_change",
+          "label": "%pay_change%"
+        },
+        {
+          "id": "opt_5wj7cxx2qn",
+          "value": "any",
+          "label": "%any%"
+        }
+      ]
+    },
+    {
+      "id": "fld_22mmvuwk7f",
+      "name": "body",
+      "label": "%body%",
+      "type": "text",
+      "required": true,
+      "help": "Text with {{placeholders}}."
+    },
+    {
+      "id": "fld_qbo4v4oloz",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

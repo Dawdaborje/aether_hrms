@@ -1,0 +1,34 @@
+{
+  "model_id": "mdl_w53m3rqp3t",
+  "name": "leave_plan",
+  "label": "%leave_plan%",
+  "plural_label": "%leave_plans%",
+  "icon": "trending-up",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_22osv3y7qd",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_v6dtv6u5by",
+      "name": "leave_type",
+      "label": "%leave_type%",
+      "type": "link",
+      "required": true,
+      "target": "leave_type"
+    },
+    {
+      "id": "fld_zedvvxna7c",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

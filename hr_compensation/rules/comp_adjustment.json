@@ -1,0 +1,59 @@
+{
+  "model": "comp_adjustment",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "employee",
+        "code_ref",
+        "code",
+        "kind",
+        "amount",
+        "mode",
+        "pay_date",
+        "date_from",
+        "date_to",
+        "prorate",
+        "status",
+        "source_plugin",
+        "source_ref",
+        "idem_key",
+        "created_by"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

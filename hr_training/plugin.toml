@@ -1,0 +1,56 @@
+[plugin]
+name = "hr_training"
+label = "Training"
+version = "0.1.0"
+description = "Courses, sessions, enrolment with waiting lists, results, certificates and training budgets."
+long_description = """
+A course can build a skill and can expire; a session of it has seats. Someone enrols, or is enrolled by their
+manager; when the seats are gone they wait, and the first in line is promoted when a seat frees. A seat costs
+what the course cost when it was booked and is charged to the person's department against its yearly budget,
+which refuses overspending unless a planner says why. After the session a trainer or planner records attendance
+and a score: a pass issues a certificate (with an expiry date if the course has one) and raises the person's
+skill level in `hr_performance`, never lowering it. Nobody records their own result. Expiring and missing
+mandatory certificates are listed for the people who need them. Built from a reading of Frappe HRMS training
+events and results and Odoo's skills. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_performance"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "trn_course", permissions = ["read", "write"] },
+  { name = "trn_session", permissions = ["read", "write"] },
+  { name = "trn_enrolment", permissions = ["read", "write"] },
+  { name = "trn_certificate", permissions = ["read", "write"] },
+  { name = "trn_budget", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "training_admin"
+label = "Training administrator"
+description = "Makes courses and sessions, sets budgets, enrols people, records results, revokes certificates"
+
+[[events]]
+name = "certificate_issued"
+
+[[events]]
+name = "certificate_expiring"
+
+[[schedule]]
+name = "training-nightly"
+function = "training_nightly"
+cron = "55 0 * * *"
+
+[app]
+icon = "graduation-cap"
+route = "/hr/training"
+description = "Courses, sessions and certificates"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

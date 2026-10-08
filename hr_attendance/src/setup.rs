@@ -17,7 +17,11 @@ const LOCATION_FIELDS: &[&str] = &["name", "latitude", "longitude", "radius_m", 
 #[derive(Deserialize)]
 struct Assign {
     employee: String,
-    shift: String,
+    #[serde(default)]
+    shift: Option<String>,
+    /// Instead of a shift: a rotation that decides the shift each day.
+    #[serde(default)]
+    rotation: Option<String>,
     #[serde(default)]
     location: Option<String>,
     valid_from: String,
@@ -92,7 +96,15 @@ fn new_location(input: Record) -> Result<Record> {
 fn assign(input: Assign) -> Result<Record> {
     require_admin()?;
     employee(&input.employee)?;
-    require("att_shift", &input.shift, "shift")?;
+    match (&input.shift, &input.rotation) {
+        (Some(shift), None) => {
+            require("att_shift", shift, "shift")?;
+        }
+        (None, Some(rotation)) => {
+            require("att_rotation", rotation, "rotation")?;
+        }
+        _ => return Err(Error::msg("give a shift or a rotation, not both and not neither")),
+    }
     if let Some(location) = &input.location {
         require("att_location", location, "location")?;
     }
@@ -121,7 +133,13 @@ fn assign(input: Assign) -> Result<Record> {
             )));
         }
     }
-    let mut data = json!({ "employee": input.employee, "shift": input.shift, "valid_from": format_date(from) });
+    let mut data = json!({ "employee": input.employee, "valid_from": format_date(from) });
+    if let Some(shift) = &input.shift {
+        data["shift"] = json!(shift);
+    }
+    if let Some(rotation) = &input.rotation {
+        data["rotation"] = json!(rotation);
+    }
     if let Some(to) = to {
         data["valid_to"] = json!(format_date(to));
     }
@@ -131,22 +149,116 @@ fn assign(input: Assign) -> Result<Record> {
     db::create("att_shift_assignment", &data).map_err(|e| e.or("could not assign the shift"))
 }
 
-/// The assignment and shift in force for a person on a day.
-pub fn assignment_on(employee_id: &str, day: aether_sdk::dates::NaiveDate) -> Result<Option<(Record, Record)>> {
+/// The assignment in force for a person on a day, shift or rotation.
+fn assignment_row(employee_id: &str, day: aether_sdk::dates::NaiveDate) -> Result<Option<Record>> {
     let on = format_date(day);
     let found = db::find::<Record>("att_shift_assignment")
         .matching(Filter::eq("employee", employee_id).and(Filter::lte("valid_from", on.as_str())))
         .order_by("-valid_from")
         .first()?;
-    let Some(assignment) = found else { return Ok(None) };
-    if text(&assignment, "valid_to").is_some_and(|end| end < on.as_str()) {
-        return Ok(None);
-    }
-    let shift = require("att_shift", text(&assignment, "shift").unwrap_or_default(), "shift")?;
+    Ok(found.filter(|a| !text(a, "valid_to").is_some_and(|end| end < on.as_str())))
+}
+
+/// The assignment and shift in force for a person on a day.
+pub fn assignment_on(employee_id: &str, day: aether_sdk::dates::NaiveDate) -> Result<Option<(Record, Record)>> {
+    let Some(assignment) = assignment_row(employee_id, day)? else { return Ok(None) };
+    let shift_id = match text(&assignment, "rotation") {
+        // A rotation names the shift of each day, or a day off (no shift that day).
+        Some(rotation) => match rotation_shift(rotation, day)? {
+            Some(id) => id,
+            None => return Ok(None),
+        },
+        None => text(&assignment, "shift").unwrap_or_default().to_string(),
+    };
+    let shift = require("att_shift", &shift_id, "shift")?;
     Ok(Some((assignment, shift)))
 }
 
+/// Whether the person's rotation gives them this day off: a day off the schedule itself decides, so
+/// it counts like a weekly off.
+pub fn rotation_day_off(employee_id: &str, day: aether_sdk::dates::NaiveDate) -> Result<bool> {
+    let Some(assignment) = assignment_row(employee_id, day)? else { return Ok(false) };
+    let Some(rotation) = text(&assignment, "rotation") else { return Ok(false) };
+    let steps = db::count("att_rotation_step", Filter::eq("rotation", rotation))?;
+    Ok(steps > 0 && rotation_shift(rotation, day)?.is_none())
+}
+
+/// Which step of a cycle of `len` days a day falls on, counting from the anchor (step 1). Days before
+/// the anchor count backwards, so the pattern is the same on both sides of it.
+pub fn step_index(anchor: aether_sdk::dates::NaiveDate, day: aether_sdk::dates::NaiveDate, len: usize) -> usize {
+    if len == 0 {
+        return 0;
+    }
+    ((day - anchor).num_days().rem_euclid(len as i64)) as usize
+}
+
+/// The shift a rotation puts on a day; `None` on a day off.
+fn rotation_shift(rotation: &str, day: aether_sdk::dates::NaiveDate) -> Result<Option<String>> {
+    let plan = require("att_rotation", rotation, "rotation")?;
+    let steps: Vec<Record> = db::find("att_rotation_step").filter("rotation", rotation).order_by("position").limit(400).all()?;
+    if steps.is_empty() {
+        return Ok(None);
+    }
+    let anchor = parse_date(text(&plan, "anchor_date").unwrap_or_default())?;
+    Ok(text(&steps[step_index(anchor, day, steps.len())], "shift").map(str::to_string))
+}
+
+#[derive(Deserialize)]
+struct NewRotation {
+    name: String,
+    anchor_date: String,
+    /// One entry per day of the cycle: a shift, or null for a day off.
+    steps: Vec<Option<String>>,
+}
+
+fn new_rotation(input: NewRotation) -> Result<Record> {
+    require_admin()?;
+    if input.steps.is_empty() || input.steps.len() > 365 {
+        return Err(Error::msg("a rotation has 1 to 365 days"));
+    }
+    if input.steps.iter().all(Option::is_none) {
+        return Err(Error::msg("a rotation of only days off is not a rotation"));
+    }
+    for shift in input.steps.iter().flatten() {
+        require("att_shift", shift, "shift")?;
+    }
+    parse_date(&input.anchor_date)?;
+    let plan: Record = db::create("att_rotation", &json!({ "name": input.name, "anchor_date": input.anchor_date, "is_active": true }))
+        .map_err(|e| e.or("could not create the rotation (the name may be taken)"))?;
+    for (n, shift) in input.steps.iter().enumerate() {
+        let mut data = json!({ "rotation": id_of(&plan)?, "position": n + 1 });
+        if let Some(shift) = shift {
+            data["shift"] = json!(shift);
+        }
+        db::create::<Record>("att_rotation_step", &data)?;
+    }
+    Ok(plan)
+}
+
+#[cfg(test)]
+mod tests {
+    use aether_sdk::dates::parse_date;
+
+    use super::step_index;
+
+    #[test]
+    fn a_rotation_repeats_from_its_anchor_both_ways() {
+        let anchor = parse_date("2026-10-05").unwrap_or_default();
+        let day = |t: &str| parse_date(t).unwrap_or_default();
+        assert_eq!(step_index(anchor, day("2026-10-05"), 4), 0);
+        assert_eq!(step_index(anchor, day("2026-10-08"), 4), 3);
+        assert_eq!(step_index(anchor, day("2026-10-09"), 4), 0);
+        assert_eq!(step_index(anchor, day("2026-10-04"), 4), 3);
+        assert_eq!(step_index(anchor, day("2026-09-01"), 1), 0);
+    }
+}
+
 handler! {
+    /// A cycle of shifts and days off that repeats from an anchor day (attendance administrators).
+    fn create_rotation(input: NewRotation) -> Record {
+        new_rotation(input)
+    }
+
     fn create_shift(input: Record) -> Record {
         new_shift(input)
     }

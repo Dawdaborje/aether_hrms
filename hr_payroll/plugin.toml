@@ -15,7 +15,7 @@ approver is not the person who made the run; approval announces the totals by co
 Employees read their own payslips once the run is approved. Written in Rust.
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["hr", "currency", "hr_leave", "hr_attendance"]
+dependencies = ["hr", "currency", "hr_leave", "hr_attendance", "hr_compensation"]
 capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "scheduler::enqueue"]
 access_models = [
   { name = "pay_structure", permissions = ["read", "write"] },

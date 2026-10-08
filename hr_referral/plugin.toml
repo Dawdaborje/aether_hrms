@@ -1,0 +1,54 @@
+[plugin]
+name = "hr_referral"
+label = "Employee referrals"
+version = "0.1.0"
+description = "Refer a candidate: a state machine, one application, a bonus gated on the hire's tenure."
+long_description = """
+Anyone working here can refer a candidate (never themselves, never a second time for the same email). Accepting the
+referral opens one application in recruitment, marked as a referral. The bonus is the policy's amount and wait in
+days, copied onto the referral so changing a policy never rewrites one already accepted. It becomes due only after
+the hire has stayed that long and is still working; leaving forfeits it. Payment is an hr_compensation adjustment
+once, never to the referrer for themselves. Frappe's Employee Referral always reset status to Pending and never
+actually paid the extra salary; this one does. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_recruitment", "hr_compensation", "currency", "party"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "ref_policy", permissions = ["read", "write"] },
+  { name = "ref_referral", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "referral_admin"
+label = "Referral administrator"
+description = "Sets the bonus policy, accepts referrals, releases and forfeits the bonus."
+
+[[events]]
+name = "referral_submitted"
+
+[[events]]
+name = "referral_hired"
+
+[[events]]
+name = "referral_bonus_due"
+
+[[schedule]]
+name = "referral-nightly"
+function = "referral_nightly"
+cron = "55 1 * * *"
+
+[app]
+icon = "user-plus"
+route = "/hr/referrals"
+description = "Refer someone and follow the bonus"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

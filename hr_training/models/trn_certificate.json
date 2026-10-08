@@ -1,0 +1,82 @@
+{
+  "model_id": "mdl_vjjqtsjkej",
+  "name": "trn_certificate",
+  "label": "%trn_certificate%",
+  "plural_label": "%trn_certificates%",
+  "icon": "award",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_urt3tmwji3",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_kqdi65uijn",
+      "name": "course",
+      "label": "%course%",
+      "type": "link",
+      "required": true,
+      "target": "trn_course"
+    },
+    {
+      "id": "fld_3iwxcqga53",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "target": "trn_enrolment",
+      "index": "unique"
+    },
+    {
+      "id": "fld_wf7peba3o5",
+      "name": "issued_on",
+      "label": "%issued_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_myfpwzxeuz",
+      "name": "expires_on",
+      "label": "%expires_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_l3zxexpc6y",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_6t7iosgodj",
+          "value": "valid",
+          "label": "%valid%"
+        },
+        {
+          "id": "opt_32s5rbhkrf",
+          "value": "revoked",
+          "label": "%revoked%"
+        }
+      ]
+    },
+    {
+      "id": "fld_2x3fcwyqds",
+      "name": "revoked_reason",
+      "label": "%revoked_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_mfaatxuvje",
+      "name": "skill_credit",
+      "label": "%skill_credit%",
+      "type": "string",
+      "max_length": 200
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "model": "comp_withholding_cycle",
+  "access": [
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "released",
+        "released_on",
+        "released_by",
+        "period_start",
+        "period_end"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

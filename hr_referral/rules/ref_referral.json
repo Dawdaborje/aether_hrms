@@ -1,0 +1,27 @@
+{
+  "model": "ref_referral",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "referrer": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "referral_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

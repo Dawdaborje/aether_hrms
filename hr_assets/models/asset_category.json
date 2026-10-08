@@ -1,0 +1,61 @@
+{
+  "model_id": "mdl_2knedey32c",
+  "name": "asset_category",
+  "label": "%asset_category%",
+  "plural_label": "%asset_categorys%",
+  "icon": "boxes",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_gy64zafy4q",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_alu2i4bcfw",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_zo2p6lgzov",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_rfyrpdmeo2",
+          "value": "equipment",
+          "label": "%equipment%"
+        },
+        {
+          "id": "opt_pcwyyy574n",
+          "value": "vehicle",
+          "label": "%vehicle%"
+        }
+      ]
+    },
+    {
+      "id": "fld_lsmeysj2tj",
+      "name": "return_on_departure",
+      "label": "%return_on_departure%",
+      "type": "bool",
+      "default": true,
+      "help": "Must be handed back when the holder leaves."
+    },
+    {
+      "id": "fld_76ysxw4nc6",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

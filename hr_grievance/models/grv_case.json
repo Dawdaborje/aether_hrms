@@ -1,0 +1,255 @@
+{
+  "model_id": "mdl_vecak6amt6",
+  "name": "grv_case",
+  "label": "%grv_case%",
+  "plural_label": "%grv_cases%",
+  "icon": "megaphone",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_2a6yovoell",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_jt6gqm4kwv",
+      "name": "complainant",
+      "label": "%complainant%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_mw4p5yzgjr",
+      "name": "anonymous",
+      "label": "%anonymous%",
+      "type": "bool",
+      "help": "The complainant is hidden from the investigator and everyone but case managers."
+    },
+    {
+      "id": "fld_ttoijvmn3h",
+      "name": "accused",
+      "label": "%accused%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_c54g5nk4l5",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "target": "grv_category"
+    },
+    {
+      "id": "fld_b2ebqampa7",
+      "name": "severity",
+      "label": "%severity%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_dnytozgun3",
+          "value": "low",
+          "label": "%low%"
+        },
+        {
+          "id": "opt_yml2mgcwj2",
+          "value": "medium",
+          "label": "%medium%"
+        },
+        {
+          "id": "opt_jgldlrxgcz",
+          "value": "high",
+          "label": "%high%"
+        }
+      ]
+    },
+    {
+      "id": "fld_vdxyeioeiy",
+      "name": "subject",
+      "label": "%subject%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_lfbe773ztf",
+      "name": "description",
+      "label": "%description%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_gknhn6yads",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_tmfwmsrtpg",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_3dnw3eqpxj",
+          "value": "investigating",
+          "label": "%investigating%"
+        },
+        {
+          "id": "opt_ulakgp5xtn",
+          "value": "findings_submitted",
+          "label": "%findings_submitted%"
+        },
+        {
+          "id": "opt_27qhmnmx3e",
+          "value": "resolved",
+          "label": "%resolved%"
+        },
+        {
+          "id": "opt_w3rrzm7doi",
+          "value": "appealed",
+          "label": "%appealed%"
+        },
+        {
+          "id": "opt_myqw6c3yvg",
+          "value": "closed",
+          "label": "%closed%"
+        },
+        {
+          "id": "opt_eeodffqas4",
+          "value": "withdrawn",
+          "label": "%withdrawn%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ksp7jmmgxi",
+      "name": "confidential",
+      "label": "%confidential%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_ur5q5rls52",
+      "name": "investigator",
+      "label": "%investigator%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_hyqphmf34b",
+      "name": "past_investigators",
+      "label": "%past_investigators%",
+      "type": "string",
+      "max_length": 500
+    },
+    {
+      "id": "fld_byooj2b4dq",
+      "name": "opened_on",
+      "label": "%opened_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_wyyxmzmmhk",
+      "name": "due_date",
+      "label": "%due_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_sakj7gfggy",
+      "name": "escalation_level",
+      "label": "%escalation_level%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_sd25mv2m7w",
+      "name": "findings",
+      "label": "%findings%",
+      "type": "text"
+    },
+    {
+      "id": "fld_sqdugdabwm",
+      "name": "recommended_outcome",
+      "label": "%recommended_outcome%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_phtewqn2mq",
+      "name": "outcome",
+      "label": "%outcome%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_kldc3ltbxe",
+          "value": "upheld",
+          "label": "%upheld%"
+        },
+        {
+          "id": "opt_dnr2ifa3ul",
+          "value": "partially_upheld",
+          "label": "%partially_upheld%"
+        },
+        {
+          "id": "opt_utr4ehsxim",
+          "value": "not_upheld",
+          "label": "%not_upheld%"
+        },
+        {
+          "id": "opt_tiyweuyvxw",
+          "value": "dismissed",
+          "label": "%dismissed%"
+        }
+      ]
+    },
+    {
+      "id": "fld_6yqrskzjjz",
+      "name": "resolution",
+      "label": "%resolution%",
+      "type": "text"
+    },
+    {
+      "id": "fld_42vubsev47",
+      "name": "resolved_on",
+      "label": "%resolved_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_6rah4uihfg",
+      "name": "closed_on",
+      "label": "%closed_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_n2qfwyqa5u",
+      "name": "appeals",
+      "label": "%appeals%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_djcyi7h2pl",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_f2ybpvbqhm",
+      "name": "log_seq",
+      "label": "%log_seq%",
+      "type": "int",
+      "default": 0,
+      "help": "How many log entries the case has; numbers the next one."
+    }
+  ]
+}

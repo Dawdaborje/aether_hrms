@@ -1,0 +1,13 @@
+<page route="/hr/travel" title="Business travel" model="trv_trip">
+  <view type="list" model="trv_trip" source="my_trips">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="destination" label="Destination"/>
+      <column field="start_date" label="From" fieldType="date"/>
+      <column field="end_date" label="To" fieldType="date"/>
+      <column field="estimate_total" label="Estimate"/>
+      <column field="state" label="State"/>
+    </columns>
+    <empty title="No trips" description="Plan a trip to see it here."/>
+  </view>
+</page>

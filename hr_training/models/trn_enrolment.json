@@ -1,0 +1,149 @@
+{
+  "model_id": "mdl_a2tluevxoq",
+  "name": "trn_enrolment",
+  "label": "%trn_enrolment%",
+  "plural_label": "%trn_enrolments%",
+  "icon": "user-check",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_rvc6pqow4d",
+      "name": "session",
+      "label": "%session%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "trn_session"
+    },
+    {
+      "id": "fld_o4ja6oriad",
+      "name": "course",
+      "label": "%course%",
+      "type": "link",
+      "required": true,
+      "target": "trn_course"
+    },
+    {
+      "id": "fld_viptfh36kt",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_vlfjn4ofxi",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_va3wwxliyr",
+          "value": "enrolled",
+          "label": "%enrolled%"
+        },
+        {
+          "id": "opt_we3worzxfr",
+          "value": "waitlisted",
+          "label": "%waitlisted%"
+        },
+        {
+          "id": "opt_odvd7xfrbv",
+          "value": "attended",
+          "label": "%attended%"
+        },
+        {
+          "id": "opt_iwmrstr2nn",
+          "value": "absent",
+          "label": "%absent%"
+        },
+        {
+          "id": "opt_vgvwvwzo2j",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_gowioafkde",
+      "name": "queued_at",
+      "label": "%queued_at%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_sdo4xkaqp6",
+      "name": "department",
+      "label": "%department%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_ljexxsek5x",
+      "name": "cost",
+      "label": "%cost%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "The seat's price, copied when it was booked."
+    },
+    {
+      "id": "fld_jkdlwkurnm",
+      "name": "budget_year",
+      "label": "%budget_year%",
+      "type": "int"
+    },
+    {
+      "id": "fld_swhmnyd6iw",
+      "name": "score",
+      "label": "%score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_nq2t4fb7xv",
+      "name": "passed",
+      "label": "%passed%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_mq4urtsa3m",
+      "name": "result_by",
+      "label": "%result_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_dovflvwjxo",
+      "name": "certificate",
+      "label": "%certificate%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_5wepekfyy3",
+      "name": "enrolled_by",
+      "label": "%enrolled_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_ow4bmn4ga5",
+      "name": "override_reason",
+      "label": "%override_reason%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_h3ytobya3l",
+      "fields": [
+        "session",
+        "employee"
+      ],
+      "unique": true
+    }
+  ]
+}

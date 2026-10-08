@@ -1,0 +1,60 @@
+[plugin]
+name = "hr_loan"
+label = "Staff loans"
+version = "0.1.0"
+description = "Staff loans with schedules, a ledger, payroll deductions under a cap, foreclosure and reversal."
+long_description = """
+A loan product sets the largest amount and term, the rate and method (reducing balance or flat), the tenure an
+employee needs, and the share of available pay that payroll may take. A request is checked against it and gets its
+full schedule at once; the manager (or a loan administrator) approves, never the borrower, and someone other than the
+approver and the borrower disburses. Money moves only as ledger entries: disbursement, repayment, reversal. Payroll
+asks what to deduct (capped by the pay available; the rest stays due), then reports what it took, once per run.
+A foreclosure quote charges no interest on instalments not yet due. A repayment is undone by a reversal entry, never
+by editing. Designed from first principles: neither Odoo nor Frappe HRMS has an engine to copy. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "currency"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "loan_product", permissions = ["read", "write"] },
+  { name = "loan", permissions = ["read", "write"] },
+  { name = "loan_instalment", permissions = ["read", "write"] },
+  { name = "loan_entry", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "loan_admin"
+label = "Loan administrator"
+description = "Sets up products, approves and disburses, records and reverses repayments."
+
+[[events]]
+name = "loan_requested"
+
+[[events]]
+name = "loan_disbursed"
+
+[[events]]
+name = "loan_closed"
+
+[[events]]
+name = "loan_instalment_overdue"
+
+[[schedule]]
+name = "loan-nightly"
+function = "loan_nightly"
+cron = "40 1 * * *"
+
+[app]
+icon = "hand-coins"
+route = "/hr/loans"
+description = "Ask for and follow a staff loan"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

@@ -1,0 +1,17 @@
+{
+  "model": "career_letter_template",
+  "access": [
+    {
+      "name": "admin",
+      "roles": [
+        "career_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

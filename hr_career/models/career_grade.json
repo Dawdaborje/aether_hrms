@@ -1,0 +1,56 @@
+{
+  "model_id": "mdl_ytqifhvx4e",
+  "name": "career_grade",
+  "label": "%career_grade%",
+  "plural_label": "%career_grades%",
+  "icon": "bar-chart",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_l7ll7dfaku",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_pi3akafhp6",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_tcildfegki",
+      "name": "rank",
+      "label": "%rank%",
+      "type": "int",
+      "required": true,
+      "help": "The ladder: a higher number is a higher grade."
+    },
+    {
+      "id": "fld_lulkiexyhy",
+      "name": "min_wage",
+      "label": "%min_wage%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_qoqskcv2r7",
+      "name": "max_wage",
+      "label": "%max_wage%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_ez5q6smsds",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

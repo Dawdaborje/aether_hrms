@@ -1,0 +1,57 @@
+[plugin]
+name = "hr_grievance"
+label = "Grievances"
+version = "0.1.0"
+description = "Confidential grievance cases with conflict-checked investigators, SLAs, escalation and an append-only log."
+long_description = """
+A grievance is a case that moves through fixed states: filed, investigated, findings submitted, decided, possibly
+appealed, closed. The investigator cannot be the complainant, the person complained about, or anyone in a direct
+reporting line with either, and a case manager who is a party to a case is recused from it. The investigator
+proposes findings and a different person decides. Each kind of case has a time limit; overdue cases escalate by
+level once each and the escalation is logged. Everything that happens goes into an append-only log with a visibility
+(internal or shared with the complainant); nothing is edited or deleted, and an anonymous complainant is hidden from
+the investigator. A decided case can be appealed once within 14 days, to a new investigator, otherwise it closes by
+itself. Built from a reading of Frappe HRMS employee grievance, extended. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "grv_category", permissions = ["read", "write"] },
+  { name = "grv_case", permissions = ["read", "write"] },
+  { name = "grv_log", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "grievance_admin"
+label = "Grievance case manager"
+description = "Triages cases, assigns investigators, decides, closes and sees every case. Recused from cases they are party to."
+
+[[events]]
+name = "grievance_filed"
+
+[[events]]
+name = "grievance_escalated"
+
+[[events]]
+name = "grievance_decided"
+
+[[schedule]]
+name = "grievance-nightly"
+function = "grievance_nightly"
+cron = "10 1 * * *"
+
+[app]
+icon = "megaphone"
+route = "/hr/grievances"
+description = "Raise and follow a grievance"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

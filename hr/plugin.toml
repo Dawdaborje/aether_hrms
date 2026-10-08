@@ -1,7 +1,7 @@
 [plugin]
 name = "hr"
 label = "Human Resources"
-version = "0.1.0"
+version = "0.1.2"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and

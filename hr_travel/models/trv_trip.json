@@ -1,0 +1,319 @@
+{
+  "model_id": "mdl_snwyclilfb",
+  "name": "trv_trip",
+  "label": "%trv_trip%",
+  "plural_label": "%trv_trips%",
+  "icon": "luggage",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_xerjfxg6o4",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_fxucfn3tqg",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_c4jh72t2aw",
+      "name": "purpose",
+      "label": "%purpose%",
+      "type": "string",
+      "required": true,
+      "max_length": 300
+    },
+    {
+      "id": "fld_hfdxoaxorm",
+      "name": "destination",
+      "label": "%destination%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_n3wy3eq3vk",
+      "name": "policy",
+      "label": "%policy%",
+      "type": "link",
+      "required": true,
+      "target": "trv_policy"
+    },
+    {
+      "id": "fld_sozthoy2z2",
+      "name": "funding",
+      "label": "%funding%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_wq2pu74wpi",
+          "value": "company",
+          "label": "%company%"
+        },
+        {
+          "id": "opt_vvpmeop5ik",
+          "value": "sponsor",
+          "label": "%sponsor%"
+        },
+        {
+          "id": "opt_vkmwv2x6wa",
+          "value": "self",
+          "label": "%self%"
+        }
+      ]
+    },
+    {
+      "id": "fld_puibvgn4jg",
+      "name": "sponsor_details",
+      "label": "%sponsor_details%",
+      "type": "text"
+    },
+    {
+      "id": "fld_62pqiah76z",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_wnrlamqzsr",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_mjdjo7deqh",
+      "name": "meals_provided_days",
+      "label": "%meals_provided_days%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_37ovs3cxfp",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_bjgn54xy3n",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_3o4hjhtvcf",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_xkfqcxz4w2",
+          "value": "awaiting_second",
+          "label": "%awaiting_second%"
+        },
+        {
+          "id": "opt_wapak3trq2",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_7k2ltxp6qe",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_oerapgm4fr",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        },
+        {
+          "id": "opt_knrkbxdbku",
+          "value": "completed",
+          "label": "%completed%"
+        }
+      ]
+    },
+    {
+      "id": "fld_vnwpba3vco",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_5nlklf7sml",
+      "name": "per_diem_rate",
+      "label": "%per_diem_rate%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_ho6b5kesg2",
+      "name": "meal_deduction_percent",
+      "label": "%meal_deduction_percent%",
+      "type": "int"
+    },
+    {
+      "id": "fld_labj5gg2vm",
+      "name": "lodging_cap_per_night",
+      "label": "%lodging_cap_per_night%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_g6xgypvny6",
+      "name": "approval_limit",
+      "label": "%approval_limit%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_mqrn26delb",
+      "name": "advance_percent",
+      "label": "%advance_percent%",
+      "type": "int"
+    },
+    {
+      "id": "fld_emdxn3t7lv",
+      "name": "days",
+      "label": "%days%",
+      "type": "int"
+    },
+    {
+      "id": "fld_fhkb5zy4rm",
+      "name": "nights",
+      "label": "%nights%",
+      "type": "int"
+    },
+    {
+      "id": "fld_6aofuhvsaa",
+      "name": "per_diem_total",
+      "label": "%per_diem_total%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_tcoy33rrv6",
+      "name": "legs_total",
+      "label": "%legs_total%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_6l64q5vhg2",
+      "name": "costs_total",
+      "label": "%costs_total%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_z3vvl3c6sq",
+      "name": "lodging_total",
+      "label": "%lodging_total%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_ubtsyiowvj",
+      "name": "lodging_excess",
+      "label": "%lodging_excess%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_cwuwrwqkjz",
+      "name": "estimate_total",
+      "label": "%estimate_total%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_nxlfg3pjd6",
+      "name": "lodging_reason",
+      "label": "%lodging_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_h7iy4r42tg",
+      "name": "needs_second",
+      "label": "%needs_second%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_yscvjtx5kp",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ycheclf6lb",
+      "name": "first_approver",
+      "label": "%first_approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_lfo3p7egaf",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_j3izvuztfx",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_ztuu3f7llo",
+      "name": "advance",
+      "label": "%advance%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_etfemmjp6y",
+      "name": "report",
+      "label": "%report%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_myl5ep3tpv",
+      "name": "unsettled_notified",
+      "label": "%unsettled_notified%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_ddymnnjqek",
+      "name": "submitted_on",
+      "label": "%submitted_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_fpl62iot5d",
+      "name": "cancel_reason",
+      "label": "%cancel_reason%",
+      "type": "text"
+    }
+  ]
+}

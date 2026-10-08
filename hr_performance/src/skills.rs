@@ -100,6 +100,43 @@ fn rate(input: Rate) -> Result<Record> {
     db::create("perf_skill_rating", &data).map_err(|e| e.or("could not record the level"))
 }
 
+#[derive(Deserialize)]
+struct Credit {
+    employee: String,
+    skill: String,
+    level: i64,
+    source: String,
+}
+
+/// Raise a level because of something that happened (a course passed). Only the people who run reviews or
+/// training may do it; it never lowers a level and is a no-op when the person is already there.
+fn credit(input: Credit) -> Result<Value> {
+    let ctx = context::current()?;
+    if !ctx.has_role(crate::common::ADMIN_ROLE) && !ctx.has_role("hr_training.training_admin") {
+        return Err(Error::msg("only the people who run reviews or training can credit a skill"));
+    }
+    employee(&input.employee)?;
+    let skill = require("perf_skill", &input.skill, "skill")?;
+    let max = int(&skill, "scale_max");
+    if !(1..=max).contains(&input.level) {
+        return Err(Error::msg(format!("a level of this skill is 1 to {max}")));
+    }
+    let current = current_levels(&input.employee)?.into_iter().find(|r| text(r, "skill") == Some(input.skill.as_str()));
+    if current.as_ref().is_some_and(|c| int(c, "level") >= input.level) {
+        return Ok(json!({ "credited": false, "level": current.map(|c| int(&c, "level")) }));
+    }
+    let today = today_date()?;
+    if let Some(current) = current {
+        let closed = if text(&current, "valid_from") == Some(format_date(today).as_str()) { today } else { today - Duration::days(1) };
+        db::update::<Record>("perf_skill_rating", id_of(&current)?, &json!({ "valid_to": format_date(closed) }))?;
+    }
+    let made: Record = db::create(
+        "perf_skill_rating",
+        &json!({ "employee": input.employee, "skill": input.skill, "level": input.level, "scale_max": max, "valid_from": format_date(today), "reason": input.source }),
+    )?;
+    Ok(json!({ "credited": true, "level": input.level, "rating": made["id"] }))
+}
+
 fn current_levels(employee_id: &str) -> Result<Vec<Record>> {
     let rows: Vec<Record> = db::find("perf_skill_rating").filter("employee", employee_id).order_by("-valid_from").limit(500).all()?;
     Ok(rows.into_iter().filter(|r| r.get("valid_to").is_none_or(Value::is_null)).collect())
@@ -150,6 +187,11 @@ handler! {
     }
 
     /// Give someone a level in a skill; the old one stays in the history.
+    /// Raise a person's level for something they did (a course): never lowers.
+    fn credit_skill(input: Credit) -> Value {
+        credit(input)
+    }
+
     fn rate_skill(input: Rate) -> Record {
         rate(input)
     }

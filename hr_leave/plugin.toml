@@ -1,7 +1,7 @@
 [plugin]
 name = "hr_leave"
 label = "Leave"
-version = "0.2.0"
+version = "0.3.1"
 description = "Leave types, a ledger of days, requests and approval."
 long_description = """
 Leave built from a reading of Odoo 19 and Frappe HRMS. Each type of leave carries its own rules (who
@@ -12,13 +12,18 @@ holiday calendar, is held against the balance, and is decided by their manager, 
 job grants earned leave, lapses carried days and puts people on leave and back. Written in Rust.
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["hr", "calendar"]
+dependencies = ["hr", "calendar", "hr_compensation"]
 capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
 access_models = [
   { name = "leave_type", permissions = ["read", "write"] },
   { name = "leave_ledger", permissions = ["read", "write"] },
   { name = "leave_request", permissions = ["read", "write"] },
   { name = "leave_block", permissions = ["read", "write"] },
+  { name = "leave_plan", permissions = ["read", "write"] },
+  { name = "leave_plan_level", permissions = ["read", "write"] },
+  { name = "leave_plan_assignment", permissions = ["read", "write"] },
+  { name = "leave_encashment", permissions = ["read", "write"] },
+  { name = "leave_comp_claim", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false

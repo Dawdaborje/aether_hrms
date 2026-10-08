@@ -1,0 +1,11 @@
+<page route="/hr/referrals" title="Referrals" model="ref_referral">
+  <view type="list" model="ref_referral" source="my_referrals">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="candidate_name" label="Candidate"/>
+      <column field="state" label="State"/>
+      <column field="bonus_due_on" label="Bonus due" fieldType="date"/>
+    </columns>
+    <empty title="No referrals" description="People you have referred appear here."/>
+  </view>
+</page>

@@ -1,0 +1,40 @@
+{
+  "model": "comp_gratuity",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "status",
+        "amount",
+        "years",
+        "snapshot",
+        "adjustment",
+        "decided_by"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

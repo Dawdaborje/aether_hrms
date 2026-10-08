@@ -1,0 +1,71 @@
+{
+  "model_id": "mdl_wm2myo4jyt",
+  "name": "ben_dependant",
+  "label": "%ben_dependant%",
+  "plural_label": "%ben_dependants%",
+  "icon": "users",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_myswkf7pb3",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_our3fto4yg",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_zunefbxrkg",
+      "name": "relation",
+      "label": "%relation%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_arklkgaa3g",
+          "value": "spouse",
+          "label": "%spouse%"
+        },
+        {
+          "id": "opt_7g6k6a6vul",
+          "value": "child",
+          "label": "%child%"
+        },
+        {
+          "id": "opt_apslpj7qoo",
+          "value": "parent",
+          "label": "%parent%"
+        },
+        {
+          "id": "opt_nahfvfa3he",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_alepge6jr4",
+      "name": "birth_date",
+      "label": "%birth_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_xdvxaeum4z",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

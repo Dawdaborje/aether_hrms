@@ -289,6 +289,49 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_6edib7wc3j",
+      "name": "encashable",
+      "label": "%encashable%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_blllk2svt4",
+      "name": "encash_keep_days",
+      "label": "%encash_keep_days%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Days that must stay after encashing."
+    },
+    {
+      "id": "fld_yzztumrtj4",
+      "name": "encash_max_year",
+      "label": "%encash_max_year%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Most days encashed per calendar year."
+    },
+    {
+      "id": "fld_wtwbbwvpra",
+      "name": "is_compensatory",
+      "label": "%is_compensatory%",
+      "type": "bool",
+      "help": "Earned by working a day off."
+    },
+    {
+      "id": "fld_5vfvzxsjdm",
+      "name": "comp_valid_days",
+      "label": "%comp_valid_days%",
+      "type": "int",
+      "help": "Days a compensatory grant stays usable."
+    },
+    {
+      "id": "fld_qryhneijuf",
+      "name": "comp_claim_window",
+      "label": "%comp_claim_window%",
+      "type": "int",
+      "help": "Days after the work in which it may be claimed."
     }
   ],
   "view": {

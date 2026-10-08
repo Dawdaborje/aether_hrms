@@ -1,0 +1,47 @@
+[plugin]
+name = "hr_compensation"
+label = "Compensation"
+version = "0.1.1"
+description = "Extra pay through one funnel: adjustments, awards, withholding, gratuity and the period lock."
+long_description = """
+Everything that adds to or takes from a payslip outside the salary structure goes through here: a one-off or
+recurring adjustment with a code, a source and an idempotency key; incentive and retention awards that someone
+other than the requester decides; pay withheld by calendar month and released one month at a time; gratuity by
+slabs with a stored copy of the rule it used. Payroll asks `payroll_adjustments` for `adj_<code>` totals and locks
+the period when it approves a run, so a closed period never changes: a correction is a new adjustment in a later
+one. Built from a reading of Frappe HRMS additional salary, incentive, retention bonus, salary withholding and
+gratuity. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "plugins::call"]
+access_models = [
+  { name = "comp_code", permissions = ["read", "write"] },
+  { name = "comp_adjustment", permissions = ["read", "write"] },
+  { name = "comp_award", permissions = ["read", "write"] },
+  { name = "comp_withholding", permissions = ["read", "write"] },
+  { name = "comp_withholding_cycle", permissions = ["read", "write"] },
+  { name = "comp_gratuity_rule", permissions = ["read", "write"] },
+  { name = "comp_gratuity", permissions = ["read", "write"] },
+  { name = "comp_lock", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "comp_admin"
+label = "Compensation administrator"
+description = "Sets up pay codes and gratuity rules, adds adjustments, decides awards, withholds and releases pay"
+
+[app]
+icon = "coins"
+route = "/hr/compensation"
+description = "Extra pay, awards, withholding and gratuity"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

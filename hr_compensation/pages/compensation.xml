@@ -1,0 +1,15 @@
+<page route="/hr/compensation" title="Compensation" model="comp_adjustment">
+  <view type="list" model="comp_award" source="list_awards">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="kind" label="Kind"/>
+      <column field="amount" label="Amount"/>
+      <column field="pay_date" label="Pay date" fieldType="date"/>
+      <column field="status" label="Status"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="decide_comp_award"/>
+    </actions>
+    <empty title="No awards" description="Incentives and retention bonuses waiting for a decision appear here."/>
+  </view>
+</page>

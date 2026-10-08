@@ -1,0 +1,11 @@
+<page route="/hr/benefits" title="Benefits" model="bnf_claim">
+  <view type="list" model="bnf_claim" source="my_benefit_claims">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="amount" label="Amount"/>
+      <column field="incurred_on" label="Incurred" fieldType="date"/>
+      <column field="state" label="State"/>
+    </columns>
+    <empty title="No claims" description="Claims you have made appear here."/>
+  </view>
+</page>

@@ -1,0 +1,57 @@
+[plugin]
+name = "hr_travel"
+label = "Business travel"
+version = "0.1.0"
+description = "Trip requests with legs, costing, per diem policy, two-level approval, advance and expense report."
+long_description = """
+A trip is planned in draft (dates, legs, costs), submitted against a travel policy, approved by the traveller's
+manager, and by a travel administrator as well when the estimate passes the policy's limit. The policy gives the
+daily allowance (less a share for days when meals are provided), a lodging cap, the approval limit and the share of
+the estimate that may be advanced; its figures are copied onto the trip. Legs must lie inside the trip's dates and
+follow one another, and a person cannot be on two trips at once. An approved trip can ask for an expense advance and
+open its expense report in hr_expense, once each, and is completed after it ends; trips left unsettled are flagged.
+Built from a reading of Frappe HRMS travel request, extended. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_expense", "currency"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "trv_policy", permissions = ["read", "write"] },
+  { name = "trv_trip", permissions = ["read", "write"] },
+  { name = "trv_leg", permissions = ["read", "write"] },
+  { name = "trv_cost", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "travel_admin"
+label = "Travel administrator"
+description = "Sets up policies, gives second approval on large trips and sees every trip."
+
+[[events]]
+name = "trip_submitted"
+
+[[events]]
+name = "trip_approved"
+
+[[events]]
+name = "trip_unsettled"
+
+[[schedule]]
+name = "travel-nightly"
+function = "travel_nightly"
+cron = "20 1 * * *"
+
+[app]
+icon = "plane"
+route = "/hr/travel"
+description = "Plan and follow business trips"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

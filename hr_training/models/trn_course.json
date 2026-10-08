@@ -1,0 +1,114 @@
+{
+  "model_id": "mdl_ez6pr55axw",
+  "name": "trn_course",
+  "label": "%trn_course%",
+  "plural_label": "%trn_courses%",
+  "icon": "graduation-cap",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_wijyx4pnux",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_sm3yryxfm5",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_pfiyt2gzih",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    },
+    {
+      "id": "fld_l7xfwyupdl",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_mslcccnfhl",
+          "value": "classroom",
+          "label": "%classroom%"
+        },
+        {
+          "id": "opt_abaiczrtqf",
+          "value": "online",
+          "label": "%online%"
+        },
+        {
+          "id": "opt_jjmfmoyi3y",
+          "value": "self_study",
+          "label": "%self_study%"
+        }
+      ]
+    },
+    {
+      "id": "fld_2cc2rpl7j7",
+      "name": "hours",
+      "label": "%hours%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_dzeazy4wej",
+      "name": "skill",
+      "label": "%skill%",
+      "type": "string",
+      "max_length": 120,
+      "help": "A skill in hr_performance this course builds."
+    },
+    {
+      "id": "fld_iyehuxblfl",
+      "name": "grants_level",
+      "label": "%grants_level%",
+      "type": "int",
+      "help": "The level of that skill a pass credits."
+    },
+    {
+      "id": "fld_vtv4nbwqyt",
+      "name": "pass_score",
+      "label": "%pass_score%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Scores at or above this pass; empty: attendance is enough."
+    },
+    {
+      "id": "fld_kwd7mfqdfg",
+      "name": "validity_months",
+      "label": "%validity_months%",
+      "type": "int",
+      "help": "Months a certificate lasts; empty: it does not expire."
+    },
+    {
+      "id": "fld_fe762y3dxf",
+      "name": "cost_per_seat",
+      "label": "%cost_per_seat%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_mm7p64oyu4",
+      "name": "is_mandatory",
+      "label": "%is_mandatory%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_a6nc2gyd55",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

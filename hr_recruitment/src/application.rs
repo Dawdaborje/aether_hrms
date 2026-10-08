@@ -101,7 +101,10 @@ fn resolve_candidate(input: &Apply) -> Result<String> {
 }
 
 fn apply(input: Apply) -> Result<Record> {
-    require_recruiter()?;
+    let referred = input.referrer.as_ref().is_some_and(|r| !r.is_empty()) && input.source.as_deref() == Some("referral");
+    if !referred {
+        require_recruiter()?;
+    }
     let opening = require("rec_opening", &input.opening, "opening")?;
     if text(&opening, "status") != Some("open") {
         return Err(Error::msg("this opening is not open for applications"));

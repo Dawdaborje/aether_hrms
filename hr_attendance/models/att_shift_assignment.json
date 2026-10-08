@@ -11,9 +11,9 @@
       "name": "employee",
       "label": "%employee%",
       "type": "link",
-      "target": "hr.employee",
       "required": true,
       "index": "plain",
+      "target": "hr.employee",
       "target_id": "mdl_3h5vuhedxt"
     },
     {
@@ -21,8 +21,7 @@
       "name": "shift",
       "label": "%shift%",
       "type": "link",
-      "target": "att_shift",
-      "required": true
+      "target": "att_shift"
     },
     {
       "id": "fld_jowb2fsvxq",
@@ -44,6 +43,14 @@
       "label": "%valid_to%",
       "type": "date",
       "help": "Empty: until changed."
+    },
+    {
+      "id": "fld_4cc2p4fju4",
+      "name": "rotation",
+      "label": "%rotation%",
+      "type": "link",
+      "target": "att_rotation",
+      "help": "Instead of a shift: the rotation decides each day."
     }
   ],
   "indexes": [

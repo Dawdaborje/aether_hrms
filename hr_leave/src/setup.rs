@@ -12,7 +12,8 @@ const TYPE_FIELDS: &[&str] = &[
     "name", "code", "color", "is_paid", "validation", "requires_allocation", "allow_negative", "max_negative", "half_days",
     "count_all_days", "sandwich", "min_notice_days", "applicable_after_days", "max_per_request", "gender", "annual_days",
     "pro_rata", "earned", "earned_frequency", "earned_rounding", "allocate_on", "carry_forward", "carry_forward_max",
-    "carry_forward_days", "is_active",
+    "carry_forward_days", "is_active", "encashable", "encash_keep_days", "encash_max_year", "is_compensatory",
+    "comp_valid_days", "comp_claim_window",
 ];
 /// What cannot change once requests exist for the type: it would change what they cost or need.
 const LOCKED_ONCE_USED: &[&str] = &["count_all_days", "requires_allocation"];
@@ -25,7 +26,7 @@ struct Change {
 }
 
 fn check_type(data: &Record) -> Result<()> {
-    for field in ["annual_days", "max_per_request", "max_negative", "carry_forward_max"] {
+    for field in ["annual_days", "max_per_request", "max_negative", "carry_forward_max", "encash_keep_days", "encash_max_year"] {
         if let Some(value) = data.get(field).filter(|v| !v.is_null()) {
             let days: Decimal = serde_json::from_value(value.clone()).map_err(|e| Error::msg(format!("{field}: {e}")))?;
             if days.is_negative() {
@@ -34,7 +35,7 @@ fn check_type(data: &Record) -> Result<()> {
             days.with_scale(SCALE).map_err(|_| Error::msg(format!("{field} has at most {SCALE} digits after the point")))?;
         }
     }
-    for field in ["min_notice_days", "applicable_after_days", "carry_forward_days"] {
+    for field in ["min_notice_days", "applicable_after_days", "carry_forward_days", "comp_valid_days", "comp_claim_window"] {
         if data.get(field).and_then(Value::as_i64).is_some_and(|n| n < 0) {
             return Err(Error::msg(format!("{field} cannot be negative")));
         }

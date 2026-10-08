@@ -1,0 +1,120 @@
+{
+  "model_id": "mdl_kpxa75glav",
+  "name": "loan_entry",
+  "label": "%loan_entry%",
+  "plural_label": "%loan_entrys%",
+  "icon": "scroll-text",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_f3xppdk32r",
+      "name": "loan",
+      "label": "%loan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "loan"
+    },
+    {
+      "id": "fld_4ynyp7i2t6",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_aoxymow6tx",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_xlcpnkfwll",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_jqfz22h33m",
+          "value": "disbursement",
+          "label": "%disbursement%"
+        },
+        {
+          "id": "opt_yciowuecfd",
+          "value": "repayment",
+          "label": "%repayment%"
+        },
+        {
+          "id": "opt_peuvkyqpq4",
+          "value": "reversal",
+          "label": "%reversal%"
+        }
+      ]
+    },
+    {
+      "id": "fld_svenyzjnvf",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_jke5cnldhc",
+      "name": "on_date",
+      "label": "%on_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_vscgls4hu7",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 200,
+      "index": "unique"
+    },
+    {
+      "id": "fld_bp36vnerpx",
+      "name": "allocations",
+      "label": "%allocations%",
+      "type": "text"
+    },
+    {
+      "id": "fld_dbtr6d2lsk",
+      "name": "reverses",
+      "label": "%reverses%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_eekqelurrk",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_k7jbmbc2xx",
+      "name": "actor",
+      "label": "%actor%",
+      "type": "string",
+      "max_length": 120
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ym2wwix3cb",
+      "fields": [
+        "loan",
+        "seq"
+      ],
+      "unique": true
+    }
+  ]
+}

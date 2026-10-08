@@ -1,0 +1,16 @@
+<page route="/hr/career" title="Career" model="career_change">
+  <view type="list" model="career_change" source="list_career_changes">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="kind" label="Kind"/>
+      <column field="effective_date" label="Effective" fieldType="date"/>
+      <column field="state" label="State"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_career_change"/>
+      <action name="reject" label="Reject" function="reject_career_change"/>
+    </actions>
+    <empty title="No changes" description="Promotions, transfers and pay changes appear here."/>
+  </view>
+</page>

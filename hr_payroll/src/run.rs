@@ -269,6 +269,12 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
     } else {
         Value::Null
     };
+    // Extra pay comes from one place: structures that declare inputs named `adj_<code>` get that code's total for the period.
+    let adjustments: Value = if structures.values().any(|(_, c)| c.structure().inputs.iter().any(|i| i.name.starts_with("adj_"))) {
+        plugins::call("hr_compensation", "payroll_adjustments", &json!({ "employees": ids, "from": format_date(start), "to": format_date(end) }))?
+    } else {
+        Value::Null
+    };
     let mut currencies: BTreeMap<String, Option<String>> = BTreeMap::new();
     let mut totals = Totals::default();
     let mut slips: Vec<(String, Value)> = Vec::new();
@@ -327,6 +333,11 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
         put("periods_per_year", json!(12));
         put("unpaid_leave_days", number(leave[id.as_str()]["unpaid_days"].as_str().unwrap_or("0"))?);
         put("overtime_hours", number(&hours_of(attendance[id.as_str()]["overtime_minutes"].as_i64().unwrap_or(0))?.to_string())?);
+        for declared_name in declared.iter().filter(|name| name.starts_with("adj_")) {
+            // No adjustment of that code for this person this period is zero, never missing.
+            let amount = adjustments[id.as_str()][*declared_name].as_str().unwrap_or("0");
+            put(declared_name, number(amount)?);
+        }
         for source in [assignment["variables"].as_object(), run_inputs.iter().find(|r| text(r, "employee") == Some(id.as_str())).and_then(|r| r["variables"].as_object())].into_iter().flatten() {
             for (name, value) in source {
                 variables.insert(name.clone(), value.clone());
@@ -502,6 +513,8 @@ fn approve(input: Id) -> Result<Record> {
     let totals: Totals = serde_json::from_value(run["totals"].clone()).map_err(|e| Error::msg(format!("totals: {e}")))?;
     let today = format_date(today_date()?);
     let approved = db::update::<Record>("pay_run", &input.id, &json!({ "status": "approved", "approved_by": who, "approved_on": today }))?.ok_or_else(|| Error::msg("the run is gone"))?;
+    // The period is closed for extra pay: an adjustment dated inside it can no longer change.
+    plugins::call::<Value>("hr_compensation", "lock_through", &json!({ "through": run["period_end"] }))?;
     let components: Vec<Value> = totals.components.iter().map(|(id, c)| json!({ "id": id, "kind": c.kind, "amount": c.amount })).collect();
     // Money amounts travel as text so no digit is lost.
     events::emit(

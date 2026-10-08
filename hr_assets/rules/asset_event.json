@@ -1,0 +1,25 @@
+{
+  "model": "asset_event",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "asset_admin"
+      ],
+      "operations": [
+        "read",
+        "create"
+      ]
+    }
+  ]
+}

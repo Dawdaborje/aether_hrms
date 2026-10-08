@@ -17,3 +17,13 @@ hr_recruitment = { path = "./hr_recruitment" }
 hr_onboarding = { path = "./hr_onboarding" }
 hr_performance = { path = "./hr_performance" }
 hr_payroll = { path = "./hr_payroll" }
+hr_compensation = { path = "./hr_compensation" }
+hr_career = { path = "./hr_career" }
+hr_workforce = { path = "./hr_workforce" }
+hr_training = { path = "./hr_training" }
+hr_grievance = { path = "./hr_grievance" }
+hr_travel = { path = "./hr_travel" }
+hr_assets = { path = "./hr_assets" }
+hr_loan = { path = "./hr_loan" }
+hr_benefits = { path = "./hr_benefits" }
+hr_referral = { path = "./hr_referral" }
