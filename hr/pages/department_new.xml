@@ -1,0 +1,8 @@
+<page route="/hr/departments/new" title="Add department" model="department">
+  <view type="form" function="create_department" submit="Add department" success="Department added" redirect="/hr/departments">
+    <field name="name" label="Name" required="true"/>
+    <field name="code" label="Code"/>
+    <field name="parent" label="Part of (department id)"/>
+    <field name="cost_center" label="Cost centre"/>
+  </view>
+</page>

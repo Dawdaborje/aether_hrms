@@ -1,7 +1,6 @@
 //! Employment: the terms someone works under, as a history of dated records.
 //!
-//! Following Odoo 19's dated employee record rather than a single row plus a separate contract:
-//! every change of job, department, manager, pay or contract is a new record that starts on a day.
+//! Every change of job, department, manager, pay or contract is a new record that starts on a day.
 //! The one in force today is `current`; later ones are `planned` and earlier ones `past`. The
 //! employee row carries a copy of the current placement (department, job, position, manager,
 //! type, location) so lists, the reporting tree and rules read it without a lookup. A nightly job
@@ -90,7 +89,7 @@ fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Op
             }
         }
     }
-    // Contract periods of one person never overlap (Odoo's `_check_dates`).
+ // Contract periods of one person never overlap. 
     if let Some(start) = start {
         let employee_id = id_of(employee)?;
         let others: Vec<Record> = db::find::<Record>("employment")

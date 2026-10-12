@@ -1,8 +1,5 @@
 <page route="/hr/attendance" title="Attendance" model="att_day">
-  <view type="form" function="punch" submit="Punch" success="Recorded">
-    <field name="direction" label="Direction" fieldType="selection" options="auto, in, out"/>
-  </view>
-  <view type="list" model="att_day" source="my_days">
+  <view type="list" model="att_day" source="my_days" create="/hr/attendance/new" create_label="Punch">
     <columns>
       <column field="work_date" label="Date" fieldType="date"/>
       <column field="status" label="Status" fieldType="badge"/>
@@ -10,6 +7,6 @@
       <column field="late_min" label="Late (min)"/>
       <column field="review" label="Needs a look"/>
     </columns>
-    <empty title="No days yet" description="Punch in to start."/>
+    <empty title="No days yet" description="Use Punch to start."/>
   </view>
 </page>

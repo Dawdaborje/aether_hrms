@@ -1,17 +1,15 @@
 //! Encashing leave and compensatory leave.
 //!
 //! **Encashment** turns unused days into pay. A leave administrator names the days and the daily
-//! rate (payroll owns salary, leave does not guess it); the type decides whether it is allowed, how
-//! many days must stay and how many may go per year. The days leave the ledger as an `encashment`
-//! entry and the money goes to `hr_compensation` as an adjustment keyed by the encashment, so a
-//! retried call pays once and a payroll run that already closed the period refuses the payment
-//! instead of changing it. Cancelling cancels the adjustment first, then returns the days.
+//! Rate (payroll owns salary, leave does not guess it); the type decides whether it is allowed, how
+//! Many days must stay and how many may go per year. The days leave the ledger as an `encashment`
+//! Entry and the money goes to `hr_compensation` as an adjustment keyed by the encashment, so a
+//! Retried call pays once and a payroll run that already closed the period refuses the payment
+//! Instead of changing it. Cancelling cancels the adjustment first, then returns the days.
 //!
 //! **Compensatory leave** is earned by working a day off. A claim names the days worked; the system
-//! counts only those that really were days off on the person's calendar (Frappe trusts the
-//! claimant's count; Odoo has no such flow), refuses overlapping claims and late claims, and needs
-//! a decision from someone other than the claimant. Approval grants days that lapse after the
-//! type's `comp_valid_days`.
+//! A decision from someone other than the claimant. Approval grants days that lapse after the
+//! Type's `comp_valid_days`.
 
 use aether_sdk::dates::{format_date, parse_date, Duration, NaiveDate};
 use aether_sdk::decimal::Decimal;

@@ -1,8 +1,8 @@
 //! Openings: a request to hire for seats of a position.
 //!
 //! An opening opens only when the position has free seats that no other open opening has already
-//! promised (neither Odoo's integer that floors at zero nor Frappe's count of offers), and only by
-//! someone other than the person who asked for it.
+//! Promised, and only by
+//! Someone other than the person who asked for it.
 
 use aether_sdk::dates::{format_date, parse_optional};
 use aether_sdk::db::Filter;

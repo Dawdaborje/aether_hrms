@@ -11,13 +11,16 @@
       "type": "string",
       "required": true,
       "max_length": 60,
-      "index": "unique"
+      "index": "unique",
+      "id": "fld_jpf5xrsmdk"
     },
     {
       "name": "next",
       "label": "%next%",
       "type": "int",
-      "default": 0
+      "default": 0,
+      "id": "fld_o2zp4v6yeh"
     }
-  ]
+  ],
+  "model_id": "mdl_gkhqrg4zqt"
 }

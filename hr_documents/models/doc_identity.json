@@ -1,0 +1,106 @@
+{
+  "model_id": "mdl_7za3ovm3rh",
+  "name": "doc_identity",
+  "label": "%doc_identity%",
+  "plural_label": "%doc_identitys%",
+  "icon": "id-card",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_kd5ql3dhgm",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_qxd4b5vh4a",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_o47sh52ffd",
+          "value": "passport",
+          "label": "%passport%"
+        },
+        {
+          "id": "opt_tljgvvdwqh",
+          "value": "national_id",
+          "label": "%national_id%"
+        },
+        {
+          "id": "opt_le24dniffd",
+          "value": "visa",
+          "label": "%visa%"
+        },
+        {
+          "id": "opt_y4mnc2pia6",
+          "value": "work_permit",
+          "label": "%work_permit%"
+        },
+        {
+          "id": "opt_5gsf74yub7",
+          "value": "driving_licence",
+          "label": "%driving_licence%"
+        },
+        {
+          "id": "opt_4ahaw7viig",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_nzwqjfeiun",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_wvolnsuybn",
+      "name": "country",
+      "label": "%country%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_o2ddpqcsb3",
+      "name": "issued_on",
+      "label": "%issued_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_r7tribtzym",
+      "name": "expires_on",
+      "label": "%expires_on%",
+      "type": "date",
+      "index": "plain"
+    },
+    {
+      "id": "fld_7qrymgt4yv",
+      "name": "is_primary",
+      "label": "%is_primary%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_oo74mx74wl",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    },
+    {
+      "id": "fld_wbqsj4uzlw",
+      "name": "last_warn_days",
+      "label": "%last_warn_days%",
+      "type": "int",
+      "help": "Last expiry threshold already reported (30, 7 or 0)."
+    }
+  ]
+}

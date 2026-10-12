@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_attendance"
+icon_path = "assets/logo.svg"
 label = "Attendance"
 version = "0.2.1"
 description = "Shifts, punches, daily attendance and corrections."
@@ -9,8 +10,9 @@ Each person and date has one derived day (present, absent, half day, leave, holi
 out by a pure function from the shift's window, the paired punches, the holiday calendar and approved
 leave, and recomputed only when its inputs change. A punch that does not pair is flagged for review, never
 dropped; working on a day of leave is flagged, not hidden. Corrections are decided by the person's manager
-or an attendance administrator, never by the person. Built from a reading of Odoo 19 and Frappe HRMS.
+or an attendance administrator, never by the person.
 Written in Rust.
+See docs/design.md in this plugin (hr_attendance/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "calendar", "hr_leave"]

@@ -1,12 +1,10 @@
 //! The arithmetic of leave, with no records read: what a request costs, what a hire is owed for
-//! the part of a year, what an earned-leave schedule gives, and the **ledger**.
+//! The part of a year, what an earned-leave schedule gives, and the **ledger**.
 //!
-//! The ledger is the design that comes out of reading both Odoo 19 and Frappe HRMS. Odoo replays
-//! every leave against every allocation each time a balance is asked for and edits accrual
-//! allocations in place, leaving no history; Frappe has a ledger but deletes rows and finds expiry
-//! rows by timestamp. Here the ledger is append-only: an entry is a signed number of days with the
-//! day it counts from and (for grants) the day it lapses, a cancellation is a **reversal** entry,
-//! and the balance is a single pass over the entries, spending the soonest-expiring grant first.
+//! Every leave against every allocation each time a balance is asked for and edits accrual
+//! Rows by timestamp. Here the ledger is append-only: an entry is a signed number of days with the
+//! Day it counts from and (for grants) the day it lapses, a cancellation is a **reversal** entry,
+//! And the balance is a single pass over the entries, spending the soonest-expiring grant first.
 
 use std::collections::HashSet;
 

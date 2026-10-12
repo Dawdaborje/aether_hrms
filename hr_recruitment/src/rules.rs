@@ -1,10 +1,10 @@
 //! The rules of hiring, with nothing read from a database.
 //!
-//! What the Odoo and Frappe sources taught (see `docs/design.md`): vacancies are *seats* checked against
-//! a position's headcount, at the moment an opening opens and again when an offer goes out, not a counter
-//! that floors at zero or a count of offers; an interview's outcome is a function of the submitted
-//! feedback (Frappe stores the result and never uses it); a stage can only be entered in order, and the
-//! hired stage only by actually hiring.
+//! Design rules (see `docs/design.md`): vacancies are *seats* checked against
+//! A position's headcount, at the moment an opening opens and again when an offer goes out, not a counter
+//! That floors at zero or a count of offers; an interview's outcome is a function of the submitted
+//! Feedback; a stage can only be entered in order, and the
+//! Hired stage only by actually hiring.
 
 use std::collections::BTreeMap;
 

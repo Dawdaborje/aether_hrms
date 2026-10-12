@@ -1,11 +1,5 @@
 <page route="/hr/departments" title="Departments" model="department">
-  <view type="form" function="create_department" submit="Add department" success="Department added">
-    <field name="name" label="Name" required="true"/>
-    <field name="code" label="Code"/>
-    <field name="parent" label="Part of (department id)"/>
-    <field name="cost_center" label="Cost centre"/>
-  </view>
-  <view type="list" model="department" source="list_departments">
+  <view type="list" model="department" source="list_departments" create="/hr/departments/new" create_label="New">
     <search/>
     <columns>
       <column field="name" label="Name"/>
@@ -15,6 +9,6 @@
     <actions>
       <action name="close" label="Close" function="close_department" confirm="Close this department?" danger="true"/>
     </actions>
-    <empty title="No departments yet" description="Add the first one above."/>
+    <empty title="No departments yet" description="Use New to add one."/>
   </view>
 </page>

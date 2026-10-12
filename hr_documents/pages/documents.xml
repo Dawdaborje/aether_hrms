@@ -1,0 +1,10 @@
+<page route="/hr/documents" title="Documents" model="doc_identity">
+  <view type="list" model="doc_identity" source="my_identity_documents">
+    <columns>
+      <column field="kind" label="Kind"/>
+      <column field="number" label="Number"/>
+      <column field="expires_on" label="Expires" fieldType="date"/>
+    </columns>
+    <empty title="No documents" description="Identity documents you have on file appear here."/>
+  </view>
+</page>

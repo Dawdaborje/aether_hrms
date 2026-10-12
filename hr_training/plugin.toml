@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_training"
+icon_path = "assets/logo.svg"
 label = "Training"
 version = "0.1.0"
 description = "Courses, sessions, enrolment with waiting lists, results, certificates and training budgets."
@@ -10,8 +11,9 @@ what the course cost when it was booked and is charged to the person's departmen
 which refuses overspending unless a planner says why. After the session a trainer or planner records attendance
 and a score: a pass issues a certificate (with an expiry date if the course has one) and raises the person's
 skill level in `hr_performance`, never lowering it. Nobody records their own result. Expiring and missing
-mandatory certificates are listed for the people who need them. Built from a reading of Frappe HRMS training
-events and results and Odoo's skills. Written in Rust.
+mandatory certificates are listed for the people who need them.
+Written in Rust. 
+See docs/design.md in this plugin (hr_training/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_performance"]

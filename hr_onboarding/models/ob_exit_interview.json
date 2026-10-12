@@ -1,0 +1,114 @@
+{
+  "model_id": "mdl_xlschi7mb2",
+  "name": "ob_exit_interview",
+  "label": "%ob_exit_interview%",
+  "plural_label": "%ob_exit_interviews%",
+  "icon": "message-square",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_lohvvduaaj",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_fgww4iorcs",
+      "name": "departure",
+      "label": "%departure%",
+      "type": "link",
+      "required": true,
+      "index": "unique",
+      "target": "ob_departure"
+    },
+    {
+      "id": "fld_olc6a6yztd",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_xvna6t2oxb",
+      "name": "interviewer",
+      "label": "%interviewer%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_tiuzd4f3i7",
+      "name": "scheduled_on",
+      "label": "%scheduled_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_gfbpughsop",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_o2qvmfrzjj",
+          "value": "scheduled",
+          "label": "%scheduled%"
+        },
+        {
+          "id": "opt_gyi5223t4r",
+          "value": "completed",
+          "label": "%completed%"
+        },
+        {
+          "id": "opt_233py2qogv",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_d33y6nb4gl",
+      "name": "reason_for_leaving",
+      "label": "%reason_for_leaving%",
+      "type": "text"
+    },
+    {
+      "id": "fld_v45rkhgezk",
+      "name": "would_recommend",
+      "label": "%would_recommend%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_whq5pabwpy",
+      "name": "summary",
+      "label": "%summary%",
+      "type": "text"
+    },
+    {
+      "id": "fld_w3blcstqzd",
+      "name": "private_notes",
+      "label": "%private_notes%",
+      "type": "text",
+      "help": "Only onboarding managers and officers see this."
+    },
+    {
+      "id": "fld_q3vonmdzvw",
+      "name": "completed_on",
+      "label": "%completed_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_dia3ygkxq6",
+      "name": "completed_by",
+      "label": "%completed_by%",
+      "type": "string",
+      "max_length": 120
+    }
+  ]
+}

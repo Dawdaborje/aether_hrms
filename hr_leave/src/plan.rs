@@ -1,13 +1,12 @@
 //! Accrual plans: leave earned by length of service.
 //!
 //! A plan belongs to a leave type and has **levels**. A level starts after some months of service
-//! and says how often days arrive and how many, with an optional cap per year and in total. The
-//! level that applies is the one in force *on the day the grant is due*, so a person moves up a
-//! level when their service reaches the next milestone and nothing is recalculated afterwards.
+//! And says how often days arrive and how many, with an optional cap per year and in total. The
+//! Level that applies is the one in force *on the day the grant is due*, so a person moves up a
+//! Level when their service reaches the next milestone and nothing is recalculated afterwards.
 //! A plan is assigned to a person over a dated span; the nightly job writes `accrual` entries with
-//! a key that names the assignment and period, so running it twice (or catching up after a missed
-//! night) never grants twice. Odoo keeps this on the allocation and edits it in place; here the
-//! plan only decides, and the ledger keeps the history.
+//! A key that names the assignment and period, so running it twice (or catching up after a missed
+//! Plan only decides, and the ledger keeps the history.
 
 use aether_sdk::dates::{format_date, months_between, parse_date, Datelike, Duration, NaiveDate};
 use aether_sdk::decimal::Decimal;

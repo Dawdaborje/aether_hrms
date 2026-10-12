@@ -1,5 +1,6 @@
 [plugin]
 name = "hr"
+icon_path = "assets/logo.svg"
 label = "Human Resources"
 version = "0.1.2"
 description = "People, departments, positions and dated employment terms."
@@ -7,6 +8,7 @@ long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
 report to each other, their dependents and skills, and a dated history of employment terms. Nothing in it belongs to one country or
 employer. Other plugins (leave, attendance, recruitment, a government registry) build on it. Written in Rust.
+See docs/design.md in this plugin (hr/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["party", "country", "currency", "company"]

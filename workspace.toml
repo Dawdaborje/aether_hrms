@@ -27,3 +27,4 @@ hr_assets = { path = "./hr_assets" }
 hr_loan = { path = "./hr_loan" }
 hr_benefits = { path = "./hr_benefits" }
 hr_referral = { path = "./hr_referral" }
+hr_documents = { path = "./hr_documents" }

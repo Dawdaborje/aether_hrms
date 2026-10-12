@@ -1,9 +1,8 @@
 //! The referral state machine and the tenure gate on the bonus, with nothing read from a database.
 //!
-//! Frappe's Employee Referral has a status that `validate` always resets to Pending, a bonus flag anyone can tick,
-//! and `create_additional_salary` that does not actually insert the extra pay. Here the states follow a table of
-//! moves, the bonus is set by the policy (amount, wait in days) copied onto the referral, and it is paid only after
-//! the hire has stayed that long, never to the referrer for themselves.
+//! States follow a table of moves. The bonus is set by the policy (amount, wait in days) copied onto
+//! the referral, and it is paid only after the hire has stayed that long, never to the referrer for
+//! themselves.
 
 use aether_sdk::dates::NaiveDate;
 use aether_sdk::decimal::Decimal;

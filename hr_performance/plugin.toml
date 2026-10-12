@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_performance"
+icon_path = "assets/logo.svg"
 label = "Performance"
 version = "0.1.1"
 description = "Appraisal cycles, goals that roll up, blind reviews and skills compared with what a job asks."
@@ -10,7 +11,8 @@ review's ratings against the template's weighted criteria, goals rolled up a tre
 score that weighs goals, self, manager and peers under a missing-data rule the cycle states (leave out,
 count as zero, or refuse). Reviews are blind: an employee sees nothing between self review and publication.
 Skills keep a history of levels, who gave them and why, and are compared with a job's targets. Built from a
-reading of Frappe HRMS and Odoo 19. Written in Rust.
+Written in Rust. 
+See docs/design.md in this plugin (hr_performance/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr"]

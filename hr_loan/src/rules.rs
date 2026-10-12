@@ -1,10 +1,9 @@
 //! Schedules, allocation of repayments, the payroll cap and the foreclosure quote, with nothing read from a database.
 //!
-//! Neither Odoo nor Frappe HRMS gives a staff loan an engine worth copying (Frappe's loan module lives in a separate
-//! lending app, and its schedule is rebuilt from a document). So: a loan has one schedule, made when it is requested
-//! and copied from the product's terms; money moves only as entries in a ledger; a repayment is spread over the oldest
-//! unpaid instalments and undone by a reversal entry, not by editing; payroll may take less than is due when the
-//! employee's pay does not stretch, and the rest stays due.
+//! A loan has one schedule, made when it is requested and copied from the product's terms; money
+//! moves only as entries in a ledger; a repayment is spread over the oldest unpaid instalments and
+//! undone by a reversal entry, not by editing; payroll may take less than is due when the employee's
+//! pay does not stretch, and the rest stays due.
 
 use aether_sdk::dates::{add_months, NaiveDate};
 use aether_sdk::decimal::Decimal;

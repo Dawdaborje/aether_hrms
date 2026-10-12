@@ -1,11 +1,9 @@
 //! Career changes: a request, a decision, and dated employment written only on approval.
 //!
-//! Frappe's promotion is a document that rewrites the employee's fields on submit and rewrites them back on
-//! cancel, with no approval and no check that a promotion goes up. Here the request is checked against the
-//! current terms and the grade ladder, decided by someone who is neither the person nor the requester, and
-//! approval adds a *dated employment record* in `hr`: the history stays, and the earlier terms are never edited.
-//! A change that is approved but has not started yet can be withdrawn; one that has started is corrected by a
-//! new change.
+//! The request is checked against the current terms and the grade ladder, decided by someone who is
+//! neither the person nor the requester, and approval adds a *dated employment record* in `hr`: the
+//! history stays, and the earlier terms are never edited. A change that is approved but has not
+//! started yet can be withdrawn; one that has started is corrected by a new change.
 
 use aether_sdk::dates::{format_date, parse_date};
 use aether_sdk::db::Filter;

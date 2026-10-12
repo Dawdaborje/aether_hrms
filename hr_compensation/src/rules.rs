@@ -1,9 +1,6 @@
 //! The rules of extra pay, with nothing read from a database.
 //!
-//! What the Frappe sources taught (see `docs/design.md`): an amount lands in a period by its dates, and a
-//! recurring one that only partly covers a period is prorated by the days it covers (Frappe skips it unless it runs
-//! to the end of the period); gratuity slabs are half-open so a boundary year matches one slab (Frappe's are
-//! inclusive both sides); years of service are exact decimals; a cancel never edits what was paid.
+//! Inclusive both sides); years of service are exact decimals; a cancel never edits what was paid.
 
 use aether_sdk::dates::{add_months, Duration, NaiveDate};
 use aether_sdk::decimal::Decimal;
@@ -192,7 +189,7 @@ mod tests {
         let (start, end) = (day("2026-10-01")?, day("2026-10-31")?);
         let open = Terms::Recurring { from: day("2026-01-01")?, to: None, prorate: false };
         assert_eq!(period_amount(d("50.00")?, open, start, end)?, d("50.00")?);
-        // Ending mid-period is not skipped (Frappe skips it): paid whole, or by the share of the days.
+ // Ending mid-period is not skipped: paid whole, or by the share of the days. 
         let ends_early = Terms::Recurring { from: day("2026-01-01")?, to: Some(day("2026-10-10")?), prorate: false };
         assert_eq!(period_amount(d("50.00")?, ends_early, start, end)?, d("50.00")?);
         let prorated = Terms::Recurring { from: day("2026-01-01")?, to: Some(day("2026-10-10")?), prorate: true };

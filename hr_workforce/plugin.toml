@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_workforce"
+icon_path = "assets/logo.svg"
 label = "Workforce planning"
 version = "0.1.0"
 description = "Staffing plans by period and position, and hiring requisitions that draw on them."
@@ -9,8 +10,9 @@ A requisition asks for seats against a position: it must fit the seats the posit
 other requisitions already hold, and it is counted against the plan that covers its date (a request outside any plan
 is allowed but marked unplanned, so the exception is visible). Someone other than the requester decides; approval can
 open the hiring in `hr_recruitment`, and fills and time-to-fill are read back from the opening, never typed. Plans
-refuse overlapping approved plans for one position. Built from a reading of Frappe HRMS staffing plan and job
+refuse overlapping approved plans for one position.
 requisition. Written in Rust.
+See docs/design.md in this plugin (hr_workforce/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_recruitment"]

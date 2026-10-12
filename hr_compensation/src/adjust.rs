@@ -1,10 +1,9 @@
 //! Pay codes, adjustments (the one funnel for extra pay), awards, and the period lock.
 //!
-//! Frappe's Additional Salary is overloaded by a `ref_doctype` and revert-by-cancel rewrites what was paid; Odoo
-//! leaves extra pay to input lines typed on each payslip. Here every extra amount is an adjustment with a code, a
-//! kind and either one pay date or a recurring span, carrying the plugin and reference that produced it so the same
-//! source twice is one adjustment. Payroll asks only this plugin (`payroll_adjustments`). Once payroll approves a
-//! period it locks through that day: nothing dated inside can change, a correction is a new adjustment later.
+//! Leaves extra pay to input lines typed on each payslip. Here every extra amount is an adjustment with a code, a
+//! Kind and either one pay date or a recurring span, carrying the plugin and reference that produced it so the same
+//! Source twice is one adjustment. Payroll asks only this plugin (`payroll_adjustments`). Once payroll approves a
+//! Period it locks through that day: nothing dated inside can change, a correction is a new adjustment later.
 
 use aether_sdk::dates::{format_date, parse_date, NaiveDate};
 use aether_sdk::db::Filter;

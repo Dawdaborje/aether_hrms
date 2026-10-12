@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_career"
+icon_path = "assets/logo.svg"
 label = "Career"
 version = "0.1.0"
 description = "Promotions, transfers and pay changes as approved change sets, grade ladders and letters."
@@ -10,7 +11,8 @@ and the person who asked cannot be the one who approves. Approval writes dated e
 kept, nothing is overwritten) and a pending change that is still in the future can be withdrawn again. A grade
 ladder makes a promotion actually go up and keeps a wage inside its grade's band unless the exception is stated.
 Letters are made from templates with placeholders and a missing value is an error, not a blank. Built from a
-reading of Frappe HRMS employee promotion, transfer and grade, and Odoo 19's dated employee versions. Written in Rust.
+Written in Rust. 
+See docs/design.md in this plugin (hr_career/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_compensation"]

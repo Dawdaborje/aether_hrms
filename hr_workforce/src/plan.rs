@@ -1,9 +1,9 @@
 //! Staffing plans: how many hires into which positions over a period, and at what budget.
 //!
-//! Frappe checks overlap against other submitted plans but keeps the numbers (current count, open jobs) frozen on
-//! the plan row at save time. Here the plan holds only intent (planned hires, cost per hire); what has happened
-//! since is always read live from the requisitions that drew on it. A plan is edited only while it is a draft, is
-//! approved by someone other than its maker, and two approved plans never cover one position on the same day.
+//! The plan holds only intent (planned hires, cost per hire); what has happened since is always
+//! read live from the requisitions that drew on it. A plan is edited only while it is a draft, is
+//! approved by someone other than its maker, and two approved plans never cover one position on the
+//! same day.
 
 use aether_sdk::dates::{check_order, format_date, parse_date, NaiveDate};
 use aether_sdk::decimal::Decimal;

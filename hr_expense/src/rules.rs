@@ -1,9 +1,9 @@
 //! The arithmetic and rules of expenses, with nothing read from a database.
 //!
-//! What the Odoo and Frappe sources taught (see `docs/design.md`): money is exact, a rate is stored with
-//! the amount it converted, a line is converted once and the report is the sum of its lines; a policy limit
-//! is looked up for the *expense date*, and can warn, ask for a reason, block, or cap; an approved amount
-//! never exceeds the claimed one; an advance can only be used up to what is unclaimed, in its own currency.
+//! Design rules (see `docs/design.md`): money is exact, a rate is stored with
+//! The amount it converted, a line is converted once and the report is the sum of its lines; a policy limit
+//! Is looked up for the *expense date*, and can warn, ask for a reason, block, or cap; an approved amount
+//! Never exceeds the claimed one; an advance can only be used up to what is unclaimed, in its own currency.
 
 use aether_sdk::decimal::Decimal;
 use aether_sdk::{Error, Result};

@@ -1,0 +1,94 @@
+{
+  "model_id": "mdl_7tlasqupfm",
+  "name": "doc_bank",
+  "label": "%doc_bank%",
+  "plural_label": "%doc_banks%",
+  "icon": "landmark",
+  "title_field": "account_no",
+  "fields": [
+    {
+      "id": "fld_gm4yyjwn6x",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_xoua4vddmk",
+      "name": "account_name",
+      "label": "%account_name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_5w23f622ps",
+      "name": "account_no",
+      "label": "%account_no%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_lz6lj7at6x",
+      "name": "bank_name",
+      "label": "%bank_name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_nfv73iyort",
+      "name": "branch",
+      "label": "%branch%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_tqccbi7wcy",
+      "name": "iban",
+      "label": "%iban%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_dmkzn3occj",
+      "name": "swift",
+      "label": "%swift%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_544dpeb4k5",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 3
+    },
+    {
+      "id": "fld_3kmxtvpep4",
+      "name": "share_percent",
+      "label": "%share_percent%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2,
+      "help": "Share of net salary paid to this account."
+    },
+    {
+      "id": "fld_m2tydyi2it",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_tdcfyplkqy",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ]
+}

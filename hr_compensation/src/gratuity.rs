@@ -1,10 +1,9 @@
 //! Gratuity: end-of-service pay by slabs, calculated from the dates and a stored copy of the rule.
 //!
-//! Frappe computes it in a controller from the rule's rows as they are when the document is saved, with slabs that
-//! include both ends and years rounded as the controller sees fit. Here the rule names how years are counted
-//! (`exact`, `round`, `floor`) and how slabs combine (`current_slab`, `cumulative`), slab boundaries are half-open,
-//! and the calculation keeps a snapshot of the rule it used, so changing a rule later never changes a figure that
-//! was approved. Approval turns the amount into an adjustment; nothing else writes payroll.
+//! The rule names how years are counted (`exact`, `round`, `floor`) and how slabs combine
+//! (`current_slab`, `cumulative`); slab boundaries are half-open; the calculation keeps a snapshot
+//! of the rule it used, so changing a rule later never changes a figure that was approved. Approval
+//! turns the amount into an adjustment; nothing else writes payroll.
 
 use aether_sdk::dates::{format_date, parse_date};
 use aether_sdk::decimal::Decimal;

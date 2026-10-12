@@ -1,10 +1,9 @@
 //! The rules of onboarding and offboarding, with nothing read from a database.
 //!
-//! What the Odoo and Frappe sources taught (see `docs/design.md`): a due date must follow the working
-//! calendar and never end before it starts (Frappe rolls forward only, Odoo ignores holidays); an
-//! assignee is resolved up the management chain with a bound and a loop check, and the fallback that
-//! was used is kept (Odoo); status is computed from the tasks, not stored by hand (Frappe writes it
-//! around its own events); a departure closes only when its checklist is clear.
+//! Design rules (see `docs/design.md`): a due date must follow the working
+//! Calendar and never end before it starts; an
+//! Assignee is resolved up the management chain with a bound and a loop check, and the fallback that
+//! Around its own events); a departure closes only when its checklist is clear.
 
 use aether_sdk::dates::{Calendar, Duration, NaiveDate};
 use aether_sdk::decimal::Decimal;
@@ -451,5 +450,64 @@ mod tests {
         assert_eq!(net_settlement(&[(true, d("1000.00")?), (false, d("250.50")?), (true, d("10.00")?)]), d("759.50")?);
         assert_eq!(net_settlement(&[(false, d("5.00")?)]), d("-5.00")?);
         Ok(())
+    }
+}
+
+/// Exit interview states.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExitState {
+    Scheduled,
+    Completed,
+    Cancelled,
+}
+
+impl ExitState {
+    pub fn parse(text: &str) -> Option<Self> {
+        Some(match text {
+            "scheduled" => Self::Scheduled,
+            "completed" => Self::Completed,
+            "cancelled" => Self::Cancelled,
+            _ => return None,
+        })
+    }
+
+    #[allow(dead_code)]
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Scheduled => "scheduled",
+            Self::Completed => "completed",
+            Self::Cancelled => "cancelled",
+        }
+    }
+}
+
+/// Whether an interview can move to completed or cancelled.
+pub fn exit_next(state: ExitState, to: ExitState) -> Result<()> {
+    match (state, to) {
+        (ExitState::Scheduled, ExitState::Completed | ExitState::Cancelled) => Ok(()),
+        _ => Err(Error::msg("only a scheduled exit interview can be completed or cancelled")),
+    }
+}
+
+/// A settlement source key is unique on a departure: the same loan or leave type is not quoted twice.
+pub fn source_key(kind: &str, id: &str) -> String {
+    format!("{kind}:{id}")
+}
+
+#[cfg(test)]
+mod exit_tests {
+    use super::*;
+
+    #[test]
+    fn an_exit_interview_completes_or_cancels_from_scheduled() {
+        assert!(exit_next(ExitState::Scheduled, ExitState::Completed).is_ok());
+        assert!(exit_next(ExitState::Scheduled, ExitState::Cancelled).is_ok());
+        assert!(exit_next(ExitState::Completed, ExitState::Cancelled).is_err());
+        assert!(exit_next(ExitState::Cancelled, ExitState::Completed).is_err());
+    }
+
+    #[test]
+    fn settlement_sources_are_keyed() {
+        assert_eq!(source_key("loan", "L1"), "loan:L1");
     }
 }

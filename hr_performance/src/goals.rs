@@ -1,9 +1,8 @@
 //! Goals: a tree per person per cycle, each under a key result area of the cycle's template.
 //!
-//! Frappe's parent goal is the plain mean of its children and a child carries no weight, target or
-//! history. Here a leaf has a target and a current value (progress is their ratio, with a check-in
-//! logged each time), a group's progress is the weighted mean of its children, and the roll-up runs
-//! up the chain in the same call that changed a child.
+//! History. Here a leaf has a target and a current value (progress is their ratio, with a check-in
+//! Logged each time), a group's progress is the weighted mean of its children, and the roll-up runs
+//! Up the chain in the same call that changed a child.
 
 use aether_sdk::dates::format_date;
 use aether_sdk::db::Filter;

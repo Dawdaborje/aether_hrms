@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_recruitment"
+icon_path = "assets/logo.svg"
 label = "Recruitment"
 version = "0.1.1"
 description = "Openings, applications, interviews, feedback and offers, ending in a hire."
@@ -10,7 +11,8 @@ the directory, so an application is just that person and an opening. Interviews 
 overlapping bookings and rate a round's criteria; feedback is blind until the interview has its outcome,
 which is worked out from the feedback in, not typed. Offers need a second person's approval and stay inside
 the opening's salary band unless someone says why. The hire itself is done by HR through the HR plugin, so
-its holds and checks apply. Built from a reading of Odoo 19 and Frappe HRMS. Written in Rust.
+its holds and checks apply. Written in Rust.
+See docs/design.md in this plugin (hr_recruitment/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "party", "currency"]

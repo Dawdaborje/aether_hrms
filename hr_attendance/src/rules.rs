@@ -1,14 +1,13 @@
 //! What a day of attendance is, worked out from facts alone: the shift, the punches, the calendar
-//! and any leave. No records are read here, so every rule is tested natively.
+//! And any leave. No records are read here, so every rule is tested natively.
 //!
-//! The design comes from reading both Odoo 19 and Frappe HRMS (see `docs/design.md`):
-//! * the shift's **window** is resolved for the work date (Frappe), overnight shifts included, and the
+//! * the shift's **window** is resolved for the work date, overnight shifts included, and the
 //!   work date is the day the shift *starts*;
 //! * punches are **paired in order**, and anything that does not pair (an out with no in, a second in)
-//!   is **flagged for review, never dropped** (Frappe drops an odd trailing punch silently);
+//!   is **flagged for review, never dropped**;
 //! * time between pairs is a recorded **break**, and a shift's usual break is deducted only when the
-//!   person did not record one (neither product handles both);
-//! * the verdict follows the worked minutes and the thresholds (Frappe), but a day that conflicts with
+//!   person did not record one (the system supports both);
+//! * the verdict follows the worked minutes and the thresholds, but a day that conflicts with
 //!   leave is kept as leave and **flagged** rather than silently overwritten;
 //! * the same facts always give the same result and the same `inputs_hash`, so recomputing is a diff.
 

@@ -1,12 +1,5 @@
 <page route="/hr/leave" title="Leave" model="leave_request">
-  <view type="form" function="request_leave" submit="Ask for leave" success="Requested">
-    <field name="leave_type" label="Kind of leave (id)" required="true"/>
-    <field name="start_date" label="From" fieldType="date" required="true"/>
-    <field name="end_date" label="To" fieldType="date" required="true"/>
-    <field name="half_day" label="Half day" fieldType="selection" options="none, morning, afternoon"/>
-    <field name="reason" label="Reason" fieldType="text"/>
-  </view>
-  <view type="list" model="leave_request" source="my_leave_requests">
+  <view type="list" model="leave_request" source="my_leave_requests" create="/hr/leave/new" create_label="Ask for leave">
     <columns>
       <column field="reference" label="Request"/>
       <column field="start_date" label="From" fieldType="date"/>
@@ -17,6 +10,6 @@
     <actions>
       <action name="cancel" label="Cancel" function="cancel_leave" confirm="Cancel this request?" danger="true"/>
     </actions>
-    <empty title="No leave yet" description="Ask for leave above."/>
+    <empty title="No leave yet" description="Use Ask for leave to request time off."/>
   </view>
 </page>

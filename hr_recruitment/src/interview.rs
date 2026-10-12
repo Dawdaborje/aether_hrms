@@ -1,8 +1,6 @@
 //! Interviews, blind feedback, outcomes, and the periodic tick.
 //!
 //! Feedback is blind: an interviewer sees only their own until the recruiter evaluates the interview,
-//! which reveals everyone's (Frappe shows each interviewer a form of their own and never compares;
-//! Odoo has no interview at all). The outcome is computed from the feedback, not typed in.
 
 use std::collections::BTreeMap;
 

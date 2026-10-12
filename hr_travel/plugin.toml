@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_travel"
+icon_path = "assets/logo.svg"
 label = "Business travel"
 version = "0.1.0"
 description = "Trip requests with legs, costing, per diem policy, two-level approval, advance and expense report."
@@ -10,7 +11,8 @@ daily allowance (less a share for days when meals are provided), a lodging cap, 
 the estimate that may be advanced; its figures are copied onto the trip. Legs must lie inside the trip's dates and
 follow one another, and a person cannot be on two trips at once. An approved trip can ask for an expense advance and
 open its expense report in hr_expense, once each, and is completed after it ends; trips left unsettled are flagged.
-Built from a reading of Frappe HRMS travel request, extended. Written in Rust.
+. Written in Rust.
+See docs/design.md in this plugin (hr_travel/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_expense", "currency"]

@@ -1,10 +1,8 @@
 //! The state machine and checks of asset custody, with nothing read from a database.
 //!
-//! Odoo keeps an equipment's owner as one editable field and a vehicle's odometer as separate editable logs; Frappe
-//! has an asset movement document. Here every change is an entry in one ledger that is never edited, the asset's
-//! state and holder are only the result of the last entries, and an odometer can never go backwards.
+//! Every change is an entry in one ledger that is never edited; the asset's state and holder are
+//! only the result of the last entries; an odometer can never go backwards.
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum State {
     Available,
     Assigned,

@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_referral"
+icon_path = "assets/logo.svg"
 label = "Employee referrals"
 version = "0.1.0"
 description = "Refer a candidate: a state machine, one application, a bonus gated on the hire's tenure."
@@ -8,8 +9,8 @@ Anyone working here can refer a candidate (never themselves, never a second time
 referral opens one application in recruitment, marked as a referral. The bonus is the policy's amount and wait in
 days, copied onto the referral so changing a policy never rewrites one already accepted. It becomes due only after
 the hire has stayed that long and is still working; leaving forfeits it. Payment is an hr_compensation adjustment
-once, never to the referrer for themselves. Frappe's Employee Referral always reset status to Pending and never
-actually paid the extra salary; this one does. Written in Rust.
+once, never to the referrer for themselves. Written in Rust.
+See docs/design.md in this plugin (hr_referral/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_recruitment", "hr_compensation", "currency", "party"]

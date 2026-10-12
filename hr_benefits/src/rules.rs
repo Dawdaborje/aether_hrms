@@ -1,9 +1,7 @@
 //! Ceilings, remaining balance, dependents, and the insurance window, with nothing read from a database.
 //!
-//! Frappe's Employee Benefit Application / Claim / Ledger tie a yearly pot to a salary component and write ledger
-//! rows from a salary slip (and delete them when the slip is cancelled). One claim per month is a workaround for
-//! over-claiming. Here a plan has a ceiling per person and a year, money moves only as ledger entries that are
-//! never deleted, a claim is refused when it would go over the remaining balance, and health insurance is a
+//! A plan has a ceiling per person and year; money moves only as ledger entries that are never
+//! deleted; a claim is refused when it would go over the remaining balance; health insurance is a
 //! separate enrolment with a window of dependents.
 
 use aether_sdk::dates::NaiveDate;

@@ -1,8 +1,8 @@
 //! Expense reports and their lines.
 //!
 //! A line is converted to the report's currency **once**, when it is made, at a rate that is stored
-//! with it, so later rate changes never alter history and the report is the sum of its lines. A line's
-//! policy limits are looked up for the *expense date* (Odoo uses the employee's job today).
+//! With it, so later rate changes never alter history and the report is the sum of its lines. A line's
+//! Policy limits are looked up for the *expense date*.
 
 use std::collections::HashMap;
 

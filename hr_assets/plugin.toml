@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_assets"
+icon_path = "assets/logo.svg"
 label = "Assets in custody"
 version = "0.1.0"
 description = "Equipment and vehicles held by employees, with an append-only custody ledger and odometer."
@@ -8,7 +9,8 @@ Every asset has one holder at most. Assigning, acknowledging receipt, returning 
 retiring and odometer readings are entries in a ledger that is never edited; the asset's state and holder only
 follow the last entries. A damaged return goes to maintenance and a lost one retires the asset. An odometer cannot go
 backwards. `outstanding_assets` lists what a leaver still holds, for the departure checklist. Built from a reading of
-Odoo hr_maintenance and hr_fleet and Frappe asset movement, extended. Written in Rust.
+Written in Rust. 
+See docs/design.md in this plugin (hr_assets/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr"]

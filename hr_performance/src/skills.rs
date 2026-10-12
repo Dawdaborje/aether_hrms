@@ -1,8 +1,7 @@
 //! Skills: a level per person and skill, kept as a history, compared with what a job asks.
 //!
-//! Odoo keeps `valid_from` / `valid_to` rows and expires a removed skill rather than deleting it;
-//! its levels are asserted by HR alone and never compared with a job. Here a rating records who gave
-//! it and why, a level never disappears, and the gap to a job's targets is computed.
+//! Its levels are asserted by HR alone and never compared with a job. Here a rating records who gave
+//! It and why, a level never disappears, and the gap to a job's targets is computed.
 
 use aether_sdk::dates::{format_date, Duration};
 use aether_sdk::db::Filter;

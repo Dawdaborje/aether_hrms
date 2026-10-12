@@ -1,9 +1,8 @@
 //! Salary withholding: pay held back for whole calendar months, released one month at a time.
 //!
-//! Frappe stops slip creation for a flagged cycle and releases by creating the slip later; the cycle list is
-//! rebuilt when the dates change. Here the cycles are rows written once (no gap, no overlap), payroll is told
-//! `withheld` for any employee with an unreleased cycle in the period and holds the payout itself, and a release
-//! is a mark on one cycle with who and when.
+//! Cycles are rows written once (no gap, no overlap). Payroll is told `withheld` for any employee
+//! with an unreleased cycle in the period and holds the payout itself; a release is a mark on one
+//! cycle with who and when.
 
 use aether_sdk::dates::{format_date, parse_date, NaiveDate};
 use aether_sdk::db::Filter;

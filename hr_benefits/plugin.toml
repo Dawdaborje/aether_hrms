@@ -1,16 +1,18 @@
 [plugin]
 name = "hr_benefits"
+icon_path = "assets/logo.svg"
 label = "Benefits"
 version = "0.1.0"
 description = "Benefit plans with yearly ceilings, an accrual ledger, claims, and health-insurance enrolment."
 long_description = """
 A plan has a yearly ceiling and a way of paying: accrue a share each month then claim, claim against the ceiling from
 day one, or pay through payroll. Accrual, claims and reversals are ledger entries that are never deleted; a claim
-that would go over the remaining balance is refused, so Frappe's one-claim-per-month workaround is not needed. The
+that would go over the remaining balance is refused, The
 manager (or a benefits administrator) approves a claim, never the claimant, and an approved claim becomes a payroll
 adjustment once. Health insurance is a separate enrolment with a window of dependents (spouse, children), one active
-enrolment per plan and year, no overlapping windows. Built from a reading of Frappe HRMS employee benefit application,
+enrolment per plan and year, no overlapping windows.
 claim and ledger, and employee health insurance. Written in Rust.
+See docs/design.md in this plugin (hr_benefits/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_compensation", "currency"]

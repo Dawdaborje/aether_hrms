@@ -1,9 +1,9 @@
 //! The rules of performance review, with nothing read from a database.
 //!
-//! What the Frappe and Odoo sources taught (see `docs/design.md`): every score is normalised to one
-//! scale and computed with exact numbers; a missing component is a decision the cycle states
-//! (Frappe counts it as zero in the mean without saying so); a goal tree rolls up with weights
-//! (Frappe's parent is a plain mean of children); the phases of a cycle each allow their own writes.
+//! Design rules (see `docs/design.md`): every score is normalised to one
+//! Scale and computed with exact numbers; a missing component is a decision the cycle states
+//!; a goal tree rolls up with weights
+//!; the phases of a cycle each allow their own writes.
 
 use std::collections::BTreeMap;
 

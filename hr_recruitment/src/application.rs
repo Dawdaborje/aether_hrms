@@ -1,8 +1,7 @@
 //! Applications: a person in the directory applying to an opening.
 //!
-//! The candidate is one party record (Frappe uses the email as the applicant's key, Odoo copies
-//! identity onto each application). Stages are entered in order; hired is reached only by hiring and
-//! rejected only by rejecting with a reason.
+//! Identity onto each application). Stages are entered in order; hired is reached only by hiring and
+//! Rejected only by rejecting with a reason.
 
 use aether_sdk::dates::format_date;
 use aether_sdk::decimal::Decimal;

@@ -1,0 +1,63 @@
+{
+  "model_id": "mdl_n45qk5xwut",
+  "name": "doc_emergency",
+  "label": "%doc_emergency%",
+  "plural_label": "%doc_emergencys%",
+  "icon": "phone",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_tmh3yu6snp",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_fxvo5a6bmj",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_q2kb6bszuh",
+      "name": "relation",
+      "label": "%relation%",
+      "type": "string",
+      "required": true,
+      "max_length": 60
+    },
+    {
+      "id": "fld_fdmdyznta2",
+      "name": "phone",
+      "label": "%phone%",
+      "type": "string",
+      "required": true,
+      "max_length": 40
+    },
+    {
+      "id": "fld_a46srze2xc",
+      "name": "email",
+      "label": "%email%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_cw6fbv534q",
+      "name": "is_primary",
+      "label": "%is_primary%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_kdmzau75af",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ]
+}

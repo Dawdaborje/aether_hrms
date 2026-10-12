@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_grievance"
+icon_path = "assets/logo.svg"
 label = "Grievances"
 version = "0.1.0"
 description = "Confidential grievance cases with conflict-checked investigators, SLAs, escalation and an append-only log."
@@ -11,7 +12,8 @@ proposes findings and a different person decides. Each kind of case has a time l
 level once each and the escalation is logged. Everything that happens goes into an append-only log with a visibility
 (internal or shared with the complainant); nothing is edited or deleted, and an anonymous complainant is hidden from
 the investigator. A decided case can be appealed once within 14 days, to a new investigator, otherwise it closes by
-itself. Built from a reading of Frappe HRMS employee grievance, extended. Written in Rust.
+itself. Written in Rust.
+See docs/design.md in this plugin (hr_grievance/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr"]

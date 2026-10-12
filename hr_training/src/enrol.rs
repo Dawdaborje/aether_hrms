@@ -1,7 +1,7 @@
 //! Enrolment, waiting lists, results and certificates.
 //!
 //! * A seat goes to whoever asks while seats are free; after that people wait in the order they asked, and the
-//!   first who fits the budget is promoted when a seat frees (Frappe has neither a capacity nor a queue).
+//!   first who fits the budget is promoted when a seat frees.
 //! * A seat's price is copied from the course when it is booked and charged to the person's department for the
 //!   year of the session; a budget refuses the seat that would overspend it unless a planner states why.
 //! * Only a training administrator records a result, never for themselves. A pass issues one certificate (by

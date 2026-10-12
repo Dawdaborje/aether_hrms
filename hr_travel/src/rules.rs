@@ -1,10 +1,9 @@
 //! The arithmetic and checks of a trip, with nothing read from a database.
 //!
-//! What the Frappe `travel_request` taught and what is done differently: Frappe keeps a free-form itinerary and
-//! a costing table with nothing checking either. Here the trip's dates frame the legs, a per-diem policy fixes
-//! the daily allowance (less a share for days when meals are provided), a lodging cap is checked against the
-//! lodging costed, a trip above the policy's limit needs a second approver, and an advance can only be a share
-//! of the estimate. The policy's figures are copied onto the trip, so changing a policy never rewrites a trip.
+//! The trip's dates frame the legs; a per-diem policy fixes the daily allowance (less a share for
+//! days when meals are provided); a lodging cap is checked against the lodging costed; a trip above
+//! the policy's limit needs a second approver; an advance can only be a share of the estimate. The
+//! policy's figures are copied onto the trip, so changing a policy never rewrites a trip.
 
 use aether_sdk::dates::{Duration, NaiveDate};
 use aether_sdk::decimal::Decimal;

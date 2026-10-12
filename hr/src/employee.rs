@@ -1,5 +1,5 @@
 //! Employees: who works here and in what state. Where they work, under whom and on what terms is
-//! in `employment` (a dated history); the employee row keeps a copy of the current placement.
+//! In `employment` (a dated history); the employee row keeps a copy of the current placement.
 
 use aether_sdk::dates::{age_on, check_order, format_date, parse_date, parse_optional};
 use aether_sdk::db::{Filter, Walk};
@@ -223,7 +223,7 @@ fn move_status(input: Move) -> Result<Record> {
     };
     let mut changes = json!({ "status": input.status });
     if status::is_ended(&input.status) {
-        // Frappe refuses to let someone leave while people still report to them; so do we.
+
         let reports = db::count("employee", Filter::eq("manager", input.id.as_str()).and(Filter::one_of("status", status::PRESENT.to_vec())))?;
         if reports > 0 {
             return Err(Error::msg(format!("{reports} people still report to this person: give them another manager first")));

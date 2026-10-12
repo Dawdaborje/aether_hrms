@@ -1,5 +1,6 @@
 [plugin]
 name = "hr_expense"
+icon_path = "assets/logo.svg"
 label = "Expenses"
 version = "0.1.0"
 description = "Expense reports, advances and policies; accounting and payroll receive events."
@@ -9,7 +10,8 @@ with it. Policies (warn, ask why, block, or cap) are looked up for the expense d
 are enforced and acknowledged by the approver, who is the person's manager, fixed when the report is sent,
 and never the person. Advances are settled in their own currency up to what is unclaimed. This plugin never
 posts accounting entries: approval announces the report with its lines, and a finance plugin (or payroll)
-answers with reimbursement events. Built from a reading of Odoo 19 and Frappe HRMS. Written in Rust.
+answers with reimbursement events. Written in Rust.
+See docs/design.md in this plugin (hr_expense/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "currency"]

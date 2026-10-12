@@ -1,11 +1,9 @@
 //! Overtime: bands with multipliers, and a decision on each day.
 //!
-//! Odoo 19 splits and retypes time records with a rule engine; Frappe has overtime types and
-//! slabs but computes them away from the day. Here the data shape is a table of **bands**: for a
-//! kind of day (working, weekly off, holiday), overtime minutes from `from_min` up to `to_min` count
-//! at a `multiplier`. The day's overtime is cut over the bands; minutes no band covers count once.
-//! The result is stored per person and date as a *claim* for payroll: `pending` until the manager
-//! or an attendance administrator decides it, and never by the person. If the day is later
+//! For a kind of day (working, weekly off, holiday), overtime minutes from `from_min` up to `to_min`
+//! count at a `multiplier`. The day's overtime is cut over the bands; minutes no band covers count
+//! once. The result is stored per person and date as a *claim* for payroll: `pending` until the
+//! manager or an attendance administrator decides it, and never by the person. If the day is later
 //! recomputed to a different number of minutes, an earlier decision no longer applies and the claim
 //! goes back to `pending` with a note, so payroll never pays for minutes nobody approved.
 
