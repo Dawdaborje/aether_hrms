@@ -10,6 +10,7 @@
 //! The SDK's `dates`; the rest reads and writes the records and calls those rules.
 
 mod common;
+mod demo;
 mod department;
 mod employee;
 mod employment;

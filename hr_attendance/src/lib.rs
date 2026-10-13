@@ -8,6 +8,7 @@
 mod common;
 mod correction;
 mod day;
+mod demo;
 mod punch;
 mod rules;
 mod setup;

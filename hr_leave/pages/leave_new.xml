@@ -1,6 +1,6 @@
 <page route="/hr/leave/new" title="Ask for leave" model="leave_request">
   <view type="form" function="request_leave" submit="Ask for leave" success="Requested" redirect="/hr/leave">
-    <field name="leave_type" label="Kind of leave (id)" required="true"/>
+    <field name="leave_type" label="Kind of leave" fieldType="link" source="list_leave_types" optionLabel="name" required="true"/>
     <field name="start_date" label="From" fieldType="date" required="true"/>
     <field name="end_date" label="To" fieldType="date" required="true"/>
     <field name="half_day" label="Half day" fieldType="selection" options="none, morning, afternoon"/>

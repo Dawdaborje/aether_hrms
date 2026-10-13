@@ -1,17 +1,39 @@
-<page route="/hr/employees/{id}" title="Employee" model="employee">
+<page route="/hr/employees/{id}" title="Employee" model="employee" roles="hr_user,hr_manager">
   <view type="form" source="get_employee" function="update_employee" submit="Save" success="Saved">
-    <field name="display_name" label="Name"/>
-    <field name="department" label="Department"/>
-    <field name="job" label="Job"/>
-    <field name="position" label="Position"/>
-    <field name="manager" label="Reports to"/>
-    <field name="employment_type" label="Employment type" fieldType="selection" options="permanent, contract, temporary, intern, casual"/>
-    <field name="work_email" label="Work email"/>
-    <field name="work_phone" label="Work phone"/>
-    <field name="work_location" label="Work location"/>
-    <field name="gender" label="Gender" fieldType="selection" options="male, female, other"/>
-    <field name="date_of_birth" label="Date of birth" fieldType="date"/>
-    <field name="marital_status" label="Marital status" fieldType="selection" options="single, married, divorced, widowed"/>
-    <field name="national_id" label="National ID"/>
+    <group title="Photo" cols="1">
+      <field name="image" label="Employee photo" fieldType="image"/>
+    </group>
+    <group title="Overview" cols="2">
+      <field name="display_name" label="Name"/>
+      <field name="employee_no" label="Employee no."/>
+      <field name="gender" label="Gender" fieldType="selection"
+               options="male, female, other, prefer_not_to_say"/>
+      <field name="employment_type" label="Employment type" fieldType="selection"
+               options="permanent, contract, temporary, intern, casual"/>
+    </group>
+    <group title="Organization" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments"
+               entity="departments"/>
+      <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs"/>
+      <field name="position" label="Position" fieldType="many2one" source="list_positions"
+               entity="positions"/>
+      <field name="manager" label="Reports to" fieldType="many2one" source="list_employees"
+               optionLabel="display_name" entity="employees"/>
+      <field name="work_location" label="Work location"/>
+    </group>
+    <group title="Contact" cols="2">
+      <field name="work_email" label="Work email"/>
+      <field name="work_phone" label="Work phone"/>
+    </group>
+    <notebook>
+      <page title="Personal">
+        <group title="Personal details" cols="2">
+          <field name="date_of_birth" label="Date of birth" fieldType="date"/>
+          <field name="marital_status" label="Marital status" fieldType="selection"
+                   options="single, married, divorced, widowed"/>
+          <field name="national_id" label="National ID"/>
+        </group>
+      </page>
+    </notebook>
   </view>
 </page>

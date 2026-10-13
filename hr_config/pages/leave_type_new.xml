@@ -1,0 +1,56 @@
+<page route="/hr/config/leave-types/new" title="New leave type" menu="false" roles="hr_leave.leave_admin">
+  <view type="form" function="create_leave_type" submit="Create" success="Leave type created"
+        redirect="/hr/config/leave-types/{id}">
+    <group title="Overview" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="code" label="Code"/>
+      <field name="validation" label="Who must approve" fieldType="selection"
+               options="none, manager, hr, both"/>
+      <field name="annual_days" label="Annual days" fieldType="float"/>
+      <field name="is_paid" label="Paid" fieldType="boolean"/>
+      <field name="half_days" label="Allow half days" fieldType="boolean"/>
+      <field name="requires_allocation" label="Needs allocation first" fieldType="boolean"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+    <notebook>
+      <page title="Rules">
+        <group title="Request rules" cols="2">
+          <field name="min_notice_days" label="Minimum notice (days)" fieldType="integer"/>
+          <field name="applicable_after_days" label="Service days before usable" fieldType="integer"/>
+          <field name="max_per_request" label="Max days per request" fieldType="float"/>
+          <field name="allow_negative" label="Allow negative balance" fieldType="boolean"/>
+          <field name="max_negative" label="Max negative" fieldType="float"/>
+          <field name="count_all_days" label="Count every calendar day" fieldType="boolean"/>
+          <field name="sandwich" label="Sandwich weekends/holidays" fieldType="boolean"/>
+          <field name="gender" label="Gender" fieldType="selection" options="any, male, female"/>
+        </group>
+      </page>
+      <page title="Accrual">
+        <group title="Earned / carry-forward" cols="2">
+          <field name="pro_rata" label="Pro-rata for mid-year hires" fieldType="boolean"/>
+          <field name="earned" label="Earned through the year" fieldType="boolean"/>
+          <field name="earned_frequency" label="Earned frequency" fieldType="selection"
+                   options="monthly, quarterly, half_yearly, yearly"/>
+          <field name="earned_rounding" label="Earned rounding" fieldType="selection"
+                   options="none, 0.25, 0.5, 1"/>
+          <field name="allocate_on" label="Allocate on" fieldType="selection" options="first, last"/>
+          <field name="carry_forward" label="Carry forward" fieldType="boolean"/>
+          <field name="carry_forward_max" label="Carry-forward max" fieldType="float"/>
+          <field name="carry_forward_days" label="Carry-forward lapse (days)" fieldType="integer"/>
+        </group>
+      </page>
+      <page title="Encash / compensatory">
+        <group title="Encashment" cols="2">
+          <field name="encashable" label="Encashable" fieldType="boolean"/>
+          <field name="encash_keep_days" label="Days to keep after encash" fieldType="float"/>
+          <field name="encash_max_year" label="Max encash per year" fieldType="float"/>
+        </group>
+        <group title="Compensatory" cols="2">
+          <field name="is_compensatory" label="Compensatory" fieldType="boolean"/>
+          <field name="comp_valid_days" label="Comp usable for (days)" fieldType="integer"/>
+          <field name="comp_claim_window" label="Claim window (days)" fieldType="integer"/>
+        </group>
+      </page>
+    </notebook>
+  </view>
+</page>

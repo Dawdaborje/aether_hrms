@@ -43,6 +43,22 @@ Leave types with per-type rules, an append-only day ledger, requests with manage
 | `leave_admin` | Types, grants, HR decisions, block overrides |
 | `ledger_corrector` | Edit/delete ledger (break-glass; not for normal use) |
 
+## Pages
+
+| Route | Who | Purpose |
+|---|---|---|
+| `/hr/leave` | Members | Own requests |
+| `/hr/leave/new` | Members | Ask for leave (picker: active types via `list_leave_types`) |
+| `/hr/leave/approvals` | `leave_admin` | Requests waiting for a decision |
+
+**Leave types** (create/edit kinds of leave) live in the HRMS **Configurations**
+app (`hr_config`): `/hr/config/leave-types`, not in this app’s sidebar. Handlers
+`list_all_leave_types` / `get_leave_type` / `create_leave_type` / `update_leave_type`
+remain here; Configurations calls them.
+
+Org **Settings** / **Users** in the shell Navigate menu are separate: they need
+`org_admin` / `user_manager`, not `leave_admin`.
+
 ## Boundaries
 
 Does not own the holiday calendar (`calendar`). Does not pay encashment; hands totals to compensation/payroll. Attendance overlays leave via `hr_leave` queries, not by writing leave rows.

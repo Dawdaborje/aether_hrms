@@ -1,4 +1,4 @@
-<page route="/hr/leave/approvals" title="Leave to approve" model="leave_request">
+<page route="/hr/leave/approvals" title="Leave to approve" model="leave_request" roles="leave_admin">
   <view type="list" model="leave_request" source="leave_waiting_for_me">
     <columns>
       <column field="reference" label="Request"/>

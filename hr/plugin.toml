@@ -2,7 +2,7 @@
 name = "hr"
 icon_path = "assets/logo.svg"
 label = "Human Resources"
-version = "0.1.2"
+version = "0.1.6"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
@@ -47,6 +47,48 @@ name = "employee_rehired"
 
 [[events]]
 name = "employee_status_changed"
+
+[[command]]
+name = "demo_department"
+function = "generate_demo_department"
+help = "Generate demo departments"
+demo_model = "department"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_job"
+function = "generate_demo_job"
+help = "Generate demo jobs"
+demo_model = "job"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_position"
+function = "generate_demo_position"
+help = "Generate demo positions"
+demo_model = "position"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_work_location"
+function = "generate_demo_work_location"
+help = "Generate demo work locations"
+demo_model = "work_location"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_skill"
+function = "generate_demo_skill"
+help = "Generate demo skills"
+demo_model = "skill"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_employee"
+function = "generate_demo_employee"
+help = "Generate demo employees (creates scaffold department/job/position if needed)"
+demo_model = "employee"
+args = [{ name = "count", type = "int", default = 10 }]
 
 # Terms whose first day has come become current every night.
 [[schedule]]

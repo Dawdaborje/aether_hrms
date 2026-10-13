@@ -38,6 +38,11 @@ fn new_department(input: Record) -> Result<Record> {
     explain(db::create("department", &data), "could not create the department")
 }
 
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_for_demo(input: Record) -> Result<Record> {
+    new_department(input)
+}
+
 /// The manager must be an employee who works here, and the parent must exist and be active.
 fn check_references(data: &Record, current: Option<&str>) -> Result<()> {
     if let Some(company) = text(data, "company") {

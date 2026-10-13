@@ -1,12 +1,33 @@
-<page route="/hr/employees/hire" title="Hire someone" model="employee">
-  <view type="form" function="hire_employee" submit="Hire" success="Hired" redirect="/hr/employees">
-    <field name="party" label="Person (directory id)" required="true"/>
-    <field name="department" label="Department"/>
-    <field name="job" label="Job"/>
-    <field name="position" label="Position"/>
-    <field name="manager" label="Reports to"/>
-    <field name="employment_type" label="Employment type" fieldType="selection" options="permanent, contract, temporary, intern, casual"/>
-    <field name="hire_date" label="Hire date" fieldType="date"/>
-    <field name="probation_end" label="Probation ends" fieldType="date"/>
+<page route="/hr/employees/hire" title="New employee" model="employee" menu="false" roles="hr_user,hr_manager">
+  <view type="form" function="hire_employee" submit="Create employee" success="Employee created" redirect="/hr/employees">
+    <group title="Photo" cols="1">
+      <field name="image" label="Employee photo" fieldType="image"
+             help="Optional. Shown on the employee record and list."/>
+    </group>
+    <group title="Personal details" cols="2">
+      <field name="first_name" label="First name" required="true"/>
+      <field name="middle_name" label="Middle name"/>
+      <field name="last_name" label="Last name"/>
+      <field name="gender" label="Gender" fieldType="selection"
+               options="male, female, other, prefer_not_to_say"/>
+    </group>
+    <group title="Contact" cols="2">
+      <field name="email" label="Work email"/>
+      <field name="phone" label="Phone"/>
+    </group>
+    <group title="Joining" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments"
+               entity="departments"/>
+      <field name="job" label="Designation / job" fieldType="many2one" source="list_jobs"
+               entity="jobs"/>
+      <field name="position" label="Position" fieldType="many2one" source="list_positions"
+               entity="positions"/>
+      <field name="manager" label="Reports to" fieldType="many2one" source="list_employees"
+               optionLabel="display_name" entity="employees"/>
+      <field name="employment_type" label="Employment type" fieldType="selection"
+               options="permanent, contract, temporary, intern, casual"/>
+      <field name="hire_date" label="Date of joining" fieldType="date"/>
+      <field name="probation_end" label="Probation ends" fieldType="date"/>
+    </group>
   </view>
 </page>

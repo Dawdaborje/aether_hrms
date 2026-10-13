@@ -1,4 +1,4 @@
-<page route="/hr/recruitment" title="Openings" model="rec_opening">
+<page route="/hr/recruitment" title="Openings" model="rec_opening" menu_group="Recruitment" icon="user-plus" sort="10" roles="recruiter,recruit_manager">
   <view type="list" model="rec_opening" source="list_openings">
     <search/>
     <columns>

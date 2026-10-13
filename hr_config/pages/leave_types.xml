@@ -1,0 +1,16 @@
+<page route="/hr/config/leave-types" title="Leave types"
+      menu_group="Leave" icon="calendar-days" sort="10" roles="hr_leave.leave_admin">
+  <view type="list" source="list_all_leave_types" open="/hr/config/leave-types/{id}"
+        create="/hr/config/leave-types/new" create_label="New">
+    <search/>
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="code" label="Code"/>
+      <column field="validation" label="Approval" fieldType="badge"/>
+      <column field="annual_days" label="Annual days"/>
+      <column field="is_paid" label="Paid" fieldType="boolean"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No leave types yet" description="Use New to define Annual, Sick, and other kinds of leave."/>
+  </view>
+</page>

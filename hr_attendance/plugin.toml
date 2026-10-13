@@ -2,7 +2,7 @@
 name = "hr_attendance"
 icon_path = "assets/logo.svg"
 label = "Attendance"
-version = "0.2.1"
+version = "0.2.2"
 description = "Shifts, punches, daily attendance and corrections."
 long_description = """
 Raw punches are kept as they came and never edited: a correction is a new punch that supersedes another.
@@ -57,6 +57,20 @@ name = "correction_decided"
 name = "attendance-nightly"
 function = "attendance_nightly"
 cron = "40 0 * * *"
+
+[[command]]
+name = "demo_att_shift"
+function = "generate_demo_att_shift"
+help = "Generate demo attendance shifts"
+demo_model = "att_shift"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_att_location"
+function = "generate_demo_att_location"
+help = "Generate demo attendance locations"
+demo_model = "att_location"
+args = [{ name = "count", type = "int", default = 10 }]
 
 [app]
 icon = "clock"

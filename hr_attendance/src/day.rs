@@ -20,6 +20,17 @@ struct Range {
     status: Option<String>,
 }
 
+/// What the attendance list page sends: often `{}`, with optional bounds.
+#[derive(Deserialize, Default)]
+struct MyDays {
+    #[serde(default)]
+    from: Option<String>,
+    #[serde(default)]
+    to: Option<String>,
+    #[serde(default)]
+    status: Option<String>,
+}
+
 #[derive(Deserialize)]
 struct OnDay {
     employee: String,
@@ -371,11 +382,20 @@ handler! {
     }
 
     /// The caller's own days between two dates.
-    fn my_days(input: Option<Range>) -> Vec<Record> {
+    ///
+    /// The list page posts `{}` (no route params). Required `from`/`to` on [`Range`] would
+    /// fail JSON decoding and surface as a 502, so this input keeps every field optional.
+    fn my_days(input: MyDays) -> Vec<Record> {
         let Some(me) = my_employee()? else { return Ok(Vec::new()) };
         let today = today_date()?;
-        let input = input.unwrap_or(Range { employee: None, from: format_date(today - Duration::days(30)), to: format_date(today), status: None });
-        days(Range { employee: Some(id_of(&me)?.to_string()), ..input })
+        let from = input.from.filter(|s| !s.trim().is_empty()).unwrap_or_else(|| format_date(today - Duration::days(30)));
+        let to = input.to.filter(|s| !s.trim().is_empty()).unwrap_or_else(|| format_date(today));
+        days(Range {
+            employee: Some(id_of(&me)?.to_string()),
+            from,
+            to,
+            status: input.status.filter(|s| !s.trim().is_empty()),
+        })
     }
 
     /// Days of the people the caller may see.

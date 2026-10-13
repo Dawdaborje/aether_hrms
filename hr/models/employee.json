@@ -27,6 +27,13 @@
       "target_id": "mdl_mr76tss5ic"
     },
     {
+      "id": "fld_292d49cbff",
+      "name": "image",
+      "label": "%image%",
+      "type": "text",
+      "help": "Employee photo (data URL or image URL)."
+    },
+    {
       "id": "fld_fjsg7cu42o",
       "name": "display_name",
       "label": "%display_name%",
@@ -197,6 +204,11 @@
           "id": "opt_gkfrohzkkh",
           "value": "other",
           "label": "%other%"
+        },
+        {
+          "id": "opt_pnts9k2m1a",
+          "value": "prefer_not_to_say",
+          "label": "%prefer_not_to_say%"
         }
       ]
     },
@@ -286,6 +298,7 @@
   },
   "view": {
     "list": [
+      "image",
       "employee_no",
       "display_name",
       "department",

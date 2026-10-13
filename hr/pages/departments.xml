@@ -1,5 +1,6 @@
-<page route="/hr/departments" title="Departments" model="department">
-  <view type="list" model="department" source="list_departments" create="/hr/departments/new" create_label="New">
+<page route="/hr/departments" title="Departments" model="department" menu_group="Employee" icon="building-2" sort="20" roles="hr_user,hr_manager">
+  <view type="list" model="department" source="list_departments" open="/hr/departments/{id}"
+        create="/hr/departments/new" create_label="New">
     <search/>
     <columns>
       <column field="name" label="Name"/>

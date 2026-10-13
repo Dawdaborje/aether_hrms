@@ -10,7 +10,9 @@ use crate::employment;
 use crate::rules::{status, MIN_WORKING_AGE};
 
 /// What an HR officer may set on the employee row itself.
-const IDENTITY: &[&str] = &["company", "gender", "work_email", "work_phone", "notice_days", "probation_end"];
+const IDENTITY: &[&str] = &[
+    "company", "gender", "image", "work_email", "work_phone", "work_location", "notice_days", "probation_end",
+];
 /// Private details, kept in `employee_private` (readable only by the person and HR).
 const PRIVATE: &[&str] = &[
     "legal_name", "date_of_birth", "place_of_birth", "marital_status", "nationality", "national_id", "passport_no",
@@ -30,8 +32,17 @@ struct Id {
 
 #[derive(Deserialize)]
 struct Hire {
-    /// The party (person) being hired.
-    party: String,
+    /// Person details from the form; the handler creates the directory record itself.
+    #[serde(default)]
+    first_name: Option<String>,
+    #[serde(default)]
+    middle_name: Option<String>,
+    #[serde(default)]
+    last_name: Option<String>,
+    #[serde(default)]
+    email: Option<String>,
+    #[serde(default)]
+    phone: Option<String>,
     #[serde(flatten)]
     fields: Record,
 }
@@ -56,8 +67,15 @@ struct Move {
 
 #[derive(Deserialize, Default)]
 struct Search {
-    #[serde(default)]
+    /// Free-text search. The list page sends this as `q`; `text` is kept for callers.
+    #[serde(default, alias = "q")]
     text: Option<String>,
+    /// Kernel filter JSON from the faceted search bar (ANDed with other fields).
+    #[serde(default)]
+    filter: Option<Value>,
+    /// Fields `db::search` expands free-text over when present.
+    #[serde(default)]
+    search_fields: Option<Vec<String>>,
     #[serde(default)]
     department: Option<String>,
     /// Include the departments below `department`.
@@ -67,6 +85,8 @@ struct Search {
     status: Option<String>,
     #[serde(default)]
     manager: Option<String>,
+    #[serde(default)]
+    order: Option<String>,
     #[serde(default)]
     limit: Option<u32>,
     #[serde(default)]
@@ -106,22 +126,55 @@ fn check_dates(hired: Option<aether_sdk::dates::NaiveDate>, probation_end: Optio
     Ok(())
 }
 
+/// Full name from first / middle / last, like Frappe's Employee.
+fn person_name(input: &Hire) -> Result<String> {
+    let mut parts = Vec::new();
+    for part in [&input.first_name, &input.middle_name, &input.last_name] {
+        if let Some(value) = part.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+            parts.push(value);
+        }
+    }
+    if parts.is_empty() {
+        return Err(Error::msg("enter the person's first name"));
+    }
+    Ok(parts.join(" "))
+}
+
+/// Create the directory person from the hire form (name, email, phone). Callers never see this.
+fn create_party_for_hire(input: &Hire) -> Result<(String, Record)> {
+    let name = person_name(input)?;
+    let mut payload = json!({ "name": name });
+    if let Some(email) = input.email.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+        payload["email"] = json!(email);
+    }
+    if let Some(phone) = input.phone.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+        payload["phone"] = json!(phone);
+    }
+    let party: Record = plugins::call("party", "create_person", &payload)?;
+    let id = id_of(&party)?.to_string();
+    Ok((id, party))
+}
+
+/// Keep avatar data URLs bounded so a hire form cannot dump megabytes into the row.
+fn check_image(fields: &Record) -> Result<()> {
+    let Some(image) = text(fields, "image").map(str::trim).filter(|s| !s.is_empty()) else {
+        return Ok(());
+    };
+    if !(image.starts_with("data:image/") || image.starts_with("http://") || image.starts_with("https://")) {
+        return Err(Error::msg("the photo must be an image file or an image URL"));
+    }
+    if image.len() > 400_000 {
+        return Err(Error::msg("the photo is too large; use a smaller image"));
+    }
+    Ok(())
+}
+
 fn hire(input: Hire) -> Result<Record> {
-    // The person must exist, and be hired once.
-    let party: Record = plugins::call("party", "get_party", &json!({ "id": input.party }))?;
-    if party.is_null() {
-        return Err(Error::msg("there is no such person in the directory"));
-    }
-    if text(&party, "kind") == Some("organization") {
-        return Err(Error::msg("an organization cannot be an employee"));
-    }
-    if db::count("employee", Filter::eq("party", input.party.as_str()))? > 0 {
-        return Err(Error::msg("this person has been an employee before: use rehire_employee, which keeps their history"));
-    }
-    check_holds(&input.party)?;
+    let (party_id, party) = create_party_for_hire(&input)?;
     if let Some(company) = text(&input.fields, "company") {
         require("company", company, "company")?;
     }
+    check_image(&input.fields)?;
 
     let start = match text(&input.fields, "hire_date") {
         Some(date) => format_date(parse_date(date)?),
@@ -131,14 +184,29 @@ fn hire(input: Hire) -> Result<Record> {
     check_dates(Some(parse_date(&start)?), probation_end, parse_optional(text(&input.fields, "date_of_birth"))?)?;
 
     let mut data = pick(&input.fields, IDENTITY);
+    if let Some(gender) = text(&input.fields, "gender") {
+        data["gender"] = json!(gender);
+    }
+    if let Some(email) = input.email.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+        data["work_email"] = json!(email);
+    }
+    if let Some(phone) = input.phone.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+        data["work_phone"] = json!(phone);
+    }
     data["hire_date"] = json!(start);
     data["first_hire_date"] = json!(start);
     // New people start in probation when a probation end is given, and active otherwise.
     data["status"] = json!(if probation_end.is_some() { "probation" } else { "active" });
-    data["party"] = json!(input.party);
+    data["party"] = json!(party_id);
     data["display_name"] = party.get("display_name").or_else(|| party.get("name")).cloned().unwrap_or(Value::Null);
     data["employee_no"] = json!(next_number("employee", "EMP-", 5)?);
-    let employee: Record = explain(db::create("employee", &data), "could not hire this person")?;
+    let employee: Record = match explain(db::create("employee", &data), "could not create this employee") {
+        Ok(row) => row,
+        Err(error) => {
+            let _ = plugins::call::<Value>("party", "archive", &json!({ "id": party_id }));
+            return Err(error);
+        }
+    };
     let employee_id = id_of(&employee)?.to_string();
 
     // Their first terms, from the day they join. If these are refused, the hire is undone.
@@ -167,17 +235,23 @@ fn hire(input: Hire) -> Result<Record> {
                 }
             })
         });
+        let _ = plugins::call::<Value>("party", "archive", &json!({ "id": party_id }));
         return Err(match error {
             Error::Message(message) => Error::Message(message),
-            other => Error::msg(format!("could not hire this person: {other}")),
+            other => Error::msg(format!("could not create this employee: {other}")),
         });
     }
 
-    // The directory shows that this person is an employee now.
-    let _: Value = plugins::call("party", "update_party", &json!({ "id": input.party, "is_employee": true }))?;
+    let _: Value = plugins::call("party", "update_party", &json!({ "id": party_id, "is_employee": true }))?;
     let hired = require("employee", &employee_id, "employee")?;
-    events::emit("employee_hired", &json!({ "employee": employee_id, "party": input.party }))?;
+    events::emit("employee_hired", &json!({ "employee": employee_id, "party": party_id }))?;
     Ok(hired)
+}
+
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn hire_for_demo(fields: Value) -> Result<Record> {
+    let input: Hire = serde_json::from_value(fields).map_err(|error| Error::msg(error.to_string()))?;
+    hire(input)
 }
 
 fn change(input: Change) -> Result<Record> {
@@ -185,6 +259,7 @@ fn change(input: Change) -> Result<Record> {
     if status::is_ended(text(&existing, "status").unwrap_or("active")) {
         return Err(Error::msg("this employment has ended: its record can no longer be changed"));
     }
+    check_image(&input.fields)?;
     let data = pick(&input.fields, IDENTITY);
     if data.as_object().is_some_and(|fields| fields.is_empty()) {
         return Err(Error::msg("there is nothing to change"));
@@ -251,8 +326,14 @@ fn move_status(input: Move) -> Result<Record> {
     Ok(updated)
 }
 
-fn search(input: Search) -> Result<Vec<Record>> {
+fn search(input: Search) -> Result<Value> {
     let mut filter = Filter::all();
+    if let Some(extra) = input.filter.clone() {
+        let from_ui = Filter::from_json(extra);
+        if !from_ui.matches_all() {
+            filter = filter.and(from_ui);
+        }
+    }
     if let Some(department) = &input.department {
         if input.with_subdepartments {
             let ids: Vec<String> = db::tree("department", "parent", department)
@@ -267,20 +348,36 @@ fn search(input: Search) -> Result<Vec<Record>> {
             filter = filter.and(Filter::eq("department", department.as_str()));
         }
     }
-    if let Some(status) = &input.status {
-        filter = filter.and(Filter::eq("status", status.as_str()));
+    if let Some(status) = input.status.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+        filter = filter.and(Filter::eq("status", status));
     }
     if let Some(manager) = &input.manager {
         filter = filter.and(Filter::eq("manager", manager.as_str()));
     }
-    if let Some(words) = input.text.as_deref().map(str::trim).filter(|t| !t.is_empty()) {
-        filter = filter.and(Filter::like("display_name", words).or(Filter::like("employee_no", words)));
+    let order = input.order.as_deref().filter(|s| !s.is_empty()).unwrap_or("display_name");
+    let limit = input.limit.unwrap_or(50).min(500);
+    let q = input.text.as_deref().map(str::trim).filter(|t| !t.is_empty());
+    let fields: Vec<&str> = match &input.search_fields {
+        Some(list) if !list.is_empty() => list.iter().map(String::as_str).collect(),
+        _ => vec!["display_name", "employee_no", "work_email"],
+    };
+    if q.is_some() {
+        return db::search(
+            "employee",
+            q,
+            &fields,
+            filter,
+            Some(order),
+            Some(limit),
+            input.offset,
+        );
     }
-    let mut find = db::find::<Record>("employee").matching(filter).order_by("display_name").limit(input.limit.unwrap_or(50).min(500));
+    let total = db::count("employee", filter.clone())?;
+    let mut find = db::find::<Record>("employee").matching(filter).order_by(order).limit(limit);
     if let Some(offset) = input.offset {
         find = find.offset(offset);
     }
-    find.all()
+    Ok(json!({ "rows": find.all()?, "total": total }))
 }
 
 fn walk_tree(input: &Chain, walk: Walk) -> Result<Vec<Record>> {
@@ -462,7 +559,7 @@ handler! {
         db::get("employee", &input.id)
     }
 
-    fn list_employees(input: Search) -> Vec<Record> {
+    fn list_employees(input: Search) -> Value {
         search(input)
     }
 

@@ -5,6 +5,7 @@
 //! Holiday calendar and is decided by their manager, by HR, or both, never by themselves.
 
 mod common;
+mod demo;
 mod ledger;
 mod request;
 mod rules;

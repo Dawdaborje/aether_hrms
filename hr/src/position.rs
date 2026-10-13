@@ -79,6 +79,25 @@ fn new_position(input: Record) -> Result<Record> {
     explain(db::create("position", &data), "could not create the position")
 }
 
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_for_demo(input: Record) -> Result<Record> {
+    new_position(input)
+}
+
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_job_for_demo(input: Record) -> Result<Record> {
+    if text(&input, "name").is_none() {
+        return Err(Error::msg("a job needs a name"));
+    }
+    explain(
+        db::create(
+            "job",
+            &crate::common::pick(&input, &["name", "code", "department", "description", "is_active"]),
+        ),
+        "could not create the job",
+    )
+}
+
 fn change_position(input: Change) -> Result<Record> {
     let existing = require("position", &input.id, "position")?;
     let data = pick(&input.fields, EDITABLE);

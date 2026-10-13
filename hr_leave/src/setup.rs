@@ -61,6 +61,11 @@ fn new_type(input: Record) -> Result<Record> {
     db::create("leave_type", &data).map_err(|e| e.or("could not create the leave type (the name may be taken)"))
 }
 
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_for_demo(input: Record) -> Result<Record> {
+    new_type(input)
+}
+
 fn change_type(input: Change) -> Result<Record> {
     require_admin()?;
     let existing = require("leave_type", &input.id, "leave type")?;
@@ -97,6 +102,11 @@ fn new_block(input: Record) -> Result<Record> {
     db::create("leave_block", &data)
 }
 
+#[derive(Deserialize)]
+struct Id {
+    id: String,
+}
+
 handler! {
     fn create_leave_type(input: Record) -> Record {
         new_type(input)
@@ -106,7 +116,23 @@ handler! {
         change_type(input)
     }
 
+    fn get_leave_type(input: Id) -> Option<Record> {
+        require_admin()?;
+        db::get("leave_type", &input.id)
+    }
+
+    /// Active types only — for Ask for leave pickers.
     fn list_leave_types(_: Empty) -> Vec<Record> {
+        db::find("leave_type")
+            .filter("is_active", true)
+            .order_by("name")
+            .limit(200)
+            .all()
+    }
+
+    /// All types (including inactive) — Leave → Configuration list.
+    fn list_all_leave_types(_: Empty) -> Vec<Record> {
+        require_admin()?;
         db::find("leave_type").order_by("name").limit(200).all()
     }
 

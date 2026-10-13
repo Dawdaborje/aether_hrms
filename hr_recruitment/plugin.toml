@@ -2,7 +2,7 @@
 name = "hr_recruitment"
 icon_path = "assets/logo.svg"
 label = "Recruitment"
-version = "0.1.1"
+version = "0.1.3"
 description = "Openings, applications, interviews, feedback and offers, ending in a hire."
 long_description = """
 Openings are for seats of a position and open only when the position has free seats that no other open
@@ -73,10 +73,21 @@ name = "recruitment-tick"
 function = "recruitment_tick"
 every = "10m"
 
-[app]
-icon = "user-plus"
-route = "/hr/recruitment"
-description = "Openings, candidates and interviews"
+# No [app]: pages fold into the HR workspace host sidebar (Frappe-style module under HR).
+
+[[command]]
+name = "demo_rec_reject_reason"
+function = "generate_demo_rec_reject_reason"
+help = "Generate demo rejection reasons"
+demo_model = "rec_reject_reason"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_rec_stage"
+function = "generate_demo_rec_stage"
+help = "Ensure the usual recruitment stages exist (idempotent)"
+demo_model = "rec_stage"
+args = [{ name = "count", type = "int", default = 6 }]
 
 [plugin.api]
 version = "0.1"

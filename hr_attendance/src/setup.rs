@@ -68,6 +68,11 @@ fn new_shift(input: Record) -> Result<Record> {
     db::create("att_shift", &data).map_err(|e| e.or("could not create the shift (the code may be taken)"))
 }
 
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_shift_for_demo(input: Record) -> Result<Record> {
+    new_shift(input)
+}
+
 fn new_location(input: Record) -> Result<Record> {
     require_admin()?;
     let data = pick(&input, LOCATION_FIELDS);
@@ -89,6 +94,11 @@ fn new_location(input: Record) -> Result<Record> {
         return Err(Error::msg("a location with a radius needs its latitude and longitude"));
     }
     db::create("att_location", &data).map_err(|e| e.or("could not create the location (the name may be taken)"))
+}
+
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_location_for_demo(input: Record) -> Result<Record> {
+    new_location(input)
 }
 
 /// Give a person a shift from a day. An open-ended assignment before it ends the day before; one

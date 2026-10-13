@@ -1,13 +1,18 @@
-<page route="/hr/employees" title="Employees" model="employee">
-  <view type="list" model="employee" source="list_employees" open="/hr/employees/{id}">
-    <search/>
+<page route="/hr/employees" title="Employees" model="employee" menu_group="Employee" icon="users" sort="10" roles="hr_user,hr_manager">
+  <view type="list" model="employee" source="list_employees" open="/hr/employees/{id}"
+        create="/hr/employees/hire" create_label="New" page_size="50" default_order="display_name">
+    <search fields="display_name,employee_no,work_email"/>
+    <filter field="status" label="Status" options="active,probation,on_leave,suspended,resigned,terminated,retired,deceased"/>
+    <groupby field="department" label="Department"/>
+    <groupby field="status" label="Status"/>
     <columns>
-      <column field="employee_no" label="No."/>
-      <column field="display_name" label="Name"/>
+      <column field="image" label="" fieldType="image"/>
+      <column field="employee_no" label="No." sortable="true"/>
+      <column field="display_name" label="Name" sortable="true"/>
       <column field="status" label="Status" fieldType="badge"/>
       <column field="employment_type" label="Type" fieldType="badge"/>
-      <column field="hire_date" label="Hired" fieldType="date"/>
+      <column field="hire_date" label="Hired" fieldType="date" sortable="true"/>
     </columns>
-    <empty title="No employees yet" description="Hire the first person from the directory."/>
+    <empty title="No employees yet" description="Use New to add someone."/>
   </view>
 </page>

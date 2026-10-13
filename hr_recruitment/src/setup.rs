@@ -43,6 +43,16 @@ fn seed() -> Result<Vec<Record>> {
     Ok(made)
 }
 
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn seed_stages_for_demo() -> Result<Vec<Record>> {
+    seed()
+}
+
+/// Used by Desk demo generation (`demo` module).
+pub(crate) fn create_reason_for_demo(input: Record) -> Result<Record> {
+    new_reason(input)
+}
+
 fn new_stage(input: Record) -> Result<Record> {
     require_manager()?;
     let data = pick(&input, &["name", "sequence", "kind", "rot_days", "is_active"]);

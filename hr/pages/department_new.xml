@@ -1,8 +1,10 @@
-<page route="/hr/departments/new" title="Add department" model="department">
+<page route="/hr/departments/new" title="Add department" model="department" menu="false" roles="hr_user,hr_manager">
   <view type="form" function="create_department" submit="Add department" success="Department added" redirect="/hr/departments">
     <field name="name" label="Name" required="true"/>
     <field name="code" label="Code"/>
-    <field name="parent" label="Part of (department id)"/>
+    <field name="parent" label="Part of" fieldType="many2one" source="list_departments" entity="departments"/>
+    <field name="manager" label="Manager" fieldType="many2one" source="list_employees"
+               optionLabel="display_name" entity="employees"/>
     <field name="cost_center" label="Cost centre"/>
   </view>
 </page>

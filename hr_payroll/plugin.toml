@@ -80,7 +80,7 @@ every = "1m"
 icon = "banknote"
 route = "/hr/payroll"
 description = "Pay runs and payslips"
-
+roles = ["payroll_admin", "payroll_clerk", "payroll_approver", "payroll_finance"]
 [plugin.api]
 version = "0.1"
 
