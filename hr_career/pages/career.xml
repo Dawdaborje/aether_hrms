@@ -1,4 +1,4 @@
-<page route="/hr/career" title="Career" model="career_change">
+<page route="/hr/career" title="Career" model="career_change" icon="arrow-up-right">
   <view type="list" model="career_change" source="list_career_changes">
     <columns>
       <column field="reference" label="Reference"/>

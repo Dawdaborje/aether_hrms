@@ -126,17 +126,19 @@ fn check_dates(hired: Option<aether_sdk::dates::NaiveDate>, probation_end: Optio
     Ok(())
 }
 
-/// Full name from first / middle / last, like Frappe's Employee.
+fn trimmed_name(value: &Option<String>) -> Option<&str> {
+    value.as_deref().map(str::trim).filter(|s| !s.is_empty())
+}
+
+/// Full name from first / middle / last. First and last are required; middle is optional.
 fn person_name(input: &Hire) -> Result<String> {
-    let mut parts = Vec::new();
-    for part in [&input.first_name, &input.middle_name, &input.last_name] {
-        if let Some(value) = part.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
-            parts.push(value);
-        }
+    let first = trimmed_name(&input.first_name).ok_or_else(|| Error::msg("enter the person's first name"))?;
+    let last = trimmed_name(&input.last_name).ok_or_else(|| Error::msg("enter the person's last name"))?;
+    let mut parts = vec![first];
+    if let Some(middle) = trimmed_name(&input.middle_name) {
+        parts.push(middle);
     }
-    if parts.is_empty() {
-        return Err(Error::msg("enter the person's first name"));
-    }
+    parts.push(last);
     Ok(parts.join(" "))
 }
 

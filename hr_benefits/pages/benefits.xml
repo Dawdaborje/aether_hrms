@@ -1,4 +1,4 @@
-<page route="/hr/benefits" title="Benefits" model="bnf_claim">
+<page route="/hr/benefits" title="Benefits" model="bnf_claim" icon="gift">
   <view type="list" model="bnf_claim" source="my_benefit_claims">
     <columns>
       <column field="reference" label="Reference"/>

@@ -1,4 +1,4 @@
-<page route="/hr/workforce" title="Workforce planning" model="wf_requisition">
+<page route="/hr/workforce" title="Workforce planning" model="wf_requisition" icon="users-round">
   <view type="list" model="wf_requisition" source="list_requisitions">
     <columns>
       <column field="reference" label="Reference"/>

@@ -1,4 +1,4 @@
-<page route="/hr/assets" title="Assets" model="asset">
+<page route="/hr/assets" title="Assets" model="asset" icon="laptop">
   <view type="list" model="asset" source="my_assets">
     <columns>
       <column field="tag" label="Tag"/>

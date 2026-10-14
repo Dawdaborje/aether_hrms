@@ -1,4 +1,4 @@
-<page route="/hr/attendance" title="Attendance" model="att_day">
+<page route="/hr/attendance" title="Attendance" model="att_day" icon="clock">
   <view type="list" model="att_day" source="my_days" create="/hr/attendance/new" create_label="Punch">
     <columns>
       <column field="work_date" label="Date" fieldType="date"/>

@@ -1,4 +1,4 @@
-<page route="/hr/loans" title="Staff loans" model="loan">
+<page route="/hr/loans" title="Staff loans" model="loan" icon="hand-coins">
   <view type="list" model="loan" source="my_loans">
     <columns>
       <column field="reference" label="Reference"/>

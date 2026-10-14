@@ -1,4 +1,4 @@
-<page route="/hr/onboarding" title="My tasks" model="ob_task">
+<page route="/hr/onboarding" title="My tasks" model="ob_task" icon="door-open">
   <view type="list" model="ob_task" source="my_tasks">
     <search/>
     <columns>

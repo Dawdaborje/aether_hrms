@@ -1,4 +1,4 @@
-<page route="/hr/leave" title="Leave" model="leave_request">
+<page route="/hr/leave" title="Leave" model="leave_request" icon="calendar-check">
   <view type="list" model="leave_request" source="my_leave_requests" create="/hr/leave/new" create_label="Ask for leave">
     <columns>
       <column field="reference" label="Request"/>

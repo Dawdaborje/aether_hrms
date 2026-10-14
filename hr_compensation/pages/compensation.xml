@@ -1,4 +1,4 @@
-<page route="/hr/compensation" title="Compensation" model="comp_adjustment">
+<page route="/hr/compensation" title="Compensation" model="comp_adjustment" icon="coins">
   <view type="list" model="comp_award" source="list_awards">
     <columns>
       <column field="employee" label="Employee"/>

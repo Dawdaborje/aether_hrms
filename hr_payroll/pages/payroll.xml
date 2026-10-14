@@ -1,4 +1,4 @@
-<page route="/hr/payroll" title="Pay runs" model="pay_run">
+<page route="/hr/payroll" title="Pay runs" model="pay_run" icon="banknote">
   <view type="list" model="pay_run" source="list_pay_runs">
     <search/>
     <columns>

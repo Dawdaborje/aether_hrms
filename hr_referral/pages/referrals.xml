@@ -1,4 +1,4 @@
-<page route="/hr/referrals" title="Referrals" model="ref_referral">
+<page route="/hr/referrals" title="Referrals" model="ref_referral" icon="user-plus">
   <view type="list" model="ref_referral" source="my_referrals">
     <columns>
       <column field="reference" label="Reference"/>

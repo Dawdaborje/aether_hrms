@@ -1,4 +1,4 @@
-<page route="/hr/travel" title="Business travel" model="trv_trip">
+<page route="/hr/travel" title="Business travel" model="trv_trip" icon="plane">
   <view type="list" model="trv_trip" source="my_trips">
     <columns>
       <column field="reference" label="Reference"/>

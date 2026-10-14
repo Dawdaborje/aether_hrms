@@ -1,4 +1,4 @@
-<page route="/hr/expenses" title="Expenses" model="expense_report">
+<page route="/hr/expenses" title="Expenses" model="expense_report" icon="receipt">
   <view type="list" model="expense_report" source="my_reports" create="/hr/expenses/new" create_label="New report">
     <columns>
       <column field="number" label="Report"/>

@@ -1,4 +1,4 @@
-<page route="/hr/grievances" title="Grievances" model="grv_case">
+<page route="/hr/grievances" title="Grievances" model="grv_case" icon="megaphone">
   <view type="list" model="grv_case" source="list_grievances">
     <columns>
       <column field="reference" label="Reference"/>

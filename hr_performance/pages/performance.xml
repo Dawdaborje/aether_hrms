@@ -1,4 +1,4 @@
-<page route="/hr/performance" title="Cycles" model="perf_cycle">
+<page route="/hr/performance" title="Cycles" model="perf_cycle" icon="target">
   <view type="list" model="perf_cycle" source="list_cycles">
     <search/>
     <columns>

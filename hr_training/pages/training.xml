@@ -1,4 +1,4 @@
-<page route="/hr/training" title="Training" model="trn_session">
+<page route="/hr/training" title="Training" model="trn_session" icon="graduation-cap">
   <view type="list" model="trn_session" source="list_sessions">
     <columns>
       <column field="reference" label="Reference"/>

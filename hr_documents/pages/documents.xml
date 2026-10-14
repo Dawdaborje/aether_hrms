@@ -1,4 +1,4 @@
-<page route="/hr/documents" title="Documents" model="doc_identity">
+<page route="/hr/documents" title="Documents" model="doc_identity" icon="folder-open">
   <view type="list" model="doc_identity" source="my_identity_documents">
     <columns>
       <column field="kind" label="Kind"/>
