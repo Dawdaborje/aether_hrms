@@ -20,6 +20,19 @@ struct Range {
     status: Option<String>,
 }
 
+/// `employee_days` input: every field optional.
+#[derive(Deserialize, Default)]
+struct EmployeeDays {
+    #[serde(default)]
+    employee: Option<String>,
+    #[serde(default)]
+    from: Option<String>,
+    #[serde(default)]
+    to: Option<String>,
+    #[serde(default)]
+    status: Option<String>,
+}
+
 /// What the attendance list page sends: often `{}`, with optional bounds.
 #[derive(Deserialize, Default)]
 struct MyDays {
@@ -375,6 +388,36 @@ fn payroll_summary(input: Summary) -> Result<Value> {
     Ok(Value::Object(out))
 }
 
+/// Which employee a per-person list is about.
+#[derive(Deserialize, Default)]
+struct OfEmployee {
+    #[serde(default)]
+    employee: Option<String>,
+}
+
+/// The employee named, else the caller (`None` when the caller is not an employee). Asking for
+/// someone else needs the plugin's administrator role.
+fn named_employee(named: Option<String>) -> Result<Option<String>> {
+    let me = crate::common::my_employee()?.and_then(|m| m.get("id").and_then(|v| v.as_str()).map(str::to_string));
+    // A page hands over the id it was opened with, often just the key part; compare and store
+    // the full record id (`table:key`), which is what a query needs.
+    let key = |id: &str| id.rsplit(':').next().unwrap_or(id).to_string();
+    match named.filter(|name| !name.trim().is_empty()) {
+        Some(other) => {
+            if let Some(mine) = me.as_ref().filter(|mine| key(mine) == key(&other)) {
+                return Ok(Some(mine.clone()));
+            }
+            crate::common::require_admin()?;
+            // Say so plainly when the id is not an employee, instead of failing in the query.
+            let found = crate::common::employee(&other)?;
+            let full = found.get("id").and_then(|v| v.as_str()).map(str::to_string);
+            Ok(Some(full.unwrap_or(other)))
+        }
+        None => Ok(me),
+    }
+}
+
+
 handler! {
     /// Overtime and lateness of many people within a period, for payroll.
     fn payroll_attendance_summary(input: Summary) -> Value {
@@ -426,5 +469,15 @@ handler! {
     /// Nightly: settle recent days and mark absences. An administrator may name one day to settle.
     fn attendance_nightly(input: Option<Nightly>) -> Value {
         nightly(input.and_then(|n| n.on).map(|d| parse_date(&d)).transpose()?)
+    }
+
+    /// One employee's recent days (default last 30): the caller's own by default, anyone's for an
+    /// attendance administrator.
+    fn employee_days(input: EmployeeDays) -> Vec<Record> {
+        let Some(who) = named_employee(input.employee)? else { return Ok(Vec::new()) };
+        let today = today_date()?;
+        let from = input.from.filter(|s| !s.trim().is_empty()).unwrap_or_else(|| format_date(today - Duration::days(30)));
+        let to = input.to.filter(|s| !s.trim().is_empty()).unwrap_or_else(|| format_date(today));
+        days(Range { employee: Some(who), from, to, status: input.status.filter(|s| !s.trim().is_empty()) })
     }
 }

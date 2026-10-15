@@ -78,3 +78,7 @@ pub fn actor() -> Result<Option<String>> {
 pub fn count_where(model: &str, filter: Filter) -> Result<u64> {
     db::count(model, filter)
 }
+
+pub fn my_employee() -> Result<Option<Record>> {
+    plugins::call("hr", "my_employee", &json!({}))
+}

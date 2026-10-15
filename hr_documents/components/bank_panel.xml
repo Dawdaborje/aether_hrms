@@ -1,0 +1,30 @@
+<component name="bank_panel">
+  <group cols="1">
+    <modal title="Add bank account" label="Add account">
+      <view type="form" function="add_bank_account" submit="Add" success="Account added">
+        <field name="account_name" label="Account name" required="true"/>
+        <field name="account_no" label="Account number" required="true"/>
+        <field name="bank_name" label="Bank" required="true"/>
+        <field name="branch" label="Branch"/>
+        <field name="share_percent" label="Share of net salary (%)" fieldType="float" required="true"/>
+        <field name="iban" label="IBAN"/>
+        <field name="swift" label="SWIFT"/>
+        <field name="currency" label="Currency"/>
+      </view>
+    </modal>
+    <view type="list" model="doc_bank" source="list_bank_accounts">
+      <columns>
+        <column field="account_name" label="Account"/>
+        <column field="bank_name" label="Bank"/>
+        <column field="account_no" label="Number"/>
+        <column field="share_percent" label="Share %"/>
+        <column field="is_active" label="Active" fieldType="boolean"/>
+      </columns>
+      <actions>
+        <action name="remove" label="Remove" function="remove_bank_account"
+                confirm="Remove this account?" danger="true"/>
+      </actions>
+      <empty title="No bank accounts" description="Accounts for the salary split appear here."/>
+    </view>
+  </group>
+</component>

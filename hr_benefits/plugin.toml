@@ -2,7 +2,7 @@
 name = "hr_benefits"
 icon_path = "assets/logo.svg"
 label = "Benefits"
-version = "0.1.0"
+version = "0.1.1"
 description = "Benefit plans with yearly ceilings, an accrual ledger, claims, and health-insurance enrolment."
 long_description = """
 A plan has a yearly ceiling and a way of paying: accrue a share each month then claim, claim against the ceiling from

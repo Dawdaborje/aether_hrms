@@ -30,8 +30,8 @@
       "id": "fld_292d49cbff",
       "name": "image",
       "label": "%image%",
-      "type": "text",
-      "help": "Employee photo (data URL or image URL)."
+      "type": "image",
+      "help": "Employee photo."
     },
     {
       "id": "fld_fjsg7cu42o",

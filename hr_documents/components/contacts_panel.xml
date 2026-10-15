@@ -1,0 +1,27 @@
+<component name="contacts_panel">
+  <group cols="1">
+    <modal title="Add emergency contact" label="Add contact">
+      <view type="form" function="add_emergency_contact" submit="Add" success="Contact added">
+        <field name="name" label="Name" required="true"/>
+        <field name="relation" label="Relation" required="true"/>
+        <field name="phone" label="Phone" required="true"/>
+        <field name="email" label="Email"/>
+        <field name="is_primary" label="Primary contact" fieldType="boolean"/>
+        <field name="notes" label="Notes" fieldType="text"/>
+      </view>
+    </modal>
+    <view type="list" model="doc_emergency" source="list_emergency_contacts">
+      <columns>
+        <column field="name" label="Name"/>
+        <column field="relation" label="Relation"/>
+        <column field="phone" label="Phone"/>
+        <column field="is_primary" label="Primary" fieldType="boolean"/>
+      </columns>
+      <actions>
+        <action name="remove" label="Remove" function="remove_emergency_contact"
+                confirm="Remove this contact?" danger="true"/>
+      </actions>
+      <empty title="No contacts" description="Emergency contacts appear here."/>
+    </view>
+  </group>
+</component>

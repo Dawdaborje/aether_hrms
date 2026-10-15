@@ -1,0 +1,14 @@
+<component name="compensation_panel">
+  <group cols="1">
+    <view type="list" model="comp_adjustment" source="employee_adjustments">
+      <columns>
+        <column field="code" label="Code"/>
+        <column field="amount" label="Amount"/>
+        <column field="kind" label="Kind" fieldType="badge"/>
+        <column field="date_from" label="From" fieldType="date"/>
+        <column field="status" label="Status" fieldType="badge"/>
+      </columns>
+      <empty title="No adjustments" description="Allowances and deductions appear here."/>
+    </view>
+  </group>
+</component>

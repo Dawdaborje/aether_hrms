@@ -105,13 +105,18 @@ fn me_id() -> Result<Option<String>> {
 
 fn target_employee(named: Option<String>) -> Result<String> {
     let me = me_id()?;
-    match named {
-        Some(other) if Some(&other) != me.as_ref() => {
+    // A page hands over the id it was opened with, often just the key part; compare and store
+    // the full record id (`table:key`), which is what a query and a link field need.
+    let key = |id: &str| id.rsplit(':').next().unwrap_or(id).to_string();
+    match named.filter(|name| !name.trim().is_empty()) {
+        Some(other) => {
+            if let Some(mine) = me.as_ref().filter(|mine| key(mine) == key(&other)) {
+                return Ok(mine.clone());
+            }
             require_admin()?;
-            employee(&other)?;
-            Ok(other)
+            let found = employee(&other)?;
+            Ok(id_of(&found)?.to_string())
         }
-        Some(own) => Ok(own),
         None => me.ok_or_else(|| Error::msg("you have no employee record: name the employee")),
     }
 }
@@ -320,6 +325,11 @@ fn remove_bank(input: Id) -> Result<Value> {
 }
 
 fn list_for(model: &str, input: Who) -> Result<Vec<Record>> {
+    // A caller who is not an employee has nothing of their own: an empty list, not an error
+    // (the panels sit on "My profile", which anyone may open).
+    if input.employee.as_deref().is_none_or(|named| named.trim().is_empty()) && me_id()?.is_none() {
+        return Ok(Vec::new());
+    }
     let who = target_employee(input.employee)?;
     if me_id()?.as_deref() != Some(who.as_str()) && !is_admin()? {
         return Err(Error::msg("you can see your own records, or anyone's if you run documents"));

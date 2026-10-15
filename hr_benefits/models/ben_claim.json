@@ -67,8 +67,7 @@
       "id": "fld_kt2wkbtlrz",
       "name": "receipt",
       "label": "%receipt%",
-      "type": "string",
-      "max_length": 300
+      "type": "file"
     },
     {
       "id": "fld_3m25pkcamm",

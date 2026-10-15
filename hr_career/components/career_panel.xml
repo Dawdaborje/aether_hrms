@@ -1,0 +1,13 @@
+<component name="career_panel">
+  <group cols="1">
+    <view type="list" model="career_change" source="employee_career_changes">
+      <columns>
+        <column field="reference" label="Reference"/>
+        <column field="kind" label="Kind" fieldType="badge"/>
+        <column field="effective_date" label="Effective" fieldType="date"/>
+        <column field="state" label="State" fieldType="badge"/>
+      </columns>
+      <empty title="No changes" description="Promotions, transfers and pay changes appear here."/>
+    </view>
+  </group>
+</component>

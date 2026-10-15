@@ -2,7 +2,7 @@
 name = "hr"
 icon_path = "assets/logo.svg"
 label = "Human Resources"
-version = "0.1.6"
+version = "0.1.7"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
@@ -11,7 +11,7 @@ employer. Other plugins (leave, attendance, recruitment, a government registry) 
 See docs/design.md in this plugin (hr/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["party", "country", "currency", "company"]
+dependencies = ["party", "country", "currency", "company", "base_ui"]
 capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
 access_models = [
   { name = "department", permissions = ["read", "write"] },

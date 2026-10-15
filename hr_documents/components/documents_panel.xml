@@ -1,0 +1,29 @@
+<component name="documents_panel">
+  <group cols="1">
+    <modal title="Add identity document" label="Add document">
+      <view type="form" function="add_identity_document" submit="Add" success="Document added">
+        <field name="kind" label="Kind" required="true" fieldType="selection"
+               options="passport, national_id, visa, work_permit, driving_licence, other"/>
+        <field name="number" label="Number" required="true"/>
+        <field name="country" label="Country"/>
+        <field name="issued_on" label="Issued" fieldType="date"/>
+        <field name="expires_on" label="Expires" fieldType="date"/>
+        <field name="is_primary" label="Primary document" fieldType="boolean"/>
+        <field name="notes" label="Notes" fieldType="text"/>
+      </view>
+    </modal>
+    <view type="list" model="doc_identity" source="list_identity_documents">
+      <columns>
+        <column field="kind" label="Kind" fieldType="badge"/>
+        <column field="number" label="Number"/>
+        <column field="country" label="Country"/>
+        <column field="expires_on" label="Expires" fieldType="date"/>
+      </columns>
+      <actions>
+        <action name="remove" label="Remove" function="remove_identity_document"
+                confirm="Remove this document?" danger="true"/>
+      </actions>
+      <empty title="No documents" description="Identity documents on file appear here."/>
+    </view>
+  </group>
+</component>

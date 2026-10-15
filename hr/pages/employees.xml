@@ -3,7 +3,7 @@
         create="/hr/employees/hire" create_label="New" page_size="50" default_order="display_name">
     <search fields="display_name,employee_no,work_email"/>
     <filter field="status" label="Status" options="active,probation,on_leave,suspended,resigned,terminated,retired,deceased"/>
-    <groupby field="department" label="Department"/>
+    <groupby field="department" label="Department" source="list_departments"/>
     <groupby field="status" label="Status"/>
     <columns>
       <column field="image" label="" fieldType="image"/>

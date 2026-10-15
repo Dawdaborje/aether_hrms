@@ -1,0 +1,13 @@
+<component name="assets_panel">
+  <group cols="1">
+    <view type="list" model="asset" source="employee_assets">
+      <columns>
+        <column field="tag" label="Tag"/>
+        <column field="name" label="Asset"/>
+        <column field="state" label="State" fieldType="badge"/>
+        <column field="assigned_on" label="Since" fieldType="date"/>
+      </columns>
+      <empty title="Nothing in custody" description="Assets assigned appear here."/>
+    </view>
+  </group>
+</component>

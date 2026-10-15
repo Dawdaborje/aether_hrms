@@ -35,10 +35,6 @@ name = "documents-nightly"
 function = "documents_nightly"
 cron = "5 2 * * *"
 
-[app]
-icon = "folder-open"
-route = "/hr/documents"
-description = "Your identity documents, contacts and pay accounts"
 
 [plugin.api]
 version = "0.1"

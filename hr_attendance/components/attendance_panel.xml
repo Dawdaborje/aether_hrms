@@ -1,0 +1,14 @@
+<component name="attendance_panel">
+  <group cols="1">
+    <view type="list" model="att_day" source="employee_days">
+      <columns>
+        <column field="work_date" label="Date" fieldType="date"/>
+        <column field="status" label="Status" fieldType="badge"/>
+        <column field="worked_min" label="Worked (min)"/>
+        <column field="late_min" label="Late (min)"/>
+        <column field="review" label="Needs a look"/>
+      </columns>
+      <empty title="No days yet" description="The last 30 days appear here."/>
+    </view>
+  </group>
+</component>

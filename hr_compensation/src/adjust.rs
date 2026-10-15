@@ -338,6 +338,36 @@ fn need_code(input: CodeNeed) -> Result<Record> {
     db::find::<Record>("comp_code").filter("code", code.as_str()).first()?.ok_or_else(|| Error::msg("the code could not be made"))
 }
 
+/// Which employee a per-person list is about.
+#[derive(Deserialize, Default)]
+struct OfEmployee {
+    #[serde(default)]
+    employee: Option<String>,
+}
+
+/// The employee named, else the caller (`None` when the caller is not an employee). Asking for
+/// someone else needs the plugin's administrator role.
+fn named_employee(named: Option<String>) -> Result<Option<String>> {
+    let me = crate::common::my_employee()?.and_then(|m| m.get("id").and_then(|v| v.as_str()).map(str::to_string));
+    // A page hands over the id it was opened with, often just the key part; compare and store
+    // the full record id (`table:key`), which is what a query needs.
+    let key = |id: &str| id.rsplit(':').next().unwrap_or(id).to_string();
+    match named.filter(|name| !name.trim().is_empty()) {
+        Some(other) => {
+            if let Some(mine) = me.as_ref().filter(|mine| key(mine) == key(&other)) {
+                return Ok(Some(mine.clone()));
+            }
+            crate::common::require_admin()?;
+            // Say so plainly when the id is not an employee, instead of failing in the query.
+            let found = crate::common::employee(&other)?;
+            let full = found.get("id").and_then(|v| v.as_str()).map(str::to_string);
+            Ok(Some(full.unwrap_or(other)))
+        }
+        None => Ok(me),
+    }
+}
+
+
 handler! {
     fn ensure_pay_code(input: CodeNeed) -> Record {
         need_code(input)
@@ -391,5 +421,13 @@ handler! {
 
     fn list_awards(_: Empty) -> Vec<Record> {
         db::find("comp_award").order_by("-id").limit(200).all()
+    }
+
+    /// One employee's adjustments: the caller's own by default, anyone's for a compensation administrator.
+    fn employee_adjustments(input: OfEmployee) -> Vec<Record> {
+        match named_employee(input.employee)? {
+            Some(who) => db::find("comp_adjustment").filter("employee", who.as_str()).order_by("-id").limit(200).all(),
+            None => Ok(Vec::new()),
+        }
     }
 }

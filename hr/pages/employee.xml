@@ -1,5 +1,6 @@
 <page route="/hr/employees/{id}" title="Employee" model="employee" roles="hr_user,hr_manager">
   <view type="form" source="get_employee" function="update_employee" submit="Save" success="Saved">
+    <use component="base_ui.status_bar" field="status" function="change_employee_status"/>
     <group title="Photo" cols="1">
       <field name="image" label="Employee photo" fieldType="image"/>
     </group>

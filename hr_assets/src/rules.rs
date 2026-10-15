@@ -3,6 +3,7 @@
 //! Every change is an entry in one ledger that is never edited; the asset's state and holder are
 //! only the result of the last entries; an odometer can never go backwards.
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum State {
     Available,
     Assigned,

@@ -1,0 +1,12 @@
+<page route="/hr/me" title="My profile" model="employee" menu_group="Employee" icon="user" sort="5">
+  <view type="form" source="my_employee">
+    <use component="base_ui.status_bar" field="status"/>
+    <group title="Overview" cols="2">
+      <field name="display_name" label="Name"/>
+      <field name="employee_no" label="Employee no."/>
+      <field name="work_email" label="Work email"/>
+      <field name="work_phone" label="Work phone"/>
+    </group>
+    <notebook/>
+  </view>
+</page>
