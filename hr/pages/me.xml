@@ -9,7 +9,8 @@
       <field name="display_name" label="Name"/>
       <field name="employee_no" label="Employee no."/>
       <field name="work_email" label="Work email"/>
-      <field name="work_phone" label="Work phone"/>
+      <field name="work_phone" label="Work phone" fieldType="phone"
+               countryField="work_phone_country"/>
     </group>
     <notebook/>
   </view>

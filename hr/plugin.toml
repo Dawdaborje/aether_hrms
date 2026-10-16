@@ -2,7 +2,7 @@
 name = "hr"
 icon_path = "assets/logo.svg"
 label = "Human Resources"
-version = "0.1.8"
+version = "0.1.9"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and

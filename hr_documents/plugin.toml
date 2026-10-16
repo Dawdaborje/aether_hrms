@@ -2,7 +2,7 @@
 name = "hr_documents"
 icon_path = "assets/logo.svg"
 label = "Employee documents"
-version = "0.1.0"
+version = "0.1.1"
 description = "Identification documents with expiry, emergency contacts, and bank accounts with a salary split."
 long_description = """
 and this suite's own employee_private), each is a list. Identity documents (passport, national id, visa, work permit,

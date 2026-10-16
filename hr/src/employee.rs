@@ -11,7 +11,8 @@ use crate::rules::{status, MIN_WORKING_AGE};
 
 /// What an HR officer may set on the employee row itself.
 const IDENTITY: &[&str] = &[
-    "company", "gender", "image", "work_email", "work_phone", "notice_days", "probation_end",
+    "company", "gender", "image", "work_email", "work_phone", "work_phone_country", "notice_days",
+    "probation_end",
 ];
 /// Private details, kept in `employee_private` (readable only by the person and HR).
 const PRIVATE: &[&str] = &[
@@ -205,6 +206,11 @@ fn hire(input: Hire) -> Result<Record> {
     if let Some(phone) = input.phone.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
         data["work_phone"] = json!(phone);
     }
+    if let Some(country) = text(&input.fields, "work_phone_country").map(str::trim).filter(|s| !s.is_empty()) {
+        let _: Record = plugins::call("country", "get_country", &json!({ "id": country }))
+            .map_err(|_| Error::msg("there is no such country"))?;
+        data["work_phone_country"] = json!(country);
+    }
     if let Some(end) = default_end {
         data["probation_end"] = json!(end);
     }
@@ -305,6 +311,10 @@ fn change(input: Change) -> Result<Record> {
     }
     if let Some(company) = text(&identity, "company") {
         require("company", company, "company")?;
+    }
+    if let Some(country) = text(&identity, "work_phone_country").map(str::trim).filter(|s| !s.is_empty()) {
+        let _: Record = plugins::call("country", "get_country", &json!({ "id": country }))
+            .map_err(|_| Error::msg("there is no such country"))?;
     }
     check_dates(
         parse_optional(text(&existing, "hire_date"))?,

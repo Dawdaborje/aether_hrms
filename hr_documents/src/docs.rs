@@ -38,6 +38,8 @@ struct ContactIn {
     relation: String,
     phone: String,
     #[serde(default)]
+    phone_country: Option<String>,
+    #[serde(default)]
     email: Option<String>,
     #[serde(default)]
     is_primary: bool,
@@ -326,11 +328,20 @@ fn add_contact(input: ContactIn) -> Result<Record> {
         let primaries = existing.iter().filter(|r| r.get("is_primary") == Some(&json!(true))).count();
         contacts_ok(primaries)?;
     }
+    let phone_country = match input.phone_country.as_deref().map(str::trim).filter(|c| !c.is_empty()) {
+        Some(id) => {
+            let _: Record = plugins::call("country", "get_country", &json!({ "id": id }))
+                .map_err(|_| Error::msg("there is no such country"))?;
+            Some(id.to_string())
+        }
+        None => None,
+    };
     db::create(
         "doc_emergency",
         &json!({
             "employee": who, "name": input.name.trim(), "relation": relation, "phone": input.phone.trim(),
-            "email": input.email, "is_primary": input.is_primary, "notes": input.notes,
+            "phone_country": phone_country, "email": input.email, "is_primary": input.is_primary,
+            "notes": input.notes,
         }),
     )
 }

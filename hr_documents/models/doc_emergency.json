@@ -49,6 +49,16 @@
       "max_length": 40
     },
     {
+      "id": "fld_emgphncoun1",
+      "name": "phone_country",
+      "label": "%phone_country%",
+      "type": "link",
+      "index": "plain",
+      "target": "country.country",
+      "target_id": "mdl_dmwfn6k2au",
+      "help": "Country for the contact phone dialling code."
+    },
+    {
       "id": "fld_a46srze2xc",
       "name": "email",
       "label": "%email%",

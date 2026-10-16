@@ -27,7 +27,8 @@
     </group>
     <group title="Contact" cols="2">
       <field name="work_email" label="Work email"/>
-      <field name="work_phone" label="Work phone"/>
+      <field name="work_phone" label="Work phone" fieldType="phone"
+               countryField="work_phone_country"/>
     </group>
     <notebook/>
   </view>

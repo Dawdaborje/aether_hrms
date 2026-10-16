@@ -227,6 +227,16 @@
       "max_length": 40
     },
     {
+      "id": "fld_empphncoun1",
+      "name": "work_phone_country",
+      "label": "%work_phone_country%",
+      "type": "link",
+      "index": "plain",
+      "target": "country.country",
+      "target_id": "mdl_dmwfn6k2au",
+      "help": "Country for the work phone dialling code."
+    },
+    {
       "id": "fld_l74bn3ow7h",
       "name": "work_location_text",
       "label": "%work_location_text%",

@@ -6,7 +6,8 @@
         <field name="relation" label="Relation" required="true" fieldType="many2one"
                source="list_relations" optionLabel="name" entity="relations"
                creatable="true" create="ensure_relation"/>
-        <field name="phone" label="Phone" required="true"/>
+        <field name="phone" label="Phone" required="true" fieldType="phone"
+               countryField="phone_country"/>
         <field name="email" label="Email"/>
         <field name="is_primary" label="Primary contact" fieldType="boolean"/>
         <field name="notes" label="Notes" fieldType="text"/>

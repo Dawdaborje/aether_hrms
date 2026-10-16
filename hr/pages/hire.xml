@@ -13,7 +13,7 @@
     </group>
     <group title="Contact" cols="2">
       <field name="email" label="Work email"/>
-      <field name="phone" label="Phone"/>
+      <field name="phone" label="Phone" fieldType="phone" countryField="work_phone_country"/>
     </group>
     <group title="Joining" cols="2">
       <field name="department" label="Department" fieldType="many2one" source="list_departments"
