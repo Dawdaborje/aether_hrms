@@ -1,5 +1,5 @@
 <page route="/hr/config/leave-types" title="Leave types"
-      menu_group="Leave" icon="calendar-days" sort="10" roles="hr_leave.leave_admin">
+      menu_group="Leave" menu_group_icon="calendar-days" icon="calendar-days" sort="10" roles="hr_leave.leave_admin">
   <view type="list" source="list_all_leave_types" open="/hr/config/leave-types/{id}"
         create="/hr/config/leave-types/new" create_label="New">
     <search/>

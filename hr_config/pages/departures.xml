@@ -1,4 +1,4 @@
-<page route="/hr/config/departures" title="Departures" roles="hr_onboarding.ob_manager" icon="door-open" menu_group="Offboarding" sort="10">
+<page route="/hr/config/departures" title="Departures" roles="hr_onboarding.ob_manager" icon="door-open" menu_group="Offboarding" menu_group_icon="door-open" sort="10">
   <view type="list" source="list_departures" create="/hr/config/departures/new" create_label="Record departure">
     <columns>
       <column field="employee" label="Employee"/>

@@ -67,8 +67,9 @@
       "id": "fld_wvolnsuybn",
       "name": "country",
       "label": "%country%",
-      "type": "string",
-      "max_length": 80
+      "type": "link",
+      "target": "country.country",
+      "target_id": "mdl_dmwfn6k2au"
     },
     {
       "id": "fld_o2ddpqcsb3",

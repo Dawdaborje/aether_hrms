@@ -1,4 +1,4 @@
-<page route="/hr/config/letters" title="Employee letters" roles="hr_career.career_admin" icon="file-text" menu_group="Career" sort="10">
+<page route="/hr/config/letters" title="Employee letters" roles="hr_career.career_admin" icon="file-text" menu_group="Career" menu_group_icon="file-text" sort="10">
   <view type="list" source="list_employee_letters" create="/hr/config/letters/new" create_label="Issue">
     <columns>
       <column field="reference" label="Reference"/>

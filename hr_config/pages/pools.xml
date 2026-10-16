@@ -1,4 +1,4 @@
-<page route="/hr/config/recruitment/pools" title="Interviewer pools" menu_group="Recruitment" icon="users" roles="hr_recruitment.recruit_manager">
+<page route="/hr/config/recruitment/pools" title="Interviewer pools" menu_group="Recruitment" menu_group_icon="user-plus" icon="users" roles="hr_recruitment.recruit_manager">
   <view type="list" source="list_interviewer_pools" create="/hr/config/recruitment/pools/new" create_label="New">
     <columns>
       <column field="name" label="Pool"/>

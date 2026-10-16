@@ -12,7 +12,7 @@ and a documents administrator can read and change them. Written in Rust.
 See docs/design.md in this plugin (hr_documents/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["hr"]
+dependencies = ["hr", "country"]
 capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
 access_models = [
   { name = "doc_identity", permissions = ["read", "write"] },

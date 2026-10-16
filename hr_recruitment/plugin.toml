@@ -41,6 +41,7 @@ access_models = [
   { name = "rec_opening_template", permissions = ["read", "write"] },
   { name = "rec_offer_term", permissions = ["read", "write"] },
   { name = "rec_offer_template", permissions = ["read", "write"] },
+  { name = "rec_pool", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false

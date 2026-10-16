@@ -1,4 +1,4 @@
-<page route="/hr/config/payroll/settings" title="Payroll settings" menu_group="Payroll" icon="settings" sort="5" roles="hr_payroll.payroll_admin">
+<page route="/hr/config/payroll/settings" title="Payroll settings" menu_group="Payroll" menu_group_icon="banknote" icon="settings" sort="5" roles="hr_payroll.payroll_admin">
   <view type="form" source="get_payroll_setting" function="set_payroll_setting" submit="Save" success="Saved">
     <group title="Calendar" cols="2">
       <field name="periods_per_year" label="Pay periods per year" fieldType="integer"/>

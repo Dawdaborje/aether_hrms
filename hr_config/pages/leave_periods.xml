@@ -1,4 +1,4 @@
-<page route="/hr/config/leave/periods" title="Leave periods" roles="hr_leave.leave_admin" icon="calendar-range" menu_group="Leave" sort="10">
+<page route="/hr/config/leave/periods" title="Leave periods" roles="hr_leave.leave_admin" icon="calendar-range" menu_group="Leave" menu_group_icon="calendar-days" sort="10">
   <view type="list" source="list_leave_periods" create="/hr/config/leave/periods/new" create_label="New">
     <columns>
       <column field="name" label="Period"/>

@@ -1,8 +1,8 @@
 <page route="/hr/config/leave/approvers" title="Leave approvers" roles="hr_leave.leave_admin" icon="user-check" menu_group="Leave" sort="20">
   <view type="list" source="list_leave_approvers" create="/hr/config/leave/approvers/new" create_label="Add">
     <columns>
-      <column field="department" label="Department"/>
-      <column field="approver" label="Approver"/>
+      <column field="department" label="Department" fieldType="link" modelTarget="hr.department"/>
+      <column field="approver" label="Approver" fieldType="link" modelTarget="hr.employee"/>
     </columns>
     <empty title="No department approvers" description="People without a manager are decided on by these approvers; with none, by HR."/>
   </view>

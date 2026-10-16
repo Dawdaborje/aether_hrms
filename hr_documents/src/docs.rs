@@ -198,13 +198,21 @@ fn add_identity(input: IdentityIn) -> Result<Record> {
     let kind = DocKind::parse(&input.kind).ok_or_else(|| Error::msg("kind is passport, national_id, visa, work_permit, driving_licence or other"))?;
     let expires = input.expires_on.as_deref().map(parse_date).transpose()?;
     document_ok(kind, &input.number, expires)?;
+    let country = match input.country.as_deref().map(str::trim).filter(|c| !c.is_empty()) {
+        Some(id) => {
+            let _: Record = plugins::call("country", "get_country", &json!({ "id": id }))
+                .map_err(|_| Error::msg("there is no such country"))?;
+            Some(id.to_string())
+        }
+        None => None,
+    };
     if input.is_primary {
         clear_primary_identity(&who, None)?;
     }
     db::create(
         "doc_identity",
         &json!({
-            "employee": who, "kind": input.kind, "number": input.number.trim(), "country": input.country,
+            "employee": who, "kind": input.kind, "number": input.number.trim(), "country": country,
             "issued_on": input.issued_on.map(|d| parse_date(&d).map(format_date)).transpose()?,
             "expires_on": expires.map(format_date), "is_primary": input.is_primary, "notes": input.notes,
         }),
@@ -402,6 +410,11 @@ fn nightly() -> Result<Value> {
 }
 
 handler! {
+    /// Active countries for the identity-document country picker.
+    fn list_countries(input: Option<Value>) -> Value {
+        plugins::call("country", "list_countries", &input.unwrap_or_else(|| json!({})))
+    }
+
     fn add_identity_document(input: IdentityIn) -> Record {
         add_identity(input)
     }

@@ -1,4 +1,4 @@
-<page route="/hr/config/attendance/shifts" title="Shifts" menu_group="Attendance" icon="clock" sort="10" roles="hr_attendance.att_admin">
+<page route="/hr/config/attendance/shifts" title="Shifts" menu_group="Attendance" menu_group_icon="clock" icon="clock" sort="10" roles="hr_attendance.att_admin">
   <view type="list" source="list_shifts" open="/hr/config/attendance/shifts/{id}" create="/hr/config/attendance/shifts/new" create_label="New">
     <search/>
     <columns>
