@@ -1,0 +1,9 @@
+<page route="/hr/performance/kras/{id}" title="Key result area" menu="false" roles="hr_performance.perf_admin">
+  <view type="form" source="get_kra" function="update_kra" submit="Save" success="Saved">
+    <group title="Key result area" cols="1">
+      <field name="name" label="Name" required="true"/>
+      <field name="description" label="About" fieldType="text"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

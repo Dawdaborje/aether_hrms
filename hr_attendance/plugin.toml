@@ -28,10 +28,21 @@ access_models = [
   { name = "att_overtime", permissions = ["read", "write"] },
   { name = "att_rotation", permissions = ["read", "write"] },
   { name = "att_rotation_step", permissions = ["read", "write"] },
+  { name = "att_shift_request", permissions = ["read", "write"] },
+  { name = "att_request", permissions = ["read", "write"] },
+  { name = "att_kiosk_pin", permissions = ["read", "write"] },
+  { name = "att_work_mode", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_general_shift"
+help = "Create a General 09:00-17:00 shift when there is no shift (idempotent)"
+on_install = true
+on_upgrade = true
 
 [[roles]]
 name = "att_admin"
@@ -43,6 +54,11 @@ name = "att_corrector"
 label = "Attendance record corrector"
 description = "May edit or delete punches and locked days. Nobody should hold this in normal use."
 
+[[roles]]
+name = "att_kiosk"
+label = "Attendance kiosk"
+description = "A shared device account that punches people in by employee number and PIN"
+
 [[events]]
 name = "punch_recorded"
 
@@ -52,9 +68,17 @@ name = "day_needs_review"
 [[events]]
 name = "correction_decided"
 
+[[events]]
+name = "shift_request_decided"
+
+[[events]]
+name = "attendance_request_decided"
+
 # Yesterday's days are settled and missing days marked absent, once the day's window has closed.
 [[schedule]]
 name = "attendance-nightly"
+title = "Settle attendance days"
+description = "Settles recent attendance days and marks absences."
 function = "attendance_nightly"
 cron = "40 0 * * *"
 

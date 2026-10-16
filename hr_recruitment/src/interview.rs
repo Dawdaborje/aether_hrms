@@ -20,7 +20,11 @@ struct Schedule {
     ends_at: String,
     #[serde(default)]
     location: Option<String>,
+    /// Named interviewers; left out, they are picked from the round's pool.
+    #[serde(default)]
     panel: Vec<String>,
+    #[serde(default)]
+    panel_size: Option<i64>,
 }
 
 #[derive(Deserialize)]
@@ -58,7 +62,7 @@ fn schedule(input: Schedule) -> Result<Record> {
     if text(&application, "status") != Some("active") {
         return Err(Error::msg("this application is closed"));
     }
-    require("rec_round", &input.round, "round")?;
+    let round = require("rec_round", &input.round, "round")?;
     let start = parse_datetime(&input.starts_at)?;
     let end = parse_datetime(&input.ends_at)?;
     if end <= start {
@@ -68,6 +72,34 @@ fn schedule(input: Schedule) -> Result<Record> {
         return Err(Error::msg("the interview is in the past"));
     }
     let mut panel = input.panel.clone();
+    if panel.is_empty() {
+        if let Some(pool) = text(&round, "pool") {
+            let wanted = input.panel_size.filter(|n| *n > 0).or(round["panel_size"].as_i64().filter(|n| *n > 0)).or(round["min_panelists"].as_i64().filter(|n| *n > 0)).unwrap_or(1) as usize;
+            // The least busy members who are free at that time.
+            let mut free: Vec<(usize, String)> = Vec::new();
+            for member in db::related::<Record>("rec_pool", "members", pool)? {
+                if !crate::common::works_here(&member) {
+                    continue;
+                }
+                let id = id_of(&member)?.to_string();
+                let booked: Vec<Record> = db::related_reverse::<Record>("rec_interview", "panel", &id)?.into_iter().filter(|o| text(o, "status") == Some("scheduled")).collect();
+                let mut clash = false;
+                for other in &booked {
+                    if overlaps((start, end), (moment(other, "starts_at")?, moment(other, "ends_at")?)) {
+                        clash = true;
+                    }
+                }
+                if !clash {
+                    free.push((booked.len(), id));
+                }
+            }
+            free.sort();
+            if free.len() < wanted {
+                return Err(Error::msg(format!("only {} interviewers in the pool are free then, {wanted} are needed", free.len())));
+            }
+            panel = free.into_iter().take(wanted).map(|(_, id)| id).collect();
+        }
+    }
     panel.sort();
     panel.dedup();
     if panel.is_empty() {

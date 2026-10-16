@@ -1,0 +1,7 @@
+<page route="/hr/config/recruitment/pools/new" title="New interviewer pool" menu="false" roles="hr_recruitment.recruit_manager">
+  <view type="form" function="create_interviewer_pool" submit="Save" success="Saved" redirect="/hr/config/recruitment/pools">
+    <group title="New interviewer pool" cols="2">
+      <field name="name" label="Pool name" required="true"/>
+    </group>
+  </view>
+</page>

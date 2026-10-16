@@ -43,6 +43,8 @@ name = "trip_unsettled"
 
 [[schedule]]
 name = "travel-nightly"
+title = "Flag unsettled trips"
+description = "Reports, once each, approved trips that ended long ago and were never completed."
 function = "travel_nightly"
 cron = "20 1 * * *"
 

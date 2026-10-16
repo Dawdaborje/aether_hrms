@@ -110,6 +110,13 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_gdj56xi5qy",
+      "name": "tax_rate",
+      "label": "%tax_rate%",
+      "type": "decimal",
+      "help": "Tax included in the amount, in percent; the tax part of a claim is shown on its line."
     }
   ],
   "view": {

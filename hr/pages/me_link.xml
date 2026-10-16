@@ -1,0 +1,8 @@
+<page route="/hr/me/link" title="Link my account" model="employee" menu="false">
+  <view type="form" function="link_me" submit="Link my account" success="Your account is linked" redirect="/hr/me">
+    <group title="Which employee are you?" cols="1">
+      <field name="employee" label="Employee" required="true" fieldType="many2one" source="list_employees"
+               optionLabel="display_name" entity="employees"/>
+    </group>
+  </view>
+</page>

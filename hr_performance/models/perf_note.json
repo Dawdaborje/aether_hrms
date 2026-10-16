@@ -1,0 +1,92 @@
+{
+  "model_id": "mdl_lxrglvcqz2",
+  "name": "perf_note",
+  "label": "%perf_note%",
+  "plural_label": "%perf_notes%",
+  "icon": "message-square",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_rdzl3jc8sg",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_0cpcdih13w",
+      "name": "author",
+      "label": "%author%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true
+    },
+    {
+      "id": "fld_u9vi6z7zp5",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_m4306gps70",
+          "value": "praise",
+          "label": "%praise%"
+        },
+        {
+          "id": "opt_cnj8wrjju3",
+          "value": "improve",
+          "label": "%improve%"
+        },
+        {
+          "id": "opt_tsyp30b5sb",
+          "value": "general",
+          "label": "%general%"
+        }
+      ],
+      "required": true,
+      "default": "general"
+    },
+    {
+      "id": "fld_fneoygf8ur",
+      "name": "rating",
+      "label": "%rating%",
+      "type": "int",
+      "help": "Optional, 1 to 5."
+    },
+    {
+      "id": "fld_afc4hk83na",
+      "name": "comment",
+      "label": "%comment%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_fch8ga1ieg",
+      "name": "shared",
+      "label": "%shared%",
+      "type": "bool",
+      "default": false,
+      "help": "The person sees it only when shared."
+    },
+    {
+      "id": "fld_3ey9jdc6vt",
+      "name": "on_date",
+      "label": "%on_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "author",
+      "kind",
+      "on_date"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+<page route="/hr/referrals/new" title="Refer someone" menu="false" model="ref_referral">
+  <view type="form" function="submit_referral" submit="Submit" success="Submitted" redirect="/hr/referrals">
+    <group title="Refer someone" cols="2">
+      <field name="candidate_name" label="Candidate name" required="true"/>
+      <field name="candidate_email" label="Candidate email" required="true"/>
+      <field name="candidate_phone" label="Candidate phone"/>
+      <field name="note" label="Why they fit" fieldType="textarea"/>
+    </group>
+  </view>
+</page>

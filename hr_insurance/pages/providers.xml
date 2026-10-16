@@ -1,0 +1,13 @@
+<page route="/hr/insurance/providers" title="Health facilities" model="ins_provider" icon="hospital" roles="ins_admin,ins_reviewer" menu_group="Setup" sort="33">
+  <view type="list" model="ins_provider" source="list_insurance_providers" create="/hr/insurance/providers/new" create_label="New facility">
+    <filter field="is_network" options="In network=true,Outside=false" label="Network"/>
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="city" label="City"/>
+      <column field="phone" label="Phone"/>
+      <column field="is_network" label="In network" fieldType="boolean"/>
+    </columns>
+    <empty title="No facilities" description="Hospitals, clinics and pharmacies claims can name."/>
+  </view>
+</page>

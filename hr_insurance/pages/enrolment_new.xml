@@ -1,0 +1,10 @@
+<page route="/hr/insurance/enrolments/new" title="Enrol an employee" menu="false" model="ins_enrolment" roles="ins_admin">
+  <view type="form" function="enrol_in_policy" submit="Enrol" success="Enrolled" redirect="/hr/insurance/enrolments">
+    <group title="Enrolment" cols="2">
+      <field name="employee" label="Employee" fieldType="many2one" entity="employees" required="true"/>
+      <field name="policy" label="Policy" fieldType="many2one" source="list_policies" optionLabel="number" entity="policies" required="true"/>
+      <field name="start_date" label="From" fieldType="date" required="true"/>
+      <field name="end_date" label="To" fieldType="date"/>
+    </group>
+  </view>
+</page>

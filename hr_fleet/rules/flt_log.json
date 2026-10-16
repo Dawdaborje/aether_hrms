@@ -1,0 +1,36 @@
+{
+  "model": "flt_log",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "fleet_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "roles": [
+        "via:*"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

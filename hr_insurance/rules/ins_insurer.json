@@ -1,0 +1,21 @@
+{
+  "model": "ins_insurer",
+  "access": [
+    {
+      "name": "read",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "ins_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

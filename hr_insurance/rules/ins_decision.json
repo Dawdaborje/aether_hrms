@@ -1,0 +1,6 @@
+{
+  "model": "ins_decision",
+  "access": [
+    { "name": "staff", "roles": ["ins_admin", "ins_reviewer", "via:self"], "operations": ["read", "create"] }
+  ]
+}

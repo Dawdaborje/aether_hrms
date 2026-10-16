@@ -1,0 +1,3 @@
+<page extends="/hr/me" title="Compensation" params="employee={id}" sort="80">
+  <use component="compensation_panel"/>
+</page>

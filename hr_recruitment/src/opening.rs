@@ -18,11 +18,11 @@ const FIELDS: &[&str] = &[
 ];
 
 #[derive(Deserialize)]
-struct New {
+pub(crate) struct New {
     #[serde(flatten)]
-    fields: Record,
+    pub(crate) fields: Record,
     #[serde(default)]
-    panel: Vec<String>,
+    pub(crate) panel: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -72,7 +72,7 @@ fn check_fields(data: &Record) -> Result<()> {
     Ok(())
 }
 
-fn create(input: New) -> Result<Record> {
+pub(crate) fn create(input: New) -> Result<Record> {
     require_recruiter()?;
     let mut data = pick(&input.fields, FIELDS);
     if text(&data, "title").is_none() {

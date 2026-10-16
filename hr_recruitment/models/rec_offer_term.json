@@ -1,0 +1,40 @@
+{
+  "model_id": "mdl_8s0bd279o3",
+  "name": "rec_offer_term",
+  "label": "%rec_offer_term%",
+  "plural_label": "%rec_offer_terms%",
+  "icon": "list-checks",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_a105c2mw8c",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "max_length": 160
+    },
+    {
+      "id": "fld_90xnbbqn3u",
+      "name": "body",
+      "label": "%body%",
+      "type": "text",
+      "required": true,
+      "help": "May use {{candidate}}, {{salary}}, {{currency}}, {{start_date}}, {{valid_until}}, {{opening}}."
+    },
+    {
+      "id": "fld_1gmjivn6ks",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "is_active"
+    ]
+  }
+}

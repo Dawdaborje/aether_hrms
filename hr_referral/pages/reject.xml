@@ -1,0 +1,8 @@
+<page route="/hr/referrals/reject" title="Reject a referral" icon="user-x" roles="hr_referral.referral_admin">
+  <view type="form" function="reject_referral" submit="Reject" success="Rejected" redirect="/hr/referrals">
+    <group title="Referral" cols="1">
+      <field name="id" label="Referral" fieldType="many2one" source="list_referrals" optionLabel="candidate_name" entity="referrals" required="true"/>
+      <field name="reason" label="Reason" fieldType="textarea" required="true"/>
+    </group>
+  </view>
+</page>

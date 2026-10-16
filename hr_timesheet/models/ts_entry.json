@@ -1,0 +1,100 @@
+{
+  "model_id": "mdl_35g3ttzgh7",
+  "name": "ts_entry",
+  "label": "%ts_entry%",
+  "plural_label": "%ts_entrys%",
+  "icon": "clock",
+  "title_field": "work_date",
+  "fields": [
+    {
+      "id": "fld_yxdwhalmah",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true
+    },
+    {
+      "id": "fld_e5u13ozd0t",
+      "name": "project",
+      "label": "%project%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_j7gofcurff",
+      "name": "work_date",
+      "label": "%work_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_bbr8qiyttr",
+      "name": "hours",
+      "label": "%hours%",
+      "type": "decimal",
+      "required": true
+    },
+    {
+      "id": "fld_y0lbmaxxq9",
+      "name": "task",
+      "label": "%task%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_tqpstnjrsf",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 300
+    },
+    {
+      "id": "fld_vw1oqi6vgn",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_8u2dy654iu",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_by60nipn87",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_k50y2a3vj5",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_vuqx3pjkrr",
+          "value": "rejected",
+          "label": "%rejected%"
+        }
+      ],
+      "index": "plain",
+      "default": "draft"
+    },
+    {
+      "id": "fld_edns4aiwj7",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_5f6wmkl3q7",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<page route="/hr/performance/kras" title="Key result areas" menu_group="Performance" icon="target" sort="30" roles="hr_performance.perf_admin">
+  <view type="list" source="list_kras" create="/hr/performance/kras/new" create_label="New" open="/hr/performance/kras/{id}">
+    <columns>
+      <column field="name" label="Area"/>
+      <column field="description" label="About"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No key result areas" description="Templates and goals use these names."/>
+  </view>
+</page>

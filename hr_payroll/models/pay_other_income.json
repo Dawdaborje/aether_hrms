@@ -1,0 +1,74 @@
+{
+  "model_id": "mdl_rla5yymed9",
+  "name": "pay_other_income",
+  "label": "%pay_other_income%",
+  "plural_label": "%pay_other_incomes%",
+  "icon": "wallet",
+  "title_field": "label",
+  "fields": [
+    {
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "id": "fld_ueltq43lu6"
+    },
+    {
+      "id": "fld_727edhugc7",
+      "name": "year",
+      "label": "%year%",
+      "type": "string",
+      "max_length": 4,
+      "required": true
+    },
+    {
+      "id": "fld_jl8bceinvm",
+      "name": "label",
+      "label": "%label%",
+      "type": "string",
+      "max_length": 120,
+      "required": true
+    },
+    {
+      "id": "fld_yoxnaoc6n1",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true
+    },
+    {
+      "id": "fld_sqaap6bgcr",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "default": "declared",
+      "options": [
+        {
+          "id": "opt_vi6vfalr8d",
+          "value": "declared",
+          "label": "%declared%"
+        },
+        {
+          "id": "opt_32qiwczbbh",
+          "value": "verified",
+          "label": "%verified%"
+        },
+        {
+          "id": "opt_vkzbuo42cu",
+          "value": "rejected",
+          "label": "%rejected%"
+        }
+      ]
+    },
+    {
+      "id": "fld_lr7hvb4hfq",
+      "name": "reviewed_by",
+      "label": "%reviewed_by%",
+      "type": "string",
+      "max_length": 80
+    }
+  ]
+}

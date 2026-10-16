@@ -1,0 +1,8 @@
+<page route="/hr/config/payroll/rule-packs/new" title="Import a rule pack" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" function="import_rule_pack" submit="Import" success="Imported" redirect="/hr/config/payroll/rule-packs">
+    <group title="Pack" cols="1">
+      <field name="description" label="Description (JSON: id, country, kind, currency, valid_from, source, inputs, constants, tests)" fieldType="textarea" required="true"/>
+      <field name="expression" label="Expression (CEL)" fieldType="textarea" required="true"/>
+    </group>
+  </view>
+</page>

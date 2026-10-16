@@ -1,0 +1,13 @@
+<page route="/hr/approvals" title="Approvals" icon="inbox">
+  <view type="list" source="approvals_inbox" open="{route}">
+    <search/>
+    <columns>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="when" label="Date"/>
+      <column field="detail" label="Detail"/>
+    </columns>
+    <empty title="Nothing waiting" description="Requests that wait on your decision, from every HR area, appear here."/>
+  </view>
+</page>

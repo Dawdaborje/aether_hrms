@@ -1,0 +1,14 @@
+<page route="/hr/config/payroll/components" title="Salary components" menu_group="Payroll" icon="puzzle" sort="20" roles="hr_payroll.payroll_admin,hr_payroll.payroll_clerk,hr_payroll.payroll_approver,hr_payroll.payroll_finance">
+  <view type="list" source="list_pay_components" open="/hr/config/payroll/components/{id}" create="/hr/config/payroll/components/new" create_label="New">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="label" label="Label"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="source" label="Amount from" fieldType="badge"/>
+      <column field="is_taxable" label="Taxable" fieldType="boolean"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No components" description="Components are the building blocks of a salary structure."/>
+  </view>
+</page>

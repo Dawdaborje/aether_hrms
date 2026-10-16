@@ -1,0 +1,12 @@
+<page route="/hr/config/departures" title="Departures" roles="hr_onboarding.ob_manager" icon="door-open" menu_group="Offboarding" sort="10">
+  <view type="list" source="list_departures" create="/hr/config/departures/new" create_label="Record departure">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="last_day" label="Last day" fieldType="date"/>
+      <column field="notice_days_required" label="Notice days"/>
+      <column field="notice_shortfall_days" label="Days short"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No departures" description="Departures in progress appear here."/>
+  </view>
+</page>

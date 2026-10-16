@@ -70,8 +70,13 @@ fn create(input: New) -> Result<Record> {
     if !phase_of(&cycle)?.goals_editable() {
         return Err(Error::msg("goals can be set while the cycle is in goal setting or self review"));
     }
-    let template = require("perf_template", text(&cycle, "template").unwrap_or_default(), "template")?;
-    if !weighted(&template["kras"], "key result areas")?.iter().any(|(name, _)| name == &input.kra) {
+    // The areas of the person's own appraisal (a job or department template may differ from the cycle's).
+    let own = db::find::<Record>("perf_appraisal").filter("cycle", input.cycle.as_str()).filter("employee", input.employee.as_str()).first()?;
+    let kras = match own {
+        Some(appraisal) => appraisal["kras"].clone(),
+        None => require("perf_template", text(&cycle, "template").unwrap_or_default(), "template")?["kras"].clone(),
+    };
+    if !weighted(&kras, "key result areas")?.iter().any(|(name, _)| name == &input.kra) {
         return Err(Error::msg(format!("`{}` is not a key result area of this cycle", input.kra)));
     }
     let weight = input.weight.unwrap_or(1);

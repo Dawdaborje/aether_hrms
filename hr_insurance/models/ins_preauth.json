@@ -1,0 +1,149 @@
+{
+  "model_id": "mdl_duyfvcljzz",
+  "name": "ins_preauth",
+  "label": "%ins_preauth%",
+  "plural_label": "%ins_preauths%",
+  "icon": "badge-check",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_clyofykqed",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_fz47zht3rp",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_enrolment"
+    },
+    {
+      "id": "fld_kinc2adj6d",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_lbnfays75p",
+      "name": "member",
+      "label": "%member%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_member"
+    },
+    {
+      "id": "fld_wmnxmza7t4",
+      "name": "provider",
+      "label": "%provider%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_provider"
+    },
+    {
+      "id": "fld_fwg23zpgf7",
+      "name": "procedure",
+      "label": "%procedure%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_m5d6k5pm4r",
+      "name": "estimated_amount",
+      "label": "%estimated_amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_lfh6xv3ctb",
+      "name": "approved_amount",
+      "label": "%approved_amount%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_3lkb7c77pf",
+      "name": "consumed_amount",
+      "label": "%consumed_amount%",
+      "type": "decimal",
+      "default": 0,
+      "scale": 2
+    },
+    {
+      "id": "fld_xttbva7epi",
+      "name": "planned_date",
+      "label": "%planned_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_nf27y2awxt",
+      "name": "valid_until",
+      "label": "%valid_until%",
+      "type": "date"
+    },
+    {
+      "id": "fld_zzvhq537h7",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "submitted",
+      "options": [
+        {
+          "id": "opt_ams2yyrnhn",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_e6zi33clkh",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_2egnnuimgt",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_m7jgdlm3zp",
+          "value": "used",
+          "label": "%used%"
+        },
+        {
+          "id": "opt_llq3kf7vj7",
+          "value": "expired",
+          "label": "%expired%"
+        },
+        {
+          "id": "opt_sgftr4dqtk",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_25h74bs6jz",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_oiiyzaphyc",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ]
+}

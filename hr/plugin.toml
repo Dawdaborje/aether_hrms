@@ -12,7 +12,7 @@ See docs/design.md in this plugin (hr/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["party", "country", "currency", "company", "base_ui"]
-capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call", "report::export"]
 access_models = [
   { name = "department", permissions = ["read", "write"] },
   { name = "job", permissions = ["read", "write"] },
@@ -24,6 +24,7 @@ access_models = [
   { name = "employee_private", permissions = ["read", "write"] },
   { name = "work_location", permissions = ["read", "write"] },
   { name = "hire_hold", permissions = ["read", "write"] },
+  { name = "hr_setting", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
@@ -93,6 +94,8 @@ args = [{ name = "count", type = "int", default = 10 }]
 # Terms whose first day has come become current every night.
 [[schedule]]
 name = "apply-employment"
+title = "Apply due employment terms"
+description = "Makes employment terms current once their first day arrives."
 function = "apply_due_employments"
 cron = "10 0 * * *"
 
@@ -107,3 +110,9 @@ version = "0.1"
 [plugin.meta]
 kind = "addon"
 workspace = "hrms"
+
+[[ai_tool]]
+name = "org_chart"
+description = "The reporting structure: who reports to whom, optionally below one person"
+function = "org_chart"
+schema = { type = "object", properties = { root = { type = "string", description = "An employee's id to start from; the top when left out" } } }

@@ -29,6 +29,13 @@ access_models = [
 is_builtin = false
 wasm_file = "out/plugin.wasm"
 
+[[command]]
+name = "seed"
+function = "seed_expense_categories"
+help = "Create the usual receipt expense categories (idempotent)"
+on_install = true
+on_upgrade = true
+
 [[roles]]
 name = "expense_admin"
 label = "Expense administrator"
@@ -69,6 +76,8 @@ name = "advance_overdue"
 
 [[schedule]]
 name = "expense-nightly"
+title = "Flag overdue advances"
+description = "Announces, once, expense advances past their due date that are not used up or returned."
 function = "expense_nightly"
 cron = "50 0 * * *"
 

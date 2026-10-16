@@ -80,6 +80,16 @@ fn set_private(input: PrivateChange) -> Result<Record> {
     if data.as_object().is_some_and(|fields| fields.is_empty()) {
         return Err(Error::msg("there is nothing to change"));
     }
+    save_private(employee_id, data)
+}
+
+/// The private-details fields of `fields`, for callers that save them with other changes.
+pub fn private_part(fields: &Record) -> Record {
+    pick(fields, PRIVATE)
+}
+
+/// Write already-picked private fields for an employee, creating the record the first time.
+pub fn save_private(employee_id: &str, data: Record) -> Result<Record> {
     if let Some(born) = parse_optional(text(&data, "date_of_birth"))? {
         if born > parse_date(&crate::common::today()?)? {
             return Err(Error::msg("the date of birth is in the future"));

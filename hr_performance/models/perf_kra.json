@@ -1,0 +1,38 @@
+{
+  "model_id": "mdl_347zkfokzk",
+  "name": "perf_kra",
+  "label": "%perf_kra%",
+  "plural_label": "%perf_kras%",
+  "icon": "target",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_3iy1usdl2u",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "max_length": 160
+    },
+    {
+      "id": "fld_2xdumph7gd",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    },
+    {
+      "id": "fld_3wa3xmoirh",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "is_active"
+    ]
+  }
+}

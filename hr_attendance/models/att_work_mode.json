@@ -1,0 +1,78 @@
+{
+  "model_id": "mdl_bxyxmal0r8",
+  "name": "att_work_mode",
+  "label": "%att_work_mode%",
+  "plural_label": "%att_work_modes%",
+  "icon": "house",
+  "title_field": "work_date",
+  "fields": [
+    {
+      "id": "fld_f4xdpt5ccq",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ejkxemnyjt",
+      "name": "work_date",
+      "label": "%work_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_vf99v857gq",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_pgef0l96ft",
+          "value": "office",
+          "label": "%office%"
+        },
+        {
+          "id": "opt_v40a8x37fo",
+          "value": "home",
+          "label": "%home%"
+        },
+        {
+          "id": "opt_yylrdtveck",
+          "value": "remote",
+          "label": "%remote%"
+        },
+        {
+          "id": "opt_iixk0zllfn",
+          "value": "field",
+          "label": "%field%"
+        },
+        {
+          "id": "opt_p9be4x9twu",
+          "value": "travel",
+          "label": "%travel%"
+        }
+      ]
+    },
+    {
+      "id": "fld_rlynx9lls4",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_qnp877zw3b",
+      "fields": [
+        "employee",
+        "work_date"
+      ],
+      "unique": true
+    }
+  ]
+}

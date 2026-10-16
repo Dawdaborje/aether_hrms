@@ -1,0 +1,8 @@
+<page route="/hr/config/departures/waive" title="Waive notice shortfall" menu="false" roles="hr_onboarding.ob_manager">
+  <view type="form" function="waive_notice_shortfall" submit="Waive" success="Waived" redirect="/hr/config/letters">
+    <group title="Departure" cols="1">
+      <field name="id" label="Departure" fieldType="many2one" source="list_departures" optionLabel="employee" entity="departures" required="true"/>
+      <field name="reason" label="Why the missing notice days are excused" fieldType="textarea" required="true"/>
+    </group>
+  </view>
+</page>

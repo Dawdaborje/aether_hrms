@@ -1,0 +1,74 @@
+{
+  "model": "ins_claim",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "ins_admin",
+        "ins_reviewer",
+        "via:self"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "draft_only",
+      "operations": [
+        "write"
+      ],
+      "exempt_roles": [
+        "ins_admin",
+        "ins_reviewer",
+        "via:self"
+      ],
+      "when": {
+        "state": "draft"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "state",
+        "approved_amount",
+        "deductible_applied",
+        "copay_applied",
+        "decided_by",
+        "decided_on",
+        "rejection_reason",
+        "adjustment",
+        "submitted_on"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

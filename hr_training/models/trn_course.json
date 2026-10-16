@@ -109,6 +109,14 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_lawvjgyj3v",
+      "name": "program",
+      "label": "%program%",
+      "type": "string",
+      "max_length": 80,
+      "help": "Group courses into a programme."
     }
   ]
 }

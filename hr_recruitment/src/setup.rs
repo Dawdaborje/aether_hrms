@@ -33,6 +33,11 @@ struct CriterionInput {
 /// Start with the usual stages, if there are none yet.
 fn seed() -> Result<Vec<Record>> {
     require_manager()?;
+    seed_unchecked()
+}
+
+/// The same without the role check: the kernel runs it as the system on install and upgrade.
+fn seed_unchecked() -> Result<Vec<Record>> {
     if db::count("rec_stage", aether_sdk::db::Filter::all())? > 0 {
         return db::find("rec_stage").order_by("sequence").limit(50).all();
     }
@@ -109,6 +114,10 @@ fn new_reason(input: Record) -> Result<Record> {
 
 handler! {
     /// Create the usual stages (New, Screening, Interview, Offer, Hired, Rejected) if there are none.
+    fn install_seed(_: Empty) -> Vec<Record> {
+        seed_unchecked()
+    }
+
     fn seed_stages(_: Empty) -> Vec<Record> {
         seed()
     }

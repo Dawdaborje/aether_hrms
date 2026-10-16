@@ -21,6 +21,7 @@ access_models = [
   { name = "career_grade", permissions = ["read", "write"] },
   { name = "career_change", permissions = ["read", "write"] },
   { name = "career_letter_template", permissions = ["read", "write"] },
+  { name = "career_letter", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false

@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 /// Inputs the payroll fills in itself; a structure may declare them, an assignment may not set them.
 /// A clerk may still correct `unpaid_leave_days` and `overtime_hours` for one person in one run (the other four
 /// are facts about the period and the contract).
-pub const RESERVED_INPUTS: &[&str] = &["base_salary", "period_days", "days_worked", "periods_per_year", "unpaid_leave_days", "overtime_hours"];
+pub const RESERVED_INPUTS: &[&str] = &["base_salary", "period_days", "days_worked", "periods_per_year", "unpaid_leave_days", "overtime_hours", "exemptions_annual", "other_income_annual"];
 
 pub const FIXED_FOR_A_RUN: &[&str] = &["base_salary", "period_days", "days_worked", "periods_per_year"];
 

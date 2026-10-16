@@ -26,10 +26,54 @@ access_models = [
   { name = "leave_plan_assignment", permissions = ["read", "write"] },
   { name = "leave_encashment", permissions = ["read", "write"] },
   { name = "leave_comp_claim", permissions = ["read", "write"] },
+  { name = "leave_approver", permissions = ["read", "write"] },
+  { name = "leave_period", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_leave_types"
+help = "Create the usual leave types: annual, sick and unpaid (idempotent)"
+on_install = true
+on_upgrade = true
+
+[[ai_tool]]
+name = "leave_balances"
+description = "The person's own leave balance for each leave type: allocated, spent, pending, available and expiring soon"
+function = "assistant_leave_balances"
+schema = { type = "object", properties = { leave_type = { type = "string", description = "Only this leave type (its id), when asked about one" }, on = { type = "string", description = "The day to work it out for, YYYY-MM-DD; today when left out" } } }
+
+[[ai_tool]]
+name = "my_leave_requests"
+description = "The person's own leave requests and where each stands"
+function = "my_leave_requests"
+
+[[ai_tool]]
+name = "leave_waiting_for_me"
+description = "Leave requests waiting for the person to approve"
+function = "leave_waiting_for_me"
+
+[[ai_tool]]
+name = "who_is_away"
+description = "Who is on approved leave between two days"
+function = "who_is_away_between"
+schema = { type = "object", properties = { from = { type = "string", description = "YYYY-MM-DD" }, to = { type = "string", description = "YYYY-MM-DD" } }, required = ["from", "to"] }
+
+[[ai_tool]]
+name = "preview_leave"
+description = "How many working days a leave would cost the person, before asking for it"
+function = "preview_leave_days"
+schema = { type = "object", properties = { leave_type = { type = "string", description = "The leave type's id" }, start_date = { type = "string", description = "YYYY-MM-DD" }, end_date = { type = "string", description = "YYYY-MM-DD; the start date when one day" }, half_day = { type = "string" } }, required = ["leave_type", "start_date"] }
+
+[[ai_tool]]
+name = "request_leave"
+description = "Ask for leave for the person. Proposed to them, who confirms it; nothing is requested until they do"
+function = "request_leave"
+schema = { type = "object", properties = { leave_type = { type = "string", description = "The leave type's id" }, start_date = { type = "string", description = "YYYY-MM-DD" }, end_date = { type = "string", description = "YYYY-MM-DD" }, half_day = { type = "string" }, reason = { type = "string" } }, required = ["leave_type", "start_date"] }
+writes = true
 
 [[roles]]
 name = "leave_admin"
@@ -52,11 +96,15 @@ name = "leave_rejected"
 
 [[schedule]]
 name = "leave-nightly"
+title = "Update leave balances"
+description = "Accrues earned leave, lapses expired days and handles people going on leave and coming back."
 function = "leave_nightly"
 cron = "20 0 * * *"
 
 [[schedule]]
 name = "leave-yearly"
+title = "Allocate yearly leave"
+description = "Gives everyone their yearly leave and carry-over (safe to run again)."
 function = "allocate_yearly"
 cron = "30 0 1 1 *"
 

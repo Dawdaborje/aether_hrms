@@ -182,6 +182,18 @@ fn build_line(report: &Record, input: &Record, existing: Option<&Record>) -> Res
     data["rate"] = json!(rate);
     data["rate_date"] = json!(format_date(date));
     data["claimed"] = json!(claimed);
+    // The tax included in the claim, when the category carries a rate: claimed x rate / (100 + rate).
+    if let Some(category) = text(&data, "category").and_then(|c| db::get::<Record>("expense_category", c).ok().flatten()) {
+        if let Some(rate) = text(&category, "tax_rate").and_then(|r| Decimal::parse(r).ok()).filter(|r| !r.is_zero() && !r.is_negative()) {
+            if let Ok(hundred) = Decimal::whole(100, 2) {
+                if let Ok(base) = hundred.checked_add(rate) {
+                    if let Ok(tax) = claimed.times(rate, 6).and_then(|t| t.div(base, places)) {
+                        data["tax_amount"] = json!(tax);
+                    }
+                }
+            }
+        }
+    }
     data["dup_key"] = json!(duplicate_key(&format_date(date), text(&data, "merchant").unwrap_or(""), &amount, &currency));
     Ok(data)
 }

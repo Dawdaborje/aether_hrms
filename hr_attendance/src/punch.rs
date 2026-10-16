@@ -16,18 +16,18 @@ use crate::setup::{assignment_on, shift_of};
 const REPEAT_SECS: i64 = 20;
 
 #[derive(Deserialize)]
-struct Press {
+pub struct Press {
     #[serde(default)]
-    direction: Option<String>,
+    pub direction: Option<String>,
     #[serde(default)]
-    latitude: Option<Decimal>,
+    pub latitude: Option<Decimal>,
     #[serde(default)]
-    longitude: Option<Decimal>,
+    pub longitude: Option<Decimal>,
     /// Make a retry of the same press harmless: the same reference is recorded once.
     #[serde(default)]
-    client_ref: Option<String>,
+    pub client_ref: Option<String>,
     #[serde(default)]
-    source: Option<String>,
+    pub source: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -69,6 +69,11 @@ pub fn work_date_of(employee_id: &str, at: NaiveDateTime) -> Result<NaiveDate> {
 
 fn press(input: Press) -> Result<Value> {
     let person = my_employee()?.ok_or_else(|| Error::msg("you are not an employee: only an employee can punch"))?;
+    press_for(person, input)
+}
+
+/// Record a punch for a person already identified (by their own session, or by a kiosk's employee number and PIN).
+pub fn press_for(person: Record, input: Press) -> Result<Value> {
     let person_id = id_of(&person)?.to_string();
     if !matches!(text(&person, "status"), Some("active" | "probation") | None) {
         return Err(Error::msg("this person cannot punch right now"));

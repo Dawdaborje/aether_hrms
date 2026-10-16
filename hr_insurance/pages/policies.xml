@@ -1,0 +1,17 @@
+<page route="/hr/insurance/policies" title="Policies" model="ins_policy" icon="file-text" roles="ins_admin" menu_group="Setup" sort="32">
+  <view type="list" model="ins_policy" source="list_policies" create="/hr/insurance/policies/new" create_label="New policy">
+    <filter field="state" options="draft,active,expired,cancelled" label="State"/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="plan" label="Plan"/>
+      <column field="start_date" label="From" fieldType="date"/>
+      <column field="end_date" label="To" fieldType="date"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="activate" label="Activate" function="activate_policy" confirm="Activate this policy?"/>
+      <action name="cancel" label="Cancel" function="cancel_policy" confirm="Cancel this policy?" danger="true"/>
+    </actions>
+    <empty title="No policies" description="Create a policy for a plan and a plan year."/>
+  </view>
+</page>

@@ -1,0 +1,111 @@
+{
+  "model_id": "mdl_o2rc44raim",
+  "name": "ins_member",
+  "label": "%ins_member%",
+  "plural_label": "%ins_members%",
+  "icon": "user",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_s5g5zk7ylg",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_enrolment"
+    },
+    {
+      "id": "fld_5425bfd93d",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_oadgicwxlu",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_rtptlvdq64",
+      "name": "relationship",
+      "label": "%relationship%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_2scftmxyzf",
+          "value": "self",
+          "label": "%self%"
+        },
+        {
+          "id": "opt_wywwjqzap4",
+          "value": "spouse",
+          "label": "%spouse%"
+        },
+        {
+          "id": "opt_2wbvwxfsuy",
+          "value": "child",
+          "label": "%child%"
+        },
+        {
+          "id": "opt_wnaarj45cc",
+          "value": "parent",
+          "label": "%parent%"
+        },
+        {
+          "id": "opt_bvsjwy3dee",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_hd4ata52ag",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_iicftl2b3e",
+      "name": "dependent",
+      "label": "%dependent%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.dependent",
+      "target_id": "mdl_r3yz77dl34"
+    },
+    {
+      "id": "fld_stkelihhba",
+      "name": "date_of_birth",
+      "label": "%date_of_birth%",
+      "type": "date"
+    },
+    {
+      "id": "fld_2dpa5lrg3p",
+      "name": "coverage_start",
+      "label": "%coverage_start%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_a5pdybtxkq",
+      "name": "coverage_end",
+      "label": "%coverage_end%",
+      "type": "date"
+    },
+    {
+      "id": "fld_sef7ztarnr",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

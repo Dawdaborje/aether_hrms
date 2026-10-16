@@ -1,0 +1,17 @@
+<page route="/hr/config/payroll/components/new" title="New component" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" function="create_pay_component" submit="Create" success="Component created" redirect="/hr/config/payroll/components">
+    <group title="Component" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="label" label="Label" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="earning, deduction, employer, info" required="true"/>
+      <field name="source" label="Amount from" fieldType="selection" options="formula, input, amount"/>
+      <field name="formula" label="Formula"/>
+      <field name="input_name" label="Input name"/>
+      <field name="amount" label="Fixed amount"/>
+      <field name="when_expr" label="Only when"/>
+      <field name="is_taxable" label="Taxable earning" fieldType="boolean"/>
+      <field name="pro_rata" label="Pro-rata by days worked" fieldType="boolean"/>
+      <field name="is_statistical" label="Statistical only" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

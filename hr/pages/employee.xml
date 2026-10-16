@@ -21,6 +21,7 @@
       <field name="manager" label="Reports to" fieldType="many2one" source="list_employees"
                optionLabel="display_name" entity="employees"/>
       <field name="work_location" label="Work location"/>
+      <field name="cost_center" label="Cost centre"/>
     </group>
     <group title="Contact" cols="2">
       <field name="work_email" label="Work email"/>

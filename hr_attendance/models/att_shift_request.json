@@ -1,0 +1,129 @@
+{
+  "model_id": "mdl_pxsypc6ohv",
+  "name": "att_shift_request",
+  "label": "%att_shift_request%",
+  "plural_label": "%att_shift_requests%",
+  "icon": "repeat",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_8piml7trq2",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_juusvgqj77",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_r496yh7lfy",
+      "name": "date_from",
+      "label": "%date_from%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_22fbr71ad4",
+      "name": "date_to",
+      "label": "%date_to%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_8lvwx275kd",
+      "name": "shift",
+      "label": "%shift%",
+      "type": "link",
+      "target": "att_shift",
+      "required": true
+    },
+    {
+      "id": "fld_0f6ze9oyvh",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_ohwe6xhbcq",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_6mmwhituos",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_ya5m4gg1gn",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_2tmth99eag",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_7gdr0jd7al",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "required": true,
+      "default": "pending",
+      "index": "plain"
+    },
+    {
+      "id": "fld_efabs568ie",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "help": "The requester's manager when it was made.",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_o4bjo335cy",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ilkgwkaz0s",
+      "name": "decided_on",
+      "label": "%decided_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_aatafybpgj",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "reference",
+      "employee",
+      "shift",
+      "date_from",
+      "date_to",
+      "status"
+    ]
+  }
+}

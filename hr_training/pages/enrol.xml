@@ -1,0 +1,7 @@
+<page route="/hr/training/enrol" title="Enrol in a session" menu="false" model="trn_session">
+  <view type="form" function="enrol_in_session" submit="Enrol" success="Enrolled" redirect="/hr/training">
+    <group title="Session" cols="1">
+      <field name="session" label="Session" fieldType="many2one" source="list_sessions" optionLabel="reference" entity="sessions" required="true"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,12 @@
+<page route="/hr/insurance/policies/new" title="New policy" menu="false" model="ins_policy" roles="ins_admin">
+  <view type="form" function="create_policy" submit="Create policy" success="Policy created" redirect="/hr/insurance/policies">
+    <group title="Policy" cols="2">
+      <field name="number" label="Policy number" required="true"/>
+      <field name="plan" label="Plan" fieldType="many2one" source="list_insurance_plans" optionLabel="name" entity="plans" required="true"/>
+      <field name="start_date" label="From" fieldType="date" required="true"/>
+      <field name="end_date" label="To" fieldType="date" required="true"/>
+      <field name="renewal_of" label="Renews" fieldType="many2one" source="list_policies" optionLabel="number" entity="policies"/>
+      <field name="notes" label="Notes" fieldType="text" colspan="2"/>
+    </group>
+  </view>
+</page>

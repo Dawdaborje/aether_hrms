@@ -190,6 +190,12 @@
       "type": "int",
       "default": 0,
       "help": "The order lines were added in, so limits apply to the later claim."
+    },
+    {
+      "id": "fld_qsyxky2y45",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal"
     }
   ],
   "indexes": [

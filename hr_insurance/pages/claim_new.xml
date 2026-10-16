@@ -1,0 +1,16 @@
+<page route="/hr/insurance/claim" title="New insurance claim" menu="false" model="ins_claim">
+  <view type="form" function="submit_insurance_claim" submit="Submit" success="Submitted" redirect="/hr/insurance">
+    <group title="Who and when" cols="2">
+      <field name="enrolment" label="Enrolment" fieldType="many2one" source="my_insurance_enrolments" optionLabel="reference" entity="enrolments" required="true"/>
+      <field name="member" label="Covered person" fieldType="many2one" source="my_insurance_members" optionLabel="name" entity="people" help="Leave empty when the claim is for yourself."/>
+      <field name="service_date" label="Service date" fieldType="date" required="true"/>
+      <field name="provider" label="Health facility" fieldType="many2one" source="list_insurance_providers" optionLabel="name" entity="facilities"/>
+      <field name="preauth" label="Preauthorisation" fieldType="many2one" source="list_preauthorisations" optionLabel="reference" entity="preauthorisations" help="Needed for claims at or above the plan's threshold."/>
+    </group>
+    <group title="What was paid" cols="2">
+      <field name="category" label="Category" fieldType="selection" options="consultation, hospital, pharmacy, laboratory, dental, optical, other"/>
+      <field name="amount" label="Amount" required="true"/>
+      <field name="description" label="Description" fieldType="text" colspan="2" required="true"/>
+    </group>
+  </view>
+</page>

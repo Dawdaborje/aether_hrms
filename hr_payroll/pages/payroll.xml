@@ -1,12 +1,23 @@
 <page route="/hr/payroll" title="Pay runs" model="pay_run" icon="banknote">
-  <view type="list" model="pay_run" source="list_pay_runs">
+  <view type="list" model="pay_run" source="list_pay_runs" open="/hr/payroll/review/{id}" create="/hr/payroll/new" create_label="New run">
     <search/>
     <columns>
       <column field="number" label="Run"/>
       <column field="name" label="Name"/>
-      <column field="period_end" label="Period end"/>
+      <column field="period_start" label="From" fieldType="date"/>
+      <column field="period_end" label="To" fieldType="date"/>
       <column field="status" label="Status" fieldType="badge"/>
     </columns>
+    <actions>
+      <action name="start" label="Calculate" function="start_pay_run"/>
+      <action name="approve" label="Approve" function="approve_pay_run"/>
+      <action name="mail" label="Email payslip notices" function="send_payslip_emails"/>
+      <action name="bank" label="Bank file (CSV)" function="export_bank_file"/>
+      <action name="bankxml" label="Bank file (ISO 20022)" function="export_bank_file_xml"/>
+      <action name="register" label="Register (Excel)" function="export_payroll_register"/>
+      <action name="diff" label="Correction difference (Excel)" function="export_correction_difference"/>
+      <action name="cancel" label="Cancel" function="cancel_pay_run" confirm="Cancel this pay run?" danger="true"/>
+    </actions>
     <empty title="No pay runs" description="A payroll clerk creates one for a period."/>
   </view>
 </page>

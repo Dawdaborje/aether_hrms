@@ -39,6 +39,8 @@ name = "referral_bonus_due"
 
 [[schedule]]
 name = "referral-nightly"
+title = "Update referral bonuses"
+description = "Brings referrals up to date with recruitment and releases or forfeits bonuses of hired referrals after the waiting period."
 function = "referral_nightly"
 cron = "55 1 * * *"
 

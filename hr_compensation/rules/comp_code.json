@@ -14,7 +14,8 @@
         "write"
       ],
       "roles": [
-        "comp_admin"
+        "comp_admin",
+        "via:*"
       ]
     }
   ],

@@ -107,7 +107,39 @@ struct Id {
     id: String,
 }
 
+/// (name, code, paid, needs an allocation)
+const SEED_TYPES: &[(&str, &str, bool, bool)] = &[
+    ("Annual leave", "ANNUAL", true, true),
+    ("Sick leave", "SICK", true, true),
+    ("Unpaid leave", "UNPAID", false, false),
+];
+
+/// The common leave types, each only when its name is free. How many days people get is
+/// left to the organization: grant them by allocation or set `annual_days` on the type.
+fn seed_types() -> Result<Value> {
+    let mut added = 0;
+    for (name, code, paid, allocation) in SEED_TYPES {
+        if db::find::<Record>("leave_type").filter("name", *name).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>(
+            "leave_type",
+            &json!({
+                "name": name, "code": code, "is_paid": paid, "requires_allocation": allocation,
+                "validation": "manager", "half_days": true, "is_active": true,
+            }),
+        )?;
+        added += 1;
+    }
+    Ok(json!({ "leave_types": added }))
+}
+
 handler! {
+    /// Starter leave types; runs on install and upgrade.
+    fn seed_leave_types(_: Empty) -> Value {
+        seed_types()
+    }
+
     fn create_leave_type(input: Record) -> Record {
         new_type(input)
     }

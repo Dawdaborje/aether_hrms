@@ -1,0 +1,14 @@
+<page route="/hr/config/attendance/shifts" title="Shifts" menu_group="Attendance" icon="clock" sort="10" roles="hr_attendance.att_admin">
+  <view type="list" source="list_shifts" open="/hr/config/attendance/shifts/{id}" create="/hr/config/attendance/shifts/new" create_label="New">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="start_time" label="Start"/>
+      <column field="end_time" label="End"/>
+      <column field="grace_late_min" label="Late grace (min)"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No shifts" description="A shift gives a person their working window and tolerances."/>
+  </view>
+</page>

@@ -1,0 +1,9 @@
+<page route="/hr/timesheets/projects/new" title="New project" menu="false" roles="hr_timesheet.timesheet_admin">
+  <view type="form" function="create_ts_project" submit="Create" success="Project created" redirect="/hr/timesheets/projects">
+    <group title="Project" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="cost_per_hour" label="Cost per hour"/>
+    </group>
+  </view>
+</page>

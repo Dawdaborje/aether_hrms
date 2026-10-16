@@ -103,6 +103,11 @@ struct Chain {
 }
 
 #[derive(Deserialize)]
+struct LinkMe {
+    employee: String,
+}
+
+#[derive(Deserialize)]
 struct LinkUser {
     employee: String,
     user: String,
@@ -182,7 +187,12 @@ fn hire(input: Hire) -> Result<Record> {
         Some(date) => format_date(parse_date(date)?),
         None => today()?,
     };
-    let probation_end = parse_optional(text(&input.fields, "probation_end"))?;
+    // The organisation's default probation applies when the hire form gave none.
+    let default_end = if text(&input.fields, "probation_end").is_none() { crate::settings::default_probation_end(&start)? } else { None };
+    let probation_end = match &default_end {
+        Some(end) => parse_optional(Some(end.as_str()))?,
+        None => parse_optional(text(&input.fields, "probation_end"))?,
+    };
     check_dates(Some(parse_date(&start)?), probation_end, parse_optional(text(&input.fields, "date_of_birth"))?)?;
 
     let mut data = pick(&input.fields, IDENTITY);
@@ -194,6 +204,12 @@ fn hire(input: Hire) -> Result<Record> {
     }
     if let Some(phone) = input.phone.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
         data["work_phone"] = json!(phone);
+    }
+    if let Some(end) = default_end {
+        data["probation_end"] = json!(end);
+    }
+    if data.get("notice_days").is_none_or(Value::is_null) {
+        data["notice_days"] = json!(crate::settings::default_notice_days()?);
     }
     data["hire_date"] = json!(start);
     data["first_hire_date"] = json!(start);
@@ -262,20 +278,55 @@ fn change(input: Change) -> Result<Record> {
         return Err(Error::msg("this employment has ended: its record can no longer be changed"));
     }
     check_image(&input.fields)?;
-    let data = pick(&input.fields, IDENTITY);
-    if data.as_object().is_some_and(|fields| fields.is_empty()) {
-        return Err(Error::msg("there is nothing to change"));
+
+    // The form posts everything on it. Three kinds of field, three homes:
+    //  - identity: the employee row itself,
+    //  - placement (department, job, position, manager, type, location): the employment history,
+    //    from today, only where the value actually differs,
+    //  - private details: the private record.
+    let mut identity = pick(&input.fields, IDENTITY);
+    if let Some(fields) = identity.as_object_mut() {
+        // Where someone works is a term: it is kept in the history and mirrored on the row.
+        fields.remove("work_location");
     }
-    if let Some(company) = text(&data, "company") {
+    let mut placement = serde_json::Map::new();
+    if let Some(sent) = input.fields.as_object() {
+        for field in employment::PLACEMENT_FIELDS {
+            let Some(new) = sent.get(*field) else { continue };
+            let new_text = new.as_str().map(str::trim).filter(|v| !v.is_empty());
+            let old_text = text(&existing, field).filter(|v| !v.is_empty());
+            // A value the form left empty clears the field, but only if there is one to clear.
+            if new_text != old_text {
+                placement.insert((*field).to_string(), new_text.map_or(Value::Null, |v| json!(v)));
+            }
+        }
+    }
+    let private = crate::people::private_part(&input.fields);
+    let nothing = |value: &Value| value.as_object().is_none_or(|fields| fields.is_empty());
+
+    if nothing(&identity) && placement.is_empty() && nothing(&private) {
+        return Ok(existing);
+    }
+    if let Some(company) = text(&identity, "company") {
         require("company", company, "company")?;
     }
     check_dates(
         parse_optional(text(&existing, "hire_date"))?,
-        parse_optional(text(&data, "probation_end").or_else(|| text(&existing, "probation_end")))?,
+        parse_optional(text(&identity, "probation_end").or_else(|| text(&existing, "probation_end")))?,
         None,
     )?;
-    explain(db::update::<Record>("employee", id_of(&existing)?, &data), "could not change the employee")?
-        .ok_or_else(|| Error::msg("the employee is gone"))
+
+    if !nothing(&identity) {
+        explain(db::update::<Record>("employee", id_of(&existing)?, &identity), "could not change the employee")?
+            .ok_or_else(|| Error::msg("the employee is gone"))?;
+    }
+    if !placement.is_empty() {
+        employment::apply_from_today(&existing, &Value::Object(placement))?;
+    }
+    if !nothing(&private) {
+        crate::people::save_private(id_of(&existing)?, private)?;
+    }
+    require("employee", &input.id, "employee")
 }
 
 /// Move an employee to another status. Ending the employment stops their contract and tells the
@@ -558,7 +609,17 @@ handler! {
     }
 
     fn get_employee(input: Id) -> Option<Record> {
-        db::get("employee", &input.id)
+        let Some(mut row) = db::get::<Record>("employee", &input.id)? else { return Ok(None) };
+        // Private details live in their own record; the form edits them with the rest. A person
+        // who may not read them (the rules decide) simply gets the row without them.
+        if let Ok(Some(private)) = db::find::<Record>("employee_private").filter("employee", input.id.as_str()).first() {
+            if let (Some(row), Some(private)) = (row.as_object_mut(), crate::people::private_part(&private).as_object()) {
+                for (key, value) in private {
+                    row.entry(key.clone()).or_insert_with(|| value.clone());
+                }
+            }
+        }
+        Ok(Some(row))
     }
 
     fn list_employees(input: Search) -> Value {
@@ -583,6 +644,24 @@ handler! {
 
     fn link_user(input: LinkUser) -> Record {
         link_account(input)
+    }
+
+    /// Link the caller's own login to an employee record. HR staff only: anyone else is told to
+    /// ask HR, so nobody can claim someone else's employment record.
+    fn link_me(input: LinkMe) -> Record {
+        if acting_employee()?.is_some() {
+            return Err(Error::msg("your account is already linked to an employee"));
+        }
+        let who = context::current()?;
+        let Some(user) = who.actor.id.clone() else {
+            return Err(Error::msg("sign in to link your account"));
+        };
+        if !(who.has_role("hr.hr_user") || who.has_role("hr.hr_manager")) {
+            return Err(Error::msg(
+                "only HR staff can link an account to an employee; ask HR to link your account",
+            ));
+        }
+        link_account(LinkUser { employee: input.employee, user })
     }
 
     /// The caller's own employee record; none when the caller is not an employee.

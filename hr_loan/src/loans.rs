@@ -598,6 +598,16 @@ handler! {
         decide(input)
     }
 
+    /// One-click approve for a page action (the action sends only the record id).
+    fn approve_loan(input: Id) -> Record {
+        decide(Decide { id: input.id, approve: true, note: None })
+    }
+
+    /// One-click reject for a page action; the reason recorded is "Declined" (use `decide_loan` for a note).
+    fn reject_loan(input: Id) -> Record {
+        decide(Decide { id: input.id, approve: false, note: Some("Declined".into()) })
+    }
+
     fn cancel_loan(input: Id) -> Record {
         cancel(input)
     }

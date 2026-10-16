@@ -19,6 +19,10 @@ Salary structures (exact-decimal Swift payroll formulas), parallel batched pay r
 | `payslip` / `pay_error` | Results and per-employee failures |
 | `pay_rule_pack` | Importable rule packs |
 | `pay_setting` | Org payroll settings |
+| `pay_component` | Reusable earning/deduction/employer/info building block; `compose_structure` turns a list of them into an immutable structure |
+| `pay_period` | Payroll calendar; with `require_open_period` a run must fall inside an open one |
+| `pay_tax_slab` | Dated yearly bands (+ standard deduction) that become the `bracket()` constant tables of a composed structure |
+| `pay_exemption_category` / `pay_exemption_declaration` | Employee tax exemptions: declare → proof → verify; feeds the input `exemptions_annual` |
 | `counter` | Numbering |
 
 ## Design
@@ -27,6 +31,13 @@ Salary structures (exact-decimal Swift payroll formulas), parallel batched pay r
 - Runs are planned in pages and calculated in parallel background batches (fixed work budget per call); every step is idempotent/safe to retry. `watch_pay_runs` recovers stuck batches.
 - Inputs: employment terms from `hr`, days employed in period, leave/attendance summaries, `hr_compensation.payroll_adjustments`. Approval refuses runs with calculation errors; approver ≠ maker. Approval locks the compensation period and emits totals for accounting.
 - Employees read own payslips only after approval.
+
+## Library
+
+- `compose_structure` reads components in the order given; a pro-rata component is scaled by `days_worked / period_days`; taxable earnings carry the tag `taxable`; slabs become constants (`<name>` and `<name>_standard_deduction`).
+- `pay_setting.periods_per_year` replaces the fixed 12; `exemptions_annual` is filled only for structures that declare it.
+- `bulk_assign_structure` assigns up to 100 people per call and reports failures per person.
+- Extra pay (incentive, retention, additional salary, arrears) is a `hr_compensation` adjustment/award, not a payroll model.
 
 ## Functions, commands, events
 

@@ -358,7 +358,35 @@ fn named_employee(named: Option<String>) -> Result<Option<String>> {
 }
 
 
+const SEED_CATEGORIES: &[(&str, &str, &str)] = &[
+    ("LAPTOP", "Laptop", "equipment"),
+    ("PHONE", "Phone", "equipment"),
+    ("ACCESS", "Access card or keys", "equipment"),
+    ("VEHICLE", "Vehicle", "vehicle"),
+];
+
+/// Starter asset categories, each only when its code is free.
+fn seed_categories() -> Result<Value> {
+    let mut added = 0;
+    for (code, name, kind) in SEED_CATEGORIES {
+        if db::find::<Record>("asset_category").filter("code", *code).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>(
+            "asset_category",
+            &json!({ "code": code, "name": name, "kind": kind, "return_on_departure": true, "is_active": true }),
+        )?;
+        added += 1;
+    }
+    Ok(json!({ "categories": added }))
+}
+
 handler! {
+    /// Starter asset categories; runs on install and upgrade.
+    fn seed_asset_categories(_: Empty) -> Value {
+        seed_categories()
+    }
+
     fn create_asset_category(input: CategoryInput) -> Record {
         category(input)
     }

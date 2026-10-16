@@ -77,6 +77,11 @@ struct Id {
 }
 
 #[derive(Deserialize)]
+struct Payees {
+    employees: Vec<String>,
+}
+
+#[derive(Deserialize)]
 struct Who {
     #[serde(default)]
     employee: Option<String>,
@@ -443,6 +448,27 @@ handler! {
 
     fn my_bank_accounts(_: Empty) -> Vec<Record> {
         list_for("doc_bank", Who { employee: None })
+    }
+
+    /// Active bank accounts of many people at once, for paying a payroll run. Documents administrators and
+    /// payroll finance or admin only. At most 1000 people.
+    fn payment_accounts(input: Payees) -> Vec<Record> {
+        let who = context::current()?;
+        if !(is_admin()? || who.has_role("hr_payroll.payroll_finance") || who.has_role("hr_payroll.payroll_admin")) {
+            return Err(Error::msg("bank details are for documents administrators and payroll finance"));
+        }
+        if input.employees.len() > 1000 {
+            return Err(Error::msg("at most 1000 people per call"));
+        }
+        let mut out = Vec::new();
+        for chunk in input.employees.chunks(100) {
+            let rows: Vec<Record> = db::find::<Record>("doc_bank")
+                .matching(aether_sdk::db::Filter::one_of("employee", chunk.to_vec()).and(aether_sdk::db::Filter::eq("is_active", true)))
+                .limit(500)
+                .all()?;
+            out.extend(rows);
+        }
+        Ok(out)
     }
 
     fn list_bank_accounts(input: Who) -> Vec<Record> {

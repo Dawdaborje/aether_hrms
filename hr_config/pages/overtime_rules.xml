@@ -1,0 +1,10 @@
+<page route="/hr/config/attendance/overtime" title="Overtime rules" menu_group="Attendance" icon="timer" sort="30" roles="hr_attendance.att_admin">
+  <view type="list" source="list_overtime_rules">
+    <columns>
+      <column field="name" label="Rule"/>
+      <column field="day_kind" label="Day" fieldType="badge"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No overtime rules" description="Rules decide how extra minutes are weighed by kind of day."/>
+  </view>
+</page>

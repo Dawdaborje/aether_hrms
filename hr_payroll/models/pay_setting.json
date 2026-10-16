@@ -13,6 +13,59 @@
       "type": "bool",
       "default": false,
       "help": "Let a run be approved although its structure uses a rule pack nobody has verified: for test organisations only."
+    },
+    {
+      "id": "fld_m7ga8fsl75",
+      "name": "periods_per_year",
+      "label": "%periods_per_year%",
+      "type": "int",
+      "default": 12,
+      "help": "Pay periods in a year: used to annualise tax."
+    },
+    {
+      "id": "fld_616efogqvh",
+      "name": "require_open_period",
+      "label": "%require_open_period%",
+      "type": "bool",
+      "default": false,
+      "help": "A run must fall inside an open payroll period."
+    },
+    {
+      "id": "fld_b83fflu4yk",
+      "name": "email_payslip",
+      "label": "%email_payslip%",
+      "type": "bool",
+      "default": false,
+      "help": "Tell employees when their payslip is approved."
+    },
+    {
+      "id": "fld_459cv7pbbx",
+      "name": "count_pending_declarations",
+      "label": "%count_pending_declarations%",
+      "type": "bool",
+      "default": true,
+      "help": "Use declared (unverified) exemptions until proof is verified."
+    },
+    {
+      "id": "fld_wve7jj1eo0",
+      "name": "payer_name",
+      "label": "%payer_name%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_zakorylcyh",
+      "name": "payer_iban",
+      "label": "%payer_iban%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_nhfydxcs8l",
+      "name": "payer_bic",
+      "label": "%payer_bic%",
+      "type": "string",
+      "max_length": 120
     }
   ]
 }

@@ -21,7 +21,7 @@ Install from the **base** workspace first (or let dependency install pull them):
 
 HR core also needs those for party identity, company scoping, and money/dates.
 
-## Plugins (19)
+## Plugins (24)
 
 | Plugin | Role | Design |
 |---|---|---|
@@ -42,8 +42,14 @@ HR core also needs those for party identity, company scoping, and money/dates.
 | [`hr_assets`](./hr_assets) | Custody ledger for equipment/vehicles | [docs/design.md](./hr_assets/docs/design.md) |
 | [`hr_loan`](./hr_loan) | Staff loans, schedule, payroll deductions | [docs/design.md](./hr_loan/docs/design.md) |
 | [`hr_benefits`](./hr_benefits) | Plans, accrual ledger, claims, insurance | [docs/design.md](./hr_benefits/docs/design.md) |
+| [`hr_insurance`](./hr_insurance) | Group health insurance: plans, policies, enrolments, claims, premiums | [docs/design.md](./hr_insurance/docs/design.md) |
 | [`hr_referral`](./hr_referral) | Referrals and tenure-gated bonus | [docs/design.md](./hr_referral/docs/design.md) |
 | [`hr_documents`](./hr_documents) | Identity docs, emergency contacts, bank split | [docs/design.md](./hr_documents/docs/design.md) |
+| [`hr_fleet`](./hr_fleet) | Company vehicles: assignment, fuel and trip logs, services | — |
+| [`hr_timesheet`](./hr_timesheet) | Hours against projects, manager approval, summary with cost | — |
+| [`hr_approvals`](./hr_approvals) | One inbox over every HR plugin's waiting requests | — |
+| [`hr_assistant`](./hr_assistant) | Answers policy questions from indexed documents; the AI assistant uses it and other plugins' `[[ai_tool]]` functions | `ai`, `ocr` |
+| [`hr_config`](./hr_config) | One setup app: HR defaults, leave, attendance, payroll configuration (forwards to the owning plugins) | — |
 
 ## Handoff to accounting
 

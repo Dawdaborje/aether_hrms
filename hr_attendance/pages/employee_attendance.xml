@@ -1,3 +1,3 @@
-<page extends="/hr/employees/{id}, /hr/me" title="Attendance" params="employee={id}" sort="50">
+<page extends="/hr/employees/{id}" roles="att_admin" title="Attendance" params="employee={id}" sort="50">
   <use component="attendance_panel"/>
 </page>

@@ -51,6 +51,14 @@
       "type": "link",
       "target": "att_rotation",
       "help": "Instead of a shift: the rotation decides each day."
+    },
+    {
+      "id": "fld_yk2gm9e6aq",
+      "name": "source_request",
+      "label": "%source_request%",
+      "type": "string",
+      "max_length": 60,
+      "help": "The shift request that made this temporary assignment."
     }
   ],
   "indexes": [

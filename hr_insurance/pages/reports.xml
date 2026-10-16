@@ -1,0 +1,14 @@
+<page route="/hr/insurance/reports/coverage" title="Who is covered" model="ins_member" icon="list-checks" roles="ins_admin,ins_reviewer" menu_group="Reports" sort="80">
+  <view type="list" source="insurance_dependants_coverage">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="policy" label="Policy"/>
+      <column field="member" label="Person"/>
+      <column field="relationship" label="Relationship" fieldType="badge"/>
+      <column field="date_of_birth" label="Born" fieldType="date"/>
+      <column field="coverage_start" label="From" fieldType="date"/>
+      <column field="coverage_end" label="To" fieldType="date"/>
+    </columns>
+    <empty title="Nobody covered" description="People on active enrolments appear here."/>
+  </view>
+</page>

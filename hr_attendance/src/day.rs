@@ -240,6 +240,11 @@ fn nightly(on: Option<NaiveDate>) -> Result<Value> {
     let today = today_date()?;
     let now = crate::common::now_utc()?;
     let (mut recomputed, mut absent, mut failed) = (0u64, 0u64, 0u64);
+    if on.is_none() {
+        if let Err(error) = crate::requests::apply_due(today) {
+            log::error(&format!("attendance requests: {error}"));
+        }
+    }
     // A named day (a backfill, by an administrator); otherwise the last two.
     let days: Vec<NaiveDate> = match on {
         Some(day) => {
@@ -288,6 +293,21 @@ fn days(input: Range) -> Result<Vec<Record>> {
     db::find::<Record>("att_day").matching(filter).order_by("-work_date").limit(1000).all()
 }
 
+/// The window a calendar asks for.
+#[derive(Deserialize)]
+struct Window {
+    start: String,
+    end: String,
+}
+
+#[derive(Deserialize)]
+struct BulkMark {
+    department: String,
+    date: String,
+    status: String,
+    reason: String,
+}
+
 fn override_day(input: Override) -> Result<Record> {
     require_admin()?;
     if input.reason.trim().is_empty() {
@@ -299,10 +319,16 @@ fn override_day(input: Override) -> Result<Record> {
     if me.as_ref().is_some_and(|m| text(m, "id") == text(&person, "id")) {
         return Err(Error::msg("nobody overrides their own attendance"));
     }
-    let existing = match stored(id_of(&person)?, date)? {
+    set_override(&person, date, &input.status, &input.reason, me.and_then(|m| text(&m, "id").map(str::to_string)))
+}
+
+/// Put a manager-style override on a person's day, making the day first if there is none yet. A locked day
+/// is refused.
+pub fn set_override(person: &Record, date: NaiveDate, status: &str, reason: &str, by: Option<String>) -> Result<Record> {
+    let existing = match stored(id_of(person)?, date)? {
         Some(day) => day,
         None => {
-            let (facts, shift) = gather(&person, date)?;
+            let (facts, shift) = gather(person, date)?;
             let blank = compute(&facts).unwrap_or(crate::rules::Day {
                 status: Status::Unscheduled,
                 first_in: None,
@@ -317,18 +343,13 @@ fn override_day(input: Override) -> Result<Record> {
                 is_early_exit: false,
                 review: Vec::new(),
             });
-            write_day(id_of(&person)?, date, &blank, shift.as_ref(), &inputs_hash(&facts))?
+            write_day(id_of(person)?, date, &blank, shift.as_ref(), &inputs_hash(&facts))?
         }
     };
     if existing.get("locked") == Some(&json!(true)) {
         return Err(Error::msg("this day is closed for payroll"));
     }
-    db::update::<Record>(
-        "att_day",
-        id_of(&existing)?,
-        &json!({ "override_status": input.status, "override_reason": input.reason, "override_by": me.and_then(|m| text(&m, "id").map(str::to_string)) }),
-    )?
-    .ok_or_else(|| Error::msg("the day is gone"))
+    db::update::<Record>("att_day", id_of(&existing)?, &json!({ "override_status": status, "override_reason": reason, "override_by": by }))?.ok_or_else(|| Error::msg("the day is gone"))
 }
 
 /// Close a period for payroll: its days are never recomputed or overridden again.
@@ -441,6 +462,28 @@ handler! {
         })
     }
 
+    /// The roster as calendar events: one chip per person per day in the window, titled with the name and
+    /// the day's status. Only days the caller may see (the same rules as `list_days`).
+    fn roster_events(input: Window) -> Vec<Value> {
+        let day_of = |s: &str| s.get(..10).unwrap_or(s).to_string();
+        let rows = days(Range { employee: None, from: day_of(&input.start), to: day_of(&input.end), status: None })?;
+        let mut names: std::collections::BTreeMap<String, String> = std::collections::BTreeMap::new();
+        let mut out = Vec::new();
+        for r in rows.into_iter().take(1500) {
+            let who = text(&r, "employee").unwrap_or_default().to_string();
+            if !names.contains_key(&who) {
+                let n = db::get::<Record>("employee", &who)?.and_then(|e| text(&e, "display_name").map(str::to_string)).unwrap_or_else(|| who.clone());
+                names.insert(who.clone(), n);
+            }
+            let status = text(&r, "status").unwrap_or("").replace('_', " ");
+            out.push(json!({
+                "id": r["id"], "employee": who, "title": format!("{} · {}", names[&who], status),
+                "starts_at": r["work_date"], "ends_at": r["work_date"], "status": r.get("status"),
+            }));
+        }
+        Ok(out)
+    }
+
     /// Days of the people the caller may see.
     fn list_days(input: Range) -> Vec<Record> {
         days(input)
@@ -455,6 +498,30 @@ handler! {
     fn recompute_day(input: OnDay) -> Option<Record> {
         let person = employee(&input.employee)?;
         recompute(&person, parse_date(&input.date)?)
+    }
+
+    /// Mark one status on one day for everyone in a department (up to 100): the attendance tool.
+    /// Each person is handled alone; failures (a locked day, an unemployed person) are listed.
+    fn mark_attendance_bulk(input: BulkMark) -> Value {
+        require_admin()?;
+        if input.reason.trim().is_empty() {
+            return Err(Error::msg("say why the days are marked"));
+        }
+        let date = parse_date(&input.date)?;
+        let me = my_employee()?;
+        let by = me.as_ref().and_then(|m| text(m, "id").map(str::to_string));
+        let (mut done, mut failed) = (0usize, Vec::new());
+        for id in crate::setup::department_people(&input.department)? {
+            if by.as_deref() == Some(id.as_str()) {
+                continue;
+            }
+            let result = employee(&id).and_then(|p| set_override(&p, date, &input.status, input.reason.trim(), by.clone()));
+            match result {
+                Ok(_) => done += 1,
+                Err(e) => failed.push(json!({ "employee": id, "error": e.to_string() })),
+            }
+        }
+        Ok(json!({ "marked": done, "failed": failed }))
     }
 
     fn override_attendance_day(input: Override) -> Record {

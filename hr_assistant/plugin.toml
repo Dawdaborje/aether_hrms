@@ -1,0 +1,33 @@
+[plugin]
+name = "hr_assistant"
+icon_path = "assets/logo.svg"
+label = "HR assistant"
+version = "0.1.0"
+description = "Answers questions about the company's HR policies from the documents HR uploads."
+long_description = """
+HR administrators index policy documents (a handbook, a leave policy: any PDF, Office file or scan stored in the organization's media). Anyone can then ask a question in plain words and get an answer written only from those documents, with the passages it used. It reads documents with the kernel's document parsing (`ocr::parse`), remembers them for search by meaning (`ai::index`) and writes the answer with the organization's own AI provider (`ai::complete`), so it needs AI turned on and an embedding model set. The assistant in the web app can also use it as a tool. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = []
+capabilities = ["ocr::parse", "ai::complete", "ai::embed"]
+access_models = []
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"
+
+[[roles]]
+name = "policy_admin"
+label = "Policy administrator"
+description = "Adds and removes the policy documents the assistant answers from"
+
+[[ai_tool]]
+name = "ask_policy"
+description = "Answer a question about the company's HR policies (leave rules, conduct, benefits, procedures) from the policy documents, with the passages used. Use it for questions about rules, not about the person's own data"
+function = "ask_policy"
+schema = { type = "object", properties = { question = { type = "string", description = "The question, in the person's words" } }, required = ["question"] }

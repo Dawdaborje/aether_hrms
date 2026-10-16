@@ -1,0 +1,15 @@
+<page route="/hr/config/payroll/correction" title="Correct a pay run" menu_group="Payroll" icon="rotate-ccw" sort="50" roles="hr_payroll.payroll_clerk,hr_payroll.payroll_admin">
+  <view type="form" function="create_correction_run" submit="Create correction run" success="Correction run created: calculate it from Pay runs" redirect="/hr/payroll">
+    <group title="Run" cols="2">
+      <field name="run" label="Approved or paid run" fieldType="many2one" source="list_pay_runs" optionLabel="number" entity="runs" required="true"/>
+      <field name="reason" label="Why" fieldType="textarea" required="true"/>
+    </group>
+    <group title="People to recalculate (up to five here)" cols="2">
+      <field name="employee_1" label="Person 1" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees" required="true"/>
+      <field name="employee_2" label="Person 2" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees"/>
+      <field name="employee_3" label="Person 3" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees"/>
+      <field name="employee_4" label="Person 4" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees"/>
+      <field name="employee_5" label="Person 5" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees"/>
+    </group>
+  </view>
+</page>

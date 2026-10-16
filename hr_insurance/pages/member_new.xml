@@ -1,0 +1,10 @@
+<page route="/hr/insurance/members/new" title="Cover another person" model="ins_member" icon="user-plus" roles="ins_admin" sort="41">
+  <view type="form" function="add_insurance_member" submit="Add" success="Added" redirect="/hr/insurance/enrolments">
+    <group title="Dependant" cols="2">
+      <field name="enrolment" label="Enrolment" fieldType="many2one" source="list_insurance_enrolments" optionLabel="reference" entity="enrolments" required="true"/>
+      <field name="relationship" label="Relationship" fieldType="selection" options="spouse, child, parent, other" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="date_of_birth" label="Date of birth" fieldType="date"/>
+    </group>
+  </view>
+</page>

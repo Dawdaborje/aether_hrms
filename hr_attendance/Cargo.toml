@@ -11,6 +11,7 @@ crate-type = ["cdylib", "rlib"]
 aether-sdk = { path = "../../../sdks/rust" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.10"
 
 [profile.release]
 opt-level = "s"

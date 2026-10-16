@@ -1,0 +1,20 @@
+<page route="/hr/config/payroll/tax-slabs/new" title="New tax slab" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" function="create_tax_slab_simple" submit="Create" success="Slab created" redirect="/hr/config/payroll/tax-slabs">
+    <group title="Slab" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="currency" label="Currency" required="true"/>
+      <field name="regime" label="Regime"/>
+      <field name="valid_from" label="Valid from" fieldType="date" required="true"/>
+      <field name="valid_to" label="Valid to" fieldType="date"/>
+      <field name="standard_deduction" label="Standard deduction"/>
+    </group>
+    <group title="Bands (rate in percent; leave the last upper bound empty)" cols="2">
+      <field name="upper_1" label="Band 1 up to"/><field name="rate_1" label="Band 1 rate %"/>
+      <field name="upper_2" label="Band 2 up to"/><field name="rate_2" label="Band 2 rate %"/>
+      <field name="upper_3" label="Band 3 up to"/><field name="rate_3" label="Band 3 rate %"/>
+      <field name="upper_4" label="Band 4 up to"/><field name="rate_4" label="Band 4 rate %"/>
+      <field name="upper_5" label="Band 5 up to"/><field name="rate_5" label="Band 5 rate %"/>
+    </group>
+  </view>
+</page>

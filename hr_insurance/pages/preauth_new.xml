@@ -1,0 +1,12 @@
+<page route="/hr/insurance/preauths/new" title="Ask for preauthorisation" menu="false" model="ins_preauth">
+  <view type="form" function="request_preauthorisation" submit="Ask" success="Requested" redirect="/hr/insurance/preauths">
+    <group title="Planned care" cols="2">
+      <field name="enrolment" label="Enrolment" fieldType="many2one" source="my_insurance_enrolments" optionLabel="reference" entity="enrolments" required="true"/>
+      <field name="member" label="Covered person" fieldType="many2one" source="my_insurance_members" optionLabel="name" entity="people"/>
+      <field name="provider" label="Health facility" fieldType="many2one" source="list_insurance_providers" optionLabel="name" entity="facilities"/>
+      <field name="planned_date" label="Planned date" fieldType="date"/>
+      <field name="estimated_amount" label="Estimated cost" required="true"/>
+      <field name="procedure" label="Procedure" fieldType="text" colspan="2" required="true"/>
+    </group>
+  </view>
+</page>

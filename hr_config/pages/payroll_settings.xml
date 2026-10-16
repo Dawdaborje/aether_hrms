@@ -1,0 +1,18 @@
+<page route="/hr/config/payroll/settings" title="Payroll settings" menu_group="Payroll" icon="settings" sort="5" roles="hr_payroll.payroll_admin">
+  <view type="form" source="get_payroll_setting" function="set_payroll_setting" submit="Save" success="Saved">
+    <group title="Calendar" cols="2">
+      <field name="periods_per_year" label="Pay periods per year" fieldType="integer"/>
+      <field name="require_open_period" label="Runs must fall in an open payroll period" fieldType="boolean"/>
+    </group>
+    <group title="Tax and rules" cols="2">
+      <field name="count_pending_declarations" label="Use declared exemptions until proof is verified" fieldType="boolean"/>
+      <field name="allow_unverified_rules" label="Allow unverified rule packs (test only)" fieldType="boolean"/>
+      <field name="email_payslip" label="Tell employees when a payslip is ready" fieldType="boolean"/>
+    </group>
+    <group title="Paying account (bank file)" cols="2">
+      <field name="payer_name" label="Company name"/>
+      <field name="payer_iban" label="IBAN"/>
+      <field name="payer_bic" label="BIC"/>
+    </group>
+  </view>
+</page>

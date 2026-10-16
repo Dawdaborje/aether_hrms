@@ -1,0 +1,9 @@
+<page route="/hr/config/recruitment/sources" title="Applicant sources" menu_group="Recruitment" icon="list" roles="hr_recruitment.recruit_manager">
+  <view type="list" source="list_rec_sources" open="/hr/config/recruitment/sources/{id}" create="/hr/config/recruitment/sources/new" create_label="New">
+    <columns>
+      <column field="name" label="Source"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No sources" description="Where candidates come from: job boards, agencies, events."/>
+  </view>
+</page>

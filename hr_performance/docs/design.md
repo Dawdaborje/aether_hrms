@@ -17,6 +17,8 @@ Appraisal cycles with phased writes, weighted goals, blind reviews, calibration,
 | `perf_appraisal` | Per-person appraisal in a cycle |
 | `perf_feedback` | Self / manager / peer ratings |
 | `perf_goal` / `perf_checkin` | Goal tree + progress check-ins |
+| `perf_kra` | Master list of key result areas; once any exist, templates may use only active names |
+| `perf_note` | Feedback about a colleague at any time; the person sees only notes marked shared, and never the author |
 | `perf_skill` / `perf_skill_rating` / `perf_skill_requirement` | Skills, rated history, job targets |
 
 ## Design
@@ -25,6 +27,12 @@ Appraisal cycles with phased writes, weighted goals, blind reviews, calibration,
 - Reviews are blind: employees see nothing between self review and publication.
 - Skills are versioned history (who, level, why); training may raise a level via `hr_performance` calls, never lower it from training.
 - Hourly tick announces deadlines / phase pressure.
+
+## Templates by job
+
+`perf_template` may name a `job` and a `department`. Opening appraisals picks the person's job template, else their department's, else the cycle's. Goals check key result areas against the person's own appraisal.
+
+**Reports:** `team_skill_matrix` (people × skills, current level), `rating_distribution` (five 20-point bands, average, calibrated count).
 
 ## Functions, commands, events
 

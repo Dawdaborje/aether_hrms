@@ -311,6 +311,14 @@ pub fn net_settlement(lines: &[(bool, Decimal)]) -> Decimal {
     lines.iter().fold(Decimal::zero(2), |sum, (payable, amount)| if *payable { sum + *amount } else { sum - *amount })
 }
 
+
+/// Days of notice the person still owes: the notice starts on `notice_start`, runs `notice_days`, and the
+/// last day should fall on or after its end. Returns the earliest last day and the shortfall in days.
+pub fn notice_shortfall(notice_start: NaiveDate, notice_days: i64, last_day: NaiveDate) -> (NaiveDate, i64) {
+    let required = notice_start + Duration::days(notice_days.max(0));
+    (required, (required - last_day).num_days().max(0))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -509,5 +517,20 @@ mod exit_tests {
     #[test]
     fn settlement_sources_are_keyed() {
         assert_eq!(source_key("loan", "L1"), "loan:L1");
+    }
+}
+
+#[cfg(test)]
+mod notice_tests {
+    use super::*;
+    use aether_sdk::dates::parse_date;
+
+    #[test]
+    fn a_short_notice_owes_the_missing_days() -> Result<()> {
+        let (required, short) = notice_shortfall(parse_date("2026-03-01")?, 30, parse_date("2026-03-21")?);
+        assert_eq!(required, parse_date("2026-03-31")?);
+        assert_eq!(short, 10);
+        assert_eq!(notice_shortfall(parse_date("2026-03-01")?, 30, parse_date("2026-04-05")?).1, 0);
+        Ok(())
     }
 }

@@ -1,0 +1,9 @@
+<page route="/hr/config/recruitment/offer-terms" title="Offer terms" menu_group="Recruitment" icon="list" roles="hr_recruitment.recruit_manager">
+  <view type="list" source="list_offer_terms" open="/hr/config/recruitment/offer-terms/{id}" create="/hr/config/recruitment/offer-terms/new" create_label="New">
+    <columns>
+      <column field="name" label="Term"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No terms" description="Reusable clauses for offer letters."/>
+  </view>
+</page>

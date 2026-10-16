@@ -1,0 +1,22 @@
+<page route="/hr/config/payroll/rule-packs" title="Tax and contribution rules" menu_group="Payroll" icon="scale" sort="30" roles="hr_payroll.payroll_admin">
+  <header title="Tax and contribution rules">
+    <button label="Load shipped packs" function="reload_shipped_rule_packs"/>
+  </header>
+  <view type="list" source="list_rule_packs" create="/hr/config/payroll/rule-packs/new" create_label="Import">
+    <search/>
+    <columns>
+      <column field="pack_id" label="Pack"/>
+      <column field="country" label="Country"/>
+      <column field="kind" label="Kind"/>
+      <column field="currency" label="Currency"/>
+      <column field="valid_from" label="From" fieldType="date"/>
+      <column field="verified" label="Verified" fieldType="boolean"/>
+      <column field="tests" label="Tests"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <actions>
+      <action name="retire" label="Retire" function="retire_rule_pack" confirm="Retire this pack? Structures that use it keep working." danger="true"/>
+    </actions>
+    <empty title="No rule packs" description="Shipped packs load when payroll is installed or upgraded; use Load shipped packs to load them now."/>
+  </view>
+</page>

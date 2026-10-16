@@ -41,6 +41,8 @@ name = "benefit_approved"
 
 [[schedule]]
 name = "benefits-nightly"
+title = "Accrue benefits"
+description = "Accrues the month's benefit amounts and syncs them to payroll."
 function = "benefits_nightly"
 cron = "50 1 * * *"
 

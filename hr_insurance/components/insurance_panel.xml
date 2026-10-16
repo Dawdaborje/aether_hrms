@@ -1,0 +1,17 @@
+<component name="insurance_panel">
+  <group cols="1">
+    <view type="list" source="employee_insurance_summary">
+      <columns>
+        <column field="policy" label="Policy"/>
+        <column field="plan" label="Plan"/>
+        <column field="member" label="Covered"/>
+        <column field="relationship" label="Relationship" fieldType="badge"/>
+        <column field="limit" label="Limit"/>
+        <column field="used" label="Used"/>
+        <column field="remaining" label="Remaining"/>
+        <column field="utilisation_percent" label="Used %"/>
+      </columns>
+      <empty title="No insurance" description="Policies this person is covered by appear here."/>
+    </view>
+  </group>
+</component>

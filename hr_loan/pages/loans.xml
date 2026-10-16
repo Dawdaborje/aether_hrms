@@ -1,11 +1,14 @@
 <page route="/hr/loans" title="Staff loans" model="loan" icon="hand-coins">
-  <view type="list" model="loan" source="my_loans">
+  <view type="list" model="loan" source="my_loans" create="/hr/loans/new" create_label="Ask for a loan">
     <columns>
       <column field="reference" label="Reference"/>
       <column field="principal" label="Principal"/>
       <column field="months" label="Months"/>
       <column field="state" label="State"/>
     </columns>
+    <actions>
+      <action name="cancel" label="Cancel" function="cancel_loan" confirm="Cancel this loan request?" danger="true"/>
+    </actions>
     <empty title="No loans" description="Ask for a loan to see it here."/>
   </view>
 </page>

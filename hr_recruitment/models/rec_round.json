@@ -46,6 +46,53 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_xmg6jf67qy",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_8q6oepwcvj",
+          "value": "onsite",
+          "label": "%onsite%"
+        },
+        {
+          "id": "opt_3zevucu6uu",
+          "value": "phone",
+          "label": "%phone%"
+        },
+        {
+          "id": "opt_4ar0u51guo",
+          "value": "video",
+          "label": "%video%"
+        }
+      ],
+      "default": "onsite"
+    },
+    {
+      "id": "fld_nvsl9gyua7",
+      "name": "duration_min",
+      "label": "%duration_min%",
+      "type": "int",
+      "default": 60
+    },
+    {
+      "id": "fld_v4kjpnggca",
+      "name": "pool",
+      "label": "%pool%",
+      "type": "link",
+      "target": "rec_pool",
+      "help": "Interviewers to pick from when none are named."
+    },
+    {
+      "id": "fld_g9u17cb9xb",
+      "name": "panel_size",
+      "label": "%panel_size%",
+      "type": "int",
+      "default": 0,
+      "help": "How many to pick from the pool; 0 uses the minimum panelists."
     }
   ]
 }

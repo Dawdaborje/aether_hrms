@@ -1,0 +1,13 @@
+<page route="/hr/performance/appraisals" title="Appraisals" model="perf_appraisal" icon="clipboard-check" menu_group="Performance" sort="20">
+  <view type="list" model="perf_appraisal" source="list_appraisals">
+    <search/>
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="phase" label="Phase" fieldType="badge"/>
+      <column field="self_score" label="Self"/>
+      <column field="manager_score" label="Manager"/>
+      <column field="final_score" label="Final"/>
+    </columns>
+    <empty title="No appraisals" description="An administrator opens them for a cycle."/>
+  </view>
+</page>

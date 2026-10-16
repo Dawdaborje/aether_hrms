@@ -1,0 +1,12 @@
+<page route="/hr/insurance" title="Insurance" model="ins_claim" icon="shield-plus">
+  <view type="list" model="ins_claim" source="my_insurance_claims" create="/hr/insurance/claim" create_label="New claim" open="/hr/insurance/claims/{id}">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="service_date" label="Service date" fieldType="date"/>
+      <column field="claimed_amount" label="Claimed"/>
+      <column field="approved_amount" label="Approved"/>
+      <column field="state" label="State"/>
+    </columns>
+    <empty title="No claims" description="Insurance claims you have made appear here."/>
+  </view>
+</page>

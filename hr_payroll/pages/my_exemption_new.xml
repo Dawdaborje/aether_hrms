@@ -1,0 +1,11 @@
+<page route="/hr/my-exemptions/new" title="Declare exemption" menu="false" model="pay_exemption_declaration">
+  <view type="form" function="declare_exemption" submit="Submit" success="Declared" redirect="/hr/my-exemptions">
+    <group title="Declaration" cols="2">
+      <field name="category" label="Category" fieldType="many2one" source="list_exemption_categories" optionLabel="name" entity="categories" required="true"/>
+      <field name="year" label="Year (e.g. 2026)" required="true"/>
+      <field name="declared" label="Amount declared" required="true"/>
+      <field name="proof_note" label="Proof reference" fieldType="textarea"/>
+      <field name="proof_file" label="Proof document" fieldType="file"/>
+    </group>
+  </view>
+</page>

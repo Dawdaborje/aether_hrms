@@ -17,8 +17,8 @@ Employees read their own payslips once the run is approved. Written in Rust.
 See docs/design.md in this plugin (hr_payroll/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["hr", "currency", "hr_leave", "hr_attendance", "hr_compensation"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "scheduler::enqueue"]
+dependencies = ["hr", "currency", "hr_leave", "hr_attendance", "hr_compensation", "hr_documents"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "scheduler::enqueue", "report::export", "communication::send", "email::send"]
 access_models = [
   { name = "pay_structure", permissions = ["read", "write"] },
   { name = "pay_assignment", permissions = ["read", "write"] },
@@ -30,6 +30,12 @@ access_models = [
   { name = "pay_error", permissions = ["read", "write"] },
   { name = "pay_rule_pack", permissions = ["read", "write"] },
   { name = "pay_setting", permissions = ["read", "write"] },
+  { name = "pay_component", permissions = ["read", "write"] },
+  { name = "pay_period", permissions = ["read", "write"] },
+  { name = "pay_tax_slab", permissions = ["read", "write"] },
+  { name = "pay_exemption_category", permissions = ["read", "write"] },
+  { name = "pay_exemption_declaration", permissions = ["read", "write"] },
+  { name = "pay_other_income", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
@@ -59,6 +65,9 @@ description = "Records that an approved run was paid"
 name = "payroll_run_calculated"
 
 [[events]]
+name = "payroll_correction_approved"
+
+[[events]]
 name = "payroll_run_approved"
 
 [[events]]
@@ -73,6 +82,8 @@ name = "payroll_run_restarted"
 # A batch job that fails for good leaves nothing in its run: look for them.
 [[schedule]]
 name = "watch-pay-runs"
+title = "Watch pay runs"
+description = "Fails pay runs that are stuck calculating or have a failed batch, naming the batches."
 function = "watch_pay_runs"
 every = "1m"
 
@@ -87,3 +98,22 @@ version = "0.1"
 [plugin.meta]
 kind = "addon"
 workspace = "hrms"
+
+# The rule packs shipped in assets/rule_packs.zip, loaded into the organization on install and upgrade.
+[[command]]
+name = "seed_rule_packs"
+function = "seed_rule_packs"
+help = "Load the tax and contribution rule packs shipped with the plugin"
+on_install = true
+on_upgrade = true
+
+[[ai_tool]]
+name = "my_payslips"
+description = "The person's own payslips, newest first, with period and amounts"
+function = "my_payslips"
+
+[[ai_tool]]
+name = "explain_payslip"
+description = "A payslip explained line by line: what each earning and deduction is and how it was worked out"
+function = "explain_payslip"
+schema = { type = "object", properties = { id = { type = "string", description = "The payslip's id, from my_payslips" } }, required = ["id"] }

@@ -34,6 +34,15 @@
         "create",
         "write"
       ]
+    },
+    {
+      "name": "insurance_migration",
+      "roles": [
+        "via:hr_insurance"
+      ],
+      "operations": [
+        "read"
+      ]
     }
   ]
 }

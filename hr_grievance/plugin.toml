@@ -27,6 +27,13 @@ access_models = [
 is_builtin = false
 wasm_file = "out/plugin.wasm"
 
+[[command]]
+name = "seed"
+function = "seed_grievance_categories"
+help = "Create the usual grievance categories with time limits (idempotent)"
+on_install = true
+on_upgrade = true
+
 [[roles]]
 name = "grievance_admin"
 label = "Grievance case manager"
@@ -43,6 +50,8 @@ name = "grievance_decided"
 
 [[schedule]]
 name = "grievance-nightly"
+title = "Escalate overdue grievances"
+description = "Escalates overdue cases one level at a time and closes decided cases once the appeal window has passed."
 function = "grievance_nightly"
 cron = "10 1 * * *"
 

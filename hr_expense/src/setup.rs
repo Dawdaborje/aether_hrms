@@ -7,7 +7,7 @@ use aether_sdk::prelude::*;
 use crate::common::{currency_places, pick, require, require_admin, text, Record};
 use crate::rules::{Enforcement, Period};
 
-const CATEGORY: &[&str] = &["code", "name", "kind", "unit", "unit_rate", "unit_currency", "receipt_required_over", "requires_note", "accounting_tag", "is_active"];
+const CATEGORY: &[&str] = &["code", "name", "kind", "unit", "unit_rate", "unit_currency", "receipt_required_over", "requires_note", "accounting_tag", "tax_rate", "is_active"];
 const POLICY: &[&str] = &["category", "scope_kind", "scope_ref", "period", "limit_amount", "currency", "enforcement", "valid_from", "valid_to"];
 
 #[derive(Deserialize)]
@@ -96,7 +96,36 @@ fn new_policy(input: Record) -> Result<Record> {
     db::create("expense_policy", &data)
 }
 
+const SEED_CATEGORIES: &[(&str, &str)] = &[
+    ("TRAVEL", "Travel"),
+    ("LODGING", "Accommodation"),
+    ("MEALS", "Meals"),
+    ("FUEL", "Fuel"),
+    ("SUPPLIES", "Office supplies"),
+    ("COMMS", "Phone and internet"),
+    ("OTHER", "Other"),
+];
+
+/// Receipt-based expense categories, each only when its code is free. Mileage and per diem
+/// need a rate and a currency, so they are left to the organization.
+fn seed_categories() -> Result<Value> {
+    let mut added = 0;
+    for (code, name) in SEED_CATEGORIES {
+        if db::find::<Record>("expense_category").filter("code", *code).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>("expense_category", &json!({ "code": code, "name": name, "kind": "receipt", "is_active": true }))?;
+        added += 1;
+    }
+    Ok(json!({ "categories": added }))
+}
+
 handler! {
+    /// Starter expense categories; runs on install and upgrade.
+    fn seed_expense_categories(_: Empty) -> Value {
+        seed_categories()
+    }
+
     fn create_expense_category(input: Record) -> Record {
         new_category(input)
     }

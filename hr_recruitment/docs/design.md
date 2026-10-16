@@ -19,6 +19,10 @@ Openings (seat-checked), applications on `party`, interview rounds with blind fe
 | `rec_round` | Interview round + criteria |
 | `rec_interview` / `rec_feedback` | Panel booking and ratings |
 | `rec_offer` | Offer awaiting second approval / response |
+| `rec_source` | Applicant sources; when any exist, an application's source must be one of them (or `referral` / `career_site`) |
+| `rec_opening_template` | Pre-filled opening (title, description, seats, band); `open_from_template` |
+| `rec_offer_term` / `rec_offer_template` | Reusable clauses and letters; a draft offer may name a `template`, placeholders are filled from the offer |
+| `rec_pool` | Interviewer pool; a round with a pool gets its panel picked (least busy, free at that time) when `schedule_interview` names none |
 | `counter` | Numbering |
 
 ## Design
@@ -35,6 +39,14 @@ Openings (seat-checked), applications on `party`, interview rounds with blind fe
 **Schedule:** `recruitment-tick` → `recruitment_tick` (every 10m).
 
 **Events:** `opening_opened`, `application_stage_changed`, `interview_reminder`, `interview_outcome_ready`, `offer_sent`, `offer_accepted`, `candidate_hired`.
+
+## Career site
+
+`career_jobs` and `career_apply` are public functions (pages `/careers`, `/careers/apply`). Visitors see title, description and closing date of open openings with seats left; never the band or panel. An application is recorded with source `career_site`, deduped by email per opening, with a honeypot field and length caps. The answer never says whether the person applied before.
+
+## Resumes and email
+
+`resume` (file) and `resume_text` live on the application. `read_resume_text` pulls emails, phones and which organisation skills the text mentions (plain word matching, not a parser). `ingest_application_email` is for a mail connector: idempotent by message id, and records only when the subject names exactly one open job.
 
 ## Roles
 

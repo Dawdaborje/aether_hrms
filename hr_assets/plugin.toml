@@ -24,6 +24,13 @@ access_models = [
 is_builtin = false
 wasm_file = "out/plugin.wasm"
 
+[[command]]
+name = "seed"
+function = "seed_asset_categories"
+help = "Create the usual asset categories (idempotent)"
+on_install = true
+on_upgrade = true
+
 [[roles]]
 name = "asset_admin"
 label = "Asset administrator"
@@ -40,6 +47,8 @@ name = "asset_unacknowledged"
 
 [[schedule]]
 name = "assets-nightly"
+title = "Flag unacknowledged assets"
+description = "Reports, once, assigned assets that nobody acknowledged within a week."
 function = "assets_nightly"
 cron = "30 1 * * *"
 

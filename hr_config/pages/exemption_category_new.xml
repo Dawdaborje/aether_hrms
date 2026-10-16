@@ -1,0 +1,10 @@
+<page route="/hr/config/payroll/exemption-categories/new" title="New exemption category" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" function="create_exemption_category" submit="Create" success="Category created" redirect="/hr/config/payroll/exemption-categories">
+    <group title="Category" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="label" label="Label" required="true"/>
+      <field name="max_amount" label="Maximum a year"/>
+      <field name="parent" label="Parent category code (for a sub-category)"/>
+    </group>
+  </view>
+</page>

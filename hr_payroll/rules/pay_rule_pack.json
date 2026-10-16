@@ -22,6 +22,16 @@
         "create",
         "write"
       ]
+    },
+    {
+      "name": "others",
+      "roles": [
+        "via:*"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
     }
   ]
 }

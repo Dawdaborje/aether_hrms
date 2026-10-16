@@ -132,7 +132,33 @@ pub fn pick_template(kind: &str, department: Option<&str>, job: Option<&str>) ->
     best.map(|(_, t)| t).ok_or_else(|| Error::msg(format!("there is no active {kind} template for this person: a manager sets one up first")))
 }
 
+/// (name, kind, status the employment ends in)
+const SEED_REASONS: &[(&str, &str, &str)] = &[
+    ("Resignation", "resignation", "resigned"),
+    ("Termination", "termination", "terminated"),
+    ("End of contract", "end_of_contract", "terminated"),
+    ("Retirement", "retirement", "retired"),
+];
+
+/// The common reasons for leaving, each only when its name is free.
+fn seed_reasons() -> Result<Value> {
+    let mut added = 0;
+    for (name, kind, status) in SEED_REASONS {
+        if db::find::<Record>("ob_departure_reason").filter("name", *name).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>("ob_departure_reason", &json!({ "name": name, "kind": kind, "status_to": status, "is_active": true }))?;
+        added += 1;
+    }
+    Ok(json!({ "reasons": added }))
+}
+
 handler! {
+    /// Starter departure reasons; runs on install and upgrade.
+    fn seed_departure_reasons(_: Empty) -> Value {
+        seed_reasons()
+    }
+
     fn create_template(input: Record) -> Record {
         new_template(input)
     }

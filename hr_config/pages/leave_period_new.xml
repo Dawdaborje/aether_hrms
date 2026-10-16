@@ -1,0 +1,9 @@
+<page route="/hr/config/leave/periods/new" title="New leave period" menu="false" roles="hr_leave.leave_admin">
+  <view type="form" function="create_leave_period" submit="Create" success="Created" redirect="/hr/config/leave/periods">
+    <group title="Period" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="start_date" label="From" fieldType="date" required="true"/>
+      <field name="end_date" label="To" fieldType="date" required="true"/>
+    </group>
+  </view>
+</page>

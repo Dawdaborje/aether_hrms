@@ -1,0 +1,16 @@
+<page route="/hr/insurance/review" title="Claims to review" model="ins_claim" icon="clipboard-check" roles="ins_reviewer,ins_admin" sort="20">
+  <view type="list" model="ins_claim" source="insurance_claims_waiting" open="/hr/insurance/claims/{id}" create="/hr/insurance/reject" create_label="Refuse a claim">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="member" label="Covered person"/>
+      <column field="service_date" label="Service date" fieldType="date"/>
+      <column field="claimed_amount" label="Claimed"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action function="approve_insurance_claim" label="Approve" confirm="Approve this claim?"/>
+    </actions>
+    <empty title="Nothing waiting" description="Submitted claims waiting for a decision appear here."/>
+  </view>
+</page>

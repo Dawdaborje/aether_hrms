@@ -1,0 +1,189 @@
+{
+  "model_id": "mdl_zuhg5a2wmd",
+  "name": "ins_claim",
+  "label": "%ins_claim%",
+  "plural_label": "%ins_claims%",
+  "icon": "receipt",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_33vhlxkqgj",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_wsqpdiwef5",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_enrolment"
+    },
+    {
+      "id": "fld_su26ua5oo3",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_wzp53hyk4p",
+      "name": "member",
+      "label": "%member%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_member"
+    },
+    {
+      "id": "fld_qfvpg3oijc",
+      "name": "provider",
+      "label": "%provider%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_provider"
+    },
+    {
+      "id": "fld_n3gwyjhsyo",
+      "name": "preauth",
+      "label": "%preauth%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_preauth"
+    },
+    {
+      "id": "fld_kzbjmvjpbo",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_wcny4hynie",
+      "name": "service_date",
+      "label": "%service_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_pi256kg5gu",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "options": [
+        {
+          "id": "opt_afizosjk3e",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_ji2pozxuja",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_3lnmh6l4fm",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_atevackw2i",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_ybqtecy2rc",
+          "value": "paid",
+          "label": "%paid%"
+        },
+        {
+          "id": "opt_glyejgvttw",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_k3hbtttpn4",
+      "name": "lines",
+      "label": "%lines%",
+      "type": "child",
+      "target": "ins_claim_line",
+      "inverse": "claim",
+      "order": "position"
+    },
+    {
+      "id": "fld_3fzixybcjm",
+      "name": "claimed_amount",
+      "label": "%claimed_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "compute": "sum(lines.amount)"
+    },
+    {
+      "id": "fld_bcakpttphs",
+      "name": "deductible_applied",
+      "label": "%deductible_applied%",
+      "type": "decimal",
+      "default": 0,
+      "scale": 2
+    },
+    {
+      "id": "fld_zyozy3ofc6",
+      "name": "copay_applied",
+      "label": "%copay_applied%",
+      "type": "decimal",
+      "default": 0,
+      "scale": 2
+    },
+    {
+      "id": "fld_n5tsw44j3l",
+      "name": "approved_amount",
+      "label": "%approved_amount%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_jw4ubg7cwe",
+      "name": "submitted_on",
+      "label": "%submitted_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_nx2puqjq53",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_zkaghkqr2v",
+      "name": "decided_on",
+      "label": "%decided_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_uwaqrfqxqk",
+      "name": "rejection_reason",
+      "label": "%rejection_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_asyqy7rnjt",
+      "name": "adjustment",
+      "label": "%adjustment%",
+      "type": "string",
+      "max_length": 80
+    }
+  ]
+}

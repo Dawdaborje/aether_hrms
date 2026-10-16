@@ -1,0 +1,9 @@
+<page route="/hr/insurance/overview" title="Overview" model="ins_claim" icon="layout-dashboard" roles="ins_reviewer,ins_admin" sort="10">
+  <view type="dashboard" source="insurance_dashboard" cols="4">
+    <stat label="Claims waiting" field="claims_waiting"/>
+    <stat label="Preauthorisations waiting" field="preauths_waiting"/>
+    <stat label="Active policies" field="active_policies"/>
+    <stat label="People covered" field="covered_people"/>
+    <chart title="Claims by state" type="bar" field="claims_by_state" category="state" value="claims"/>
+  </view>
+</page>

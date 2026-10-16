@@ -1,0 +1,98 @@
+[plugin]
+name = "hr_insurance"
+icon_path = "assets/logo.svg"
+label = "Insurance"
+version = "0.1.0"
+description = "Group health insurance: insurers, plans, policies by plan year, enrolments with covered members, preauthorisations, claims, premiums through payroll."
+long_description = """
+An insurer offers plans; a policy is a plan for a plan year (a renewal is a new policy, so history stays); an employee is
+enrolled on a policy for a window with the people covered. A claim has lines and is settled by one engine: deductible,
+then the member's copay, then the member's remaining limit for the policy year. Utilisation is worked out from decided
+claims, never stored. A reviewer who is not the claimant decides; an approved claim is paid as a payroll
+reimbursement exactly once. Premiums are split between employer and employee, the employee share is a payroll
+deduction, and the plugin announces premium and claim events for the ledger. Written in Rust.
+See docs/design.md in this plugin.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "hr_compensation", "hr_payroll", "hr_benefits", "currency"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "events::subscribe", "plugins::call"]
+access_models = [
+  { name = "ins_insurer", permissions = ["read", "write"] },
+  { name = "ins_plan", permissions = ["read", "write"] },
+  { name = "ins_policy", permissions = ["read", "write"] },
+  { name = "ins_enrolment", permissions = ["read", "write"] },
+  { name = "ins_member", permissions = ["read", "write"] },
+  { name = "ins_provider", permissions = ["read", "write"] },
+  { name = "ins_preauth", permissions = ["read", "write"] },
+  { name = "ins_claim", permissions = ["read", "write"] },
+  { name = "ins_claim_line", permissions = ["read", "write"] },
+  { name = "ins_decision", permissions = ["read", "write"] },
+  { name = "ins_premium", permissions = ["read", "write"] },
+  { name = "ins_payment", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "ins_admin"
+label = "Insurance administrator"
+description = "Sets up insurers, plans and policies, enrols people, runs premiums and payments."
+
+[[roles]]
+name = "ins_reviewer"
+label = "Claims reviewer"
+description = "Decides claims and preauthorisations (never their own)."
+
+[[events]]
+name = "claim_submitted"
+
+[[events]]
+name = "claim_approved"
+
+[[events]]
+name = "claim_paid"
+
+[[events]]
+name = "claim_refunded"
+
+[[events]]
+name = "premium_accrued"
+
+[[events]]
+name = "premium_paid"
+
+[[events]]
+name = "policy_expiring"
+
+[[events]]
+name = "claim_pending_review"
+
+[[events]]
+name = "hr_payroll.payroll_run_approved"
+direction = "listen"
+handler = "on_payroll_run_approved"
+
+[[schedule]]
+name = "insurance-nightly"
+title = "Insurance upkeep"
+description = "Expires policies and preauthorisations, announces policies ending soon, creates the month's premiums, reminds about claims waiting over a week."
+function = "insurance_nightly"
+cron = "20 2 * * *"
+
+[[command]]
+name = "migrate_from_benefits"
+function = "migrate_from_benefits"
+help = "Copy health-insurance enrolments (and their dependents) from hr_benefits"
+
+[app]
+icon = "shield-plus"
+route = "/hr/insurance"
+description = "Plans, claims and premiums"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

@@ -1,0 +1,6 @@
+<page route="/hr/attendance/roster" title="Roster" icon="calendar-days" roles="att_admin,hr.hr_manager,hr.hr_user">
+  <view type="calendar" source="roster_events" date_start="starts_at" date_stop="ends_at" color="status">
+    <field name="title"/>
+    <empty title="No days" description="Scheduled and recorded days appear here."/>
+  </view>
+</page>

@@ -1,0 +1,25 @@
+<page route="/hr/insurance/claims/{id}" title="Insurance claim" menu="false" model="ins_claim">
+  <view type="form" source="get_insurance_claim">
+    <header>
+      <button label="Approve" function="approve_insurance_claim" confirm="Approve this claim?"/>
+      <button label="Cancel claim" function="cancel_insurance_claim" confirm="Cancel this claim?"/>
+    </header>
+    <statusbar field="state" options="submitted, approved, paid"/>
+    <group title="Claim" cols="2">
+      <field name="reference" label="Reference" readonly="true"/>
+      <field name="state" label="State" readonly="true"/>
+      <field name="employee" label="Employee" readonly="true"/>
+      <field name="member" label="Covered person" readonly="true"/>
+      <field name="service_date" label="Service date" fieldType="date" readonly="true"/>
+      <field name="provider" label="Provider" readonly="true"/>
+    </group>
+    <group title="Settlement" cols="2">
+      <field name="claimed_amount" label="Claimed" readonly="true"/>
+      <field name="deductible_applied" label="Deductible" readonly="true"/>
+      <field name="copay_applied" label="Copay" readonly="true"/>
+      <field name="approved_amount" label="Approved" readonly="true"/>
+      <field name="decided_by" label="Decided by" readonly="true"/>
+      <field name="rejection_reason" label="Refusal reason" readonly="true"/>
+    </group>
+  </view>
+</page>

@@ -1,4 +1,13 @@
+mod bank_file;
 mod common;
+mod correction;
+mod email;
+mod explain;
+mod export;
+mod library;
 mod rules;
+mod review;
 mod run;
+mod seed;
 mod setup;
+mod simulate;

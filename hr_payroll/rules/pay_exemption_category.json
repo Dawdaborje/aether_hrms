@@ -1,0 +1,43 @@
+{
+  "model": "pay_exemption_category",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "staff",
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "payroll_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ]
+}

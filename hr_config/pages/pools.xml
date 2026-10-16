@@ -1,0 +1,9 @@
+<page route="/hr/config/recruitment/pools" title="Interviewer pools" menu_group="Recruitment" icon="users" roles="hr_recruitment.recruit_manager">
+  <view type="list" source="list_interviewer_pools" create="/hr/config/recruitment/pools/new" create_label="New">
+    <columns>
+      <column field="name" label="Pool"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No pools" description="A round with a pool gets its panel picked from it when none is named."/>
+  </view>
+</page>

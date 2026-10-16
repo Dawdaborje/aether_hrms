@@ -1,0 +1,11 @@
+<page route="/hr/insurance/enrolments/{id}" title="Insurance enrolment" menu="false" model="ins_enrolment">
+  <view type="form" source="get_insurance_enrolment">
+    <group title="Enrolment" cols="2">
+      <field name="reference" label="Reference" readonly="true"/>
+      <field name="policy" label="Policy" readonly="true"/>
+      <field name="start_date" label="From" fieldType="date" readonly="true"/>
+      <field name="end_date" label="To" fieldType="date" readonly="true"/>
+      <field name="state" label="State" readonly="true"/>
+    </group>
+  </view>
+</page>

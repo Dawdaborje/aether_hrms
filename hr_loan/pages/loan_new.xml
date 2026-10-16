@@ -1,0 +1,11 @@
+<page route="/hr/loans/new" title="Ask for a loan" menu="false" model="loan">
+  <view type="form" function="request_loan" submit="Submit" success="Submitted" redirect="/hr/loans">
+    <group title="Ask for a loan" cols="2">
+      <field name="product" label="Loan product" fieldType="many2one" source="list_loan_products" optionLabel="name" entity="products" required="true"/>
+      <field name="amount" label="Amount" required="true"/>
+      <field name="months" label="Months" fieldType="integer" required="true"/>
+      <field name="purpose" label="Purpose" fieldType="textarea"/>
+      <field name="first_due" label="First repayment due" fieldType="date"/>
+    </group>
+  </view>
+</page>

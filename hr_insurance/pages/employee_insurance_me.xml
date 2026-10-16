@@ -1,0 +1,3 @@
+<page extends="/hr/me" title="Insurance" params="employee={id}" sort="85">
+  <use component="insurance_panel"/>
+</page>

@@ -59,6 +59,21 @@
           "id": "opt_5wj7cxx2qn",
           "value": "any",
           "label": "%any%"
+        },
+        {
+          "id": "opt_4vpgo89gdl",
+          "value": "appointment",
+          "label": "%appointment%"
+        },
+        {
+          "id": "opt_8c9t4eft7s",
+          "value": "relieving",
+          "label": "%relieving%"
+        },
+        {
+          "id": "opt_44pxoira2z",
+          "value": "experience",
+          "label": "%experience%"
         }
       ]
     },

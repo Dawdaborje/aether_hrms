@@ -1,0 +1,11 @@
+<page route="/hr/insurance/insurers" title="Insurers" model="ins_insurer" icon="building-2" roles="ins_admin" menu_group="Setup" sort="30">
+  <view type="list" model="ins_insurer" source="list_insurers" create="/hr/insurance/insurers/new" create_label="New insurer">
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="contact_email" label="Email"/>
+      <column field="contact_phone" label="Phone"/>
+    </columns>
+    <empty title="No insurers" description="Add the company that carries your cover."/>
+  </view>
+</page>

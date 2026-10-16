@@ -1,0 +1,43 @@
+{
+  "model_id": "mdl_o3lzpe1hao",
+  "name": "att_kiosk_pin",
+  "label": "%att_kiosk_pin%",
+  "plural_label": "%att_kiosk_pins%",
+  "icon": "key",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_toi9aijpm8",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "unique",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_9lfnkvzrqj",
+      "name": "pin_hash",
+      "label": "%pin_hash%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_5z1djd5z6q",
+      "name": "failures",
+      "label": "%failures%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_cxzanh5m37",
+      "name": "locked",
+      "label": "%locked%",
+      "type": "bool",
+      "default": false,
+      "help": "Locked after too many wrong PINs; an administrator unlocks it."
+    }
+  ]
+}

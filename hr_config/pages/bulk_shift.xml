@@ -1,0 +1,12 @@
+<page route="/hr/config/attendance/assign" title="Assign shift to a department" menu_group="Attendance" icon="users" sort="40" roles="hr_attendance.att_admin">
+  <view type="form" function="bulk_assign_shift_by_department" submit="Assign" success="Done: see the result for any failures">
+    <group title="Assignment" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments" required="true"/>
+      <field name="shift" label="Shift" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="rotation" label="Rotation" fieldType="many2one" source="list_rotations" optionLabel="name" entity="rotations"/>
+      <field name="location" label="Location" fieldType="many2one" source="list_locations" optionLabel="name" entity="locations"/>
+      <field name="valid_from" label="Valid from" fieldType="date" required="true"/>
+      <field name="valid_to" label="Valid to" fieldType="date"/>
+    </group>
+  </view>
+</page>

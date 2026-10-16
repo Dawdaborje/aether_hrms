@@ -1,0 +1,25 @@
+{
+  "model": "hr_setting",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "hr_user",
+        "hr_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "manager",
+      "roles": [
+        "hr_manager"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

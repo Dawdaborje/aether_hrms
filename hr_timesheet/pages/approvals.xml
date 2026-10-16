@@ -1,0 +1,15 @@
+<page route="/hr/timesheets/approvals" title="Timesheet approvals" model="ts_entry" icon="check-check">
+  <view type="list" model="ts_entry" source="timesheets_waiting_for_me">
+    <columns>
+      <column field="work_date" label="Day" fieldType="date"/>
+      <column field="employee" label="Employee"/>
+      <column field="project" label="Project"/>
+      <column field="hours" label="Hours"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_hours"/>
+      <action name="reject" label="Reject" function="reject_hours" confirm="Reject these hours?" danger="true"/>
+    </actions>
+    <empty title="Nothing waiting" description="Hours your team has submitted appear here."/>
+  </view>
+</page>

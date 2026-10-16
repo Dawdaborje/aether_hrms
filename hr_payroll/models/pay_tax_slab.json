@@ -1,0 +1,98 @@
+{
+  "model_id": "mdl_w7nqz1ajpx",
+  "name": "pay_tax_slab",
+  "label": "%pay_tax_slab%",
+  "plural_label": "%pay_tax_slabs%",
+  "icon": "percent",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_4plxgyrtfp",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 60,
+      "index": "plain"
+    },
+    {
+      "id": "fld_zyzvne7wrj",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_fzoydxeuko",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 10
+    },
+    {
+      "id": "fld_chyoh0ichr",
+      "name": "regime",
+      "label": "%regime%",
+      "type": "string",
+      "max_length": 40,
+      "help": "For example old or new, where a person picks one."
+    },
+    {
+      "id": "fld_4vjabefqmt",
+      "name": "valid_from",
+      "label": "%valid_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_uczajh1gbt",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date"
+    },
+    {
+      "id": "fld_83pcx5qpms",
+      "name": "standard_deduction",
+      "label": "%standard_deduction%",
+      "type": "decimal",
+      "default": "0",
+      "help": "Taken off yearly taxable pay before the slabs.",
+      "scale": 2
+    },
+    {
+      "id": "fld_oxaor99692",
+      "name": "slabs",
+      "label": "%slabs%",
+      "type": "json",
+      "required": true,
+      "help": "[[upper_bound_or_null, rate], ...] ascending; the last has no upper bound."
+    },
+    {
+      "id": "fld_iezrem3wzk",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_2pjw8yazf7",
+      "fields": [
+        "code",
+        "valid_from"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "valid_from",
+      "regime"
+    ]
+  }
+}

@@ -278,6 +278,13 @@
       "label": "%first_hire_date%",
       "type": "date",
       "help": "The first time this person joined; hire_date is the latest."
+    },
+    {
+      "id": "fld_l0apgmnh3z",
+      "name": "cost_center",
+      "label": "%cost_center%",
+      "type": "string",
+      "max_length": 60
     }
   ],
   "indexes": [

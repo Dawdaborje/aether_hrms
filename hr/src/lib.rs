@@ -18,3 +18,4 @@ mod people;
 mod position;
 mod reports;
 mod rules;
+mod settings;

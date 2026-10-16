@@ -1,0 +1,11 @@
+<page route="/hr/org-chart" title="Organisation chart" menu_group="Employee" icon="network" sort="20" roles="hr_user,hr_manager">
+  <view type="list" source="org_chart" open="/hr/employees/{id}">
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="job" label="Job"/>
+      <column field="department" label="Department"/>
+      <column field="direct_reports" label="Reports"/>
+    </columns>
+    <empty title="Nobody yet" description="People appear under the person they report to."/>
+  </view>
+</page>

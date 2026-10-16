@@ -381,7 +381,38 @@ fn nightly() -> Result<Value> {
     Ok(json!({ "warned": warned }))
 }
 
+#[derive(Deserialize)]
+struct Feedback {
+    enrolment: String,
+    rating: i64,
+    #[serde(default)]
+    comment: Option<String>,
+}
+
+/// The person who attended says how it went: 1 to 5 and a comment. Once only; nobody rates for another.
+fn give_feedback(input: Feedback) -> Result<Record> {
+    let row = require("trn_enrolment", &input.enrolment, "enrolment")?;
+    let me = crate::common::my_employee()?.ok_or_else(|| Error::msg("you are not an employee here"))?;
+    if text(&row, "employee") != text(&me, "id") && !text(&row, "employee").is_some_and(|e| text(&me, "id").is_some_and(|m| e.ends_with(m) || m.ends_with(e))) {
+        return Err(Error::msg("you can rate only a session you took part in"));
+    }
+    if text(&row, "state") != Some("attended") {
+        return Err(Error::msg("feedback is given once you have attended"));
+    }
+    if !(1..=5).contains(&input.rating) {
+        return Err(Error::msg("the rating is 1 to 5"));
+    }
+    if row.get("feedback_rating").is_some_and(|v| !v.is_null()) {
+        return Err(Error::msg("you have already given feedback on this session"));
+    }
+    db::update("trn_enrolment", &input.enrolment, &json!({ "feedback_rating": input.rating, "feedback_text": input.comment }))?.ok_or_else(|| Error::msg("the enrolment is gone"))
+}
+
 handler! {
+    fn give_training_feedback(input: Feedback) -> Record {
+        give_feedback(input)
+    }
+
     /// Take a seat (or a place in the queue): yourself, your report, or anyone if you run training.
     fn enrol_in_session(input: Enrol) -> Record {
         enrol(input)

@@ -198,6 +198,32 @@
       "label": "%started%",
       "type": "string",
       "max_length": 40
+    },
+    {
+      "id": "fld_kint4e692n",
+      "name": "correction_of",
+      "label": "%correction_of%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_xskqrzv2cl",
+      "name": "only_employees",
+      "label": "%only_employees%",
+      "type": "json"
+    },
+    {
+      "id": "fld_zm4nq0hef4",
+      "name": "correction_reason",
+      "label": "%correction_reason%",
+      "type": "text"
+    },
+    {
+      "id": "fld_txzh4vib9b",
+      "name": "net_difference",
+      "label": "%net_difference%",
+      "type": "string",
+      "max_length": 40
     }
   ],
   "view": {

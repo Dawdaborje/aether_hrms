@@ -1,0 +1,12 @@
+<page route="/hr/attendance/presence" title="Who is in" model="att_day" icon="users" roles="att_admin,hr.hr_manager">
+  <view type="list" source="presence_today">
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="state" label="Now" fieldType="badge"/>
+      <column field="work_mode" label="Working from" fieldType="badge"/>
+      <column field="first_in" label="First in" fieldType="datetime"/>
+      <column field="last_out" label="Last out" fieldType="datetime"/>
+    </columns>
+    <empty title="Nobody has punched in" description="People appear here after their first punch of the day."/>
+  </view>
+</page>

@@ -1,0 +1,85 @@
+{
+  "model_id": "mdl_gi656tdozr",
+  "name": "ins_enrolment",
+  "label": "%ins_enrolment%",
+  "plural_label": "%ins_enrolments%",
+  "icon": "users",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_mn2mw6wdqh",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_gxg4nh2bl2",
+      "name": "policy",
+      "label": "%policy%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_policy"
+    },
+    {
+      "id": "fld_tolg7af5cw",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_e7l66s47pz",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_zwfgjnmhdq",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_pjbm265bmd",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "active",
+      "options": [
+        {
+          "id": "opt_bvkhinrjuw",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_okzv4af6gl",
+          "value": "ended",
+          "label": "%ended%"
+        },
+        {
+          "id": "opt_jtjbnqukqm",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_5n6ijvipsz",
+      "name": "members",
+      "label": "%members%",
+      "type": "child",
+      "target": "ins_member",
+      "inverse": "enrolment",
+      "order": "position"
+    }
+  ]
+}

@@ -33,6 +33,13 @@ access_models = [
 is_builtin = false
 wasm_file = "out/plugin.wasm"
 
+[[command]]
+name = "seed"
+function = "seed_departure_reasons"
+help = "Create the usual departure reasons (idempotent)"
+on_install = true
+on_upgrade = true
+
 [[roles]]
 name = "ob_officer"
 label = "Onboarding officer"
@@ -64,6 +71,8 @@ name = "employee_departed"
 # Move departures whose last day has come to clearance; announce tasks past their day.
 [[schedule]]
 name = "onboarding-tick"
+title = "Move departures and flag late tasks"
+description = "Moves departures to clearance on their last day and announces open tasks past their due day."
 function = "onboarding_tick"
 every = "1h"
 

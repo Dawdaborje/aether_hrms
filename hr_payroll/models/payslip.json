@@ -113,6 +113,12 @@
       "type": "int",
       "required": true,
       "index": "plain"
+    },
+    {
+      "id": "fld_yom418ay93",
+      "name": "inputs",
+      "label": "%inputs%",
+      "type": "json"
     }
   ],
   "indexes": [

@@ -37,6 +37,24 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_97fuy1nyn3",
+      "name": "job",
+      "label": "%job%",
+      "type": "link",
+      "target": "hr.job",
+      "help": "Used for people in this job when appraisals are opened.",
+      "target_id": "mdl_r244x6gqni"
+    },
+    {
+      "id": "fld_g4g6v6ruhd",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "hr.department",
+      "help": "Used for people in this department when no job template matches.",
+      "target_id": "mdl_2wk5bl6ddu"
     }
   ],
   "view": {

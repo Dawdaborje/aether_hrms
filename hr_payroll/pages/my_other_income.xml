@@ -1,0 +1,11 @@
+<page route="/hr/my-other-income" title="My other income" model="pay_other_income" icon="wallet">
+  <view type="list" model="pay_other_income" source="my_other_income" create="/hr/my-other-income/new" create_label="Declare">
+    <columns>
+      <column field="year" label="Year"/>
+      <column field="label" label="Income"/>
+      <column field="amount" label="Amount"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="Nothing declared" description="Declare income from another source that counts towards your tax."/>
+  </view>
+</page>

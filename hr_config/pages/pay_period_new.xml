@@ -1,0 +1,9 @@
+<page route="/hr/config/payroll/periods/new" title="New payroll period" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" function="create_pay_period" submit="Create" success="Period created" redirect="/hr/config/payroll/periods">
+    <group title="Period" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="start_date" label="From" fieldType="date" required="true"/>
+      <field name="end_date" label="To" fieldType="date" required="true"/>
+    </group>
+  </view>
+</page>

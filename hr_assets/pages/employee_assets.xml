@@ -1,3 +1,3 @@
-<page extends="/hr/employees/{id}, /hr/me" title="Assets" params="employee={id}" sort="60">
+<page extends="/hr/employees/{id}" roles="asset_admin" title="Assets" params="employee={id}" sort="60">
   <use component="assets_panel"/>
 </page>

@@ -1,0 +1,16 @@
+<page route="/hr/reports/turnover" title="Turnover" menu_group="Reports" icon="trending-down" roles="hr.hr_manager">
+  <header title="Turnover">
+    <button label="Download Excel" function="export_turnover" format="xlsx"/>
+    <button label="Download PDF" function="export_turnover" format="pdf"/>
+  </header>
+  <view type="dashboard" source="turnover_dashboard">
+    <stat label="Period" field="period"/>
+    <stat label="People at start" field="opening"/>
+    <stat label="Hired" field="hired"/>
+    <stat label="Left" field="left"/>
+    <stat label="People at end" field="closing"/>
+    <stat label="Turnover %" field="turnover_percent"/>
+    <chart type="bar" title="Movement" field="movement" category="name" value="value"/>
+    <chart type="bar" title="Leavers by status" field="leavers" category="name" value="value"/>
+  </view>
+</page>

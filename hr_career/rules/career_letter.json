@@ -1,0 +1,36 @@
+{
+  "model": "career_letter",
+  "access": [
+    {
+      "name": "admin",
+      "roles": [
+        "career_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "others",
+      "roles": [
+        "via:*"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

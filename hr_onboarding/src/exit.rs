@@ -51,6 +51,9 @@ struct Build {
     gratuity_rule: Option<String>,
     #[serde(default)]
     gratuity_base: Option<Decimal>,
+    /// Daily rate used to recover a notice shortfall. Without it, a shortfall is reported only.
+    #[serde(default)]
+    notice_daily_rate: Option<Decimal>,
     #[serde(default)]
     currency: Option<String>,
 }
@@ -285,6 +288,31 @@ fn build(input: Build) -> Result<Value> {
             }
         }
         Err(e) => notes.push(format!("leave skipped: {e}")),
+    }
+
+    // Notice shortfall: the days short of the notice the person owes, at a daily rate, unless waived.
+    let short = match departure.get("notice_shortfall_days").and_then(Value::as_i64) {
+        Some(n) => n,
+        None => {
+            let days = employee(&person)?.get("notice_days").and_then(Value::as_i64).unwrap_or(0);
+            let start = match text(&departure, "notice_date") {
+                Some(n) => aether_sdk::dates::parse_date(n)?,
+                None => crate::common::today_date()?,
+            };
+            crate::rules::notice_shortfall(start, days, aether_sdk::dates::parse_date(&last_day)?).1
+        }
+    };
+    if short > 0 && text(&departure, "notice_waived_reason").is_none_or(str::is_empty) {
+        match &input.notice_daily_rate {
+            Some(rate) if !have.contains("notice_shortfall") => {
+                let amount = rate.clone().times(Decimal::whole(short, 0)?, 2)?;
+                let label = format!("Notice shortfall recovery ({short} days)");
+                added_lines.push(add_line(&input.departure, "receivable", &label, amount, currency, "notice_shortfall")?);
+                have.insert("notice_shortfall".to_string());
+            }
+            Some(_) => skipped.push("notice_shortfall".to_string()),
+            None => notes.push(format!("notice is {short} days short: give notice_daily_rate to recover it")),
+        }
     }
 
     // Gratuity: calculate (not approve) and quote the amount.

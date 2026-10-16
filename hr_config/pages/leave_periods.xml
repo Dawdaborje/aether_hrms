@@ -1,0 +1,14 @@
+<page route="/hr/config/leave/periods" title="Leave periods" roles="hr_leave.leave_admin" icon="calendar-range" menu_group="Leave" sort="10">
+  <view type="list" source="list_leave_periods" create="/hr/config/leave/periods/new" create_label="New">
+    <columns>
+      <column field="name" label="Period"/>
+      <column field="start_date" label="From" fieldType="date"/>
+      <column field="end_date" label="To" fieldType="date"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <actions>
+      <action name="close" label="Close" function="close_leave_period" confirm="Close this period?" danger="true"/>
+    </actions>
+    <empty title="No leave periods" description="A period gives bulk allocations their dates."/>
+  </view>
+</page>

@@ -1,0 +1,62 @@
+{
+  "model_id": "mdl_wgyztcdsfy",
+  "name": "flt_assignment",
+  "label": "%flt_assignment%",
+  "plural_label": "%flt_assignments%",
+  "icon": "key",
+  "title_field": "from_date",
+  "fields": [
+    {
+      "id": "fld_068p2ulf4y",
+      "name": "vehicle",
+      "label": "%vehicle%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_il3pytgnl3",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true
+    },
+    {
+      "id": "fld_f9b3u0dj5v",
+      "name": "from_date",
+      "label": "%from_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_ard4v1foo1",
+      "name": "to_date",
+      "label": "%to_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_7aond59a4v",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_d3ls4q8598",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_khvzw9v9je",
+          "value": "ended",
+          "label": "%ended%"
+        }
+      ],
+      "index": "plain",
+      "default": "active"
+    }
+  ]
+}

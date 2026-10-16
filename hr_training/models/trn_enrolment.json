@@ -134,6 +134,18 @@
       "name": "override_reason",
       "label": "%override_reason%",
       "type": "text"
+    },
+    {
+      "id": "fld_qov9121lqu",
+      "name": "feedback_rating",
+      "label": "%feedback_rating%",
+      "type": "int"
+    },
+    {
+      "id": "fld_dsxxyz048k",
+      "name": "feedback_text",
+      "label": "%feedback_text%",
+      "type": "text"
     }
   ],
   "indexes": [

@@ -1,0 +1,134 @@
+{
+  "model_id": "mdl_4kfe2dfdfb",
+  "name": "ins_payment",
+  "label": "%ins_payment%",
+  "plural_label": "%ins_payments%",
+  "icon": "banknote",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_gsppshjnba",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_w5xg7lgmwm",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_ojsj6wiyru",
+          "value": "claim_reimbursement",
+          "label": "%claim_reimbursement%"
+        },
+        {
+          "id": "opt_zhvhhr53l2",
+          "value": "premium_remittance",
+          "label": "%premium_remittance%"
+        },
+        {
+          "id": "opt_rz4rcmxnmg",
+          "value": "refund",
+          "label": "%refund%"
+        }
+      ]
+    },
+    {
+      "id": "fld_tfh2rkexct",
+      "name": "claim",
+      "label": "%claim%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_claim"
+    },
+    {
+      "id": "fld_z6q2o5umkd",
+      "name": "premium",
+      "label": "%premium%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_premium"
+    },
+    {
+      "id": "fld_y65tsupvax",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ifyq4rlhxz",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_tcj3nswc2b",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_446um2ugnh",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "pending",
+      "options": [
+        {
+          "id": "opt_knksb2b6a3",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_no7irwrbwm",
+          "value": "confirmed",
+          "label": "%confirmed%"
+        },
+        {
+          "id": "opt_6wcwp5ogou",
+          "value": "failed",
+          "label": "%failed%"
+        },
+        {
+          "id": "opt_7oudt7nuba",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_32orzob3dv",
+      "name": "method",
+      "label": "%method%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_wds344gczj",
+      "name": "external_ref",
+      "label": "%external_ref%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_byiblyzpta",
+      "name": "confirmed_on",
+      "label": "%confirmed_on%",
+      "type": "date"
+    }
+  ]
+}

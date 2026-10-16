@@ -1,0 +1,11 @@
+<page route="/hr/config/attendance/locations/new" title="New location" menu="false" roles="hr_attendance.att_admin">
+  <view type="form" function="create_location" submit="Create" success="Location created" redirect="/hr/config/attendance/locations">
+    <group title="Location" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="latitude" label="Latitude"/>
+      <field name="longitude" label="Longitude"/>
+      <field name="radius_m" label="Radius (m)" fieldType="integer"/>
+      <field name="geo_mode" label="Geo mode" fieldType="selection" options="off, record, enforce"/>
+    </group>
+  </view>
+</page>

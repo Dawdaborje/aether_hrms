@@ -32,6 +32,8 @@ name = "document_expiring"
 
 [[schedule]]
 name = "documents-nightly"
+title = "Warn of expiring documents"
+description = "Warns about identity documents that are expired or about to expire."
 function = "documents_nightly"
 cron = "5 2 * * *"
 

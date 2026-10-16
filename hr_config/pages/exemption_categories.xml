@@ -1,0 +1,12 @@
+<page route="/hr/config/payroll/exemption-categories" title="Exemption categories" menu_group="Payroll" icon="shield-check" sort="41" roles="hr_payroll.payroll_admin">
+  <view type="list" source="list_exemption_categories" create="/hr/config/payroll/exemption-categories/new" create_label="New">
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="label" label="Label"/>
+      <column field="parent" label="Under"/>
+      <column field="max_amount" label="Maximum"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No categories" description="A category caps what an employee may exempt; a sub-category counts towards its parent's cap."/>
+  </view>
+</page>

@@ -1,0 +1,26 @@
+{
+  "model": "perf_note",
+  "access": [
+    {
+      "name": "admin",
+      "roles": [
+        "perf_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ]
+}

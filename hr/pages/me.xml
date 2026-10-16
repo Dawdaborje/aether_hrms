@@ -1,5 +1,9 @@
-<page route="/hr/me" title="My profile" model="employee" menu_group="Employee" icon="user" sort="5">
+<page route="/hr/me" title="My profile" model="employee" menu_when="my_employee" menu_group="Employee" icon="user" sort="5">
   <view type="form" source="my_employee">
+    <empty title="Your account is not linked to an employee"
+           description="There is no employee record for your login, so there is no profile to show. If you are HR staff you can link your account to an employee now; otherwise ask HR to link it.">
+      <button label="Link my account" href="/hr/me/link" variant="default"/>
+    </empty>
     <use component="base_ui.status_bar" field="status"/>
     <group title="Overview" cols="2">
       <field name="display_name" label="Name"/>

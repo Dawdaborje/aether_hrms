@@ -1,0 +1,9 @@
+<page route="/hr/config/payroll/periods/{id}" title="Payroll period" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" source="get_pay_period" function="update_pay_period" submit="Save" success="Saved" redirect="/hr/config/payroll/periods">
+    <group title="Period" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="start_date" label="Start" fieldType="date"/>
+      <field name="end_date" label="End" fieldType="date"/>
+    </group>
+  </view>
+</page>

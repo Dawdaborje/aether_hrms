@@ -12,30 +12,30 @@ use crate::common::{id_of, is_manager, kind_of, require, require_recruiter, sequ
 use crate::rules::{check_move, normalise_email};
 
 #[derive(Deserialize)]
-struct Person {
-    name: String,
-    email: String,
+pub(crate) struct Person {
+    pub(crate) name: String,
+    pub(crate) email: String,
     #[serde(default)]
-    phone: Option<String>,
+    pub(crate) phone: Option<String>,
 }
 
 #[derive(Deserialize)]
-struct Apply {
-    opening: String,
+pub(crate) struct Apply {
+    pub(crate) opening: String,
     /// A person already in the directory...
     #[serde(default)]
-    candidate: Option<String>,
+    pub(crate) candidate: Option<String>,
     /// ...or the details to find them by email, or add them.
     #[serde(default)]
-    person: Option<Person>,
+    pub(crate) person: Option<Person>,
     #[serde(default)]
-    source: Option<String>,
+    pub(crate) source: Option<String>,
     #[serde(default)]
-    referrer: Option<String>,
+    pub(crate) referrer: Option<String>,
     #[serde(default)]
-    expected_salary: Option<Decimal>,
+    pub(crate) expected_salary: Option<Decimal>,
     #[serde(default)]
-    notes: Option<String>,
+    pub(crate) notes: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -104,7 +104,19 @@ fn apply(input: Apply) -> Result<Record> {
     if !referred {
         require_recruiter()?;
     }
+    apply_inner(input)
+}
+
+/// Record an application; whoever may do it has been checked by the caller.
+pub(crate) fn apply_inner(input: Apply) -> Result<Record> {
     let opening = require("rec_opening", &input.opening, "opening")?;
+    if let Some(source) = input.source.as_deref().filter(|s| !s.trim().is_empty()) {
+        let known: Vec<Record> = db::find("rec_source").filter("is_active", true).limit(200).all()?;
+        let internal = matches!(source, "referral" | "career_site" | "email");
+        if !known.is_empty() && !internal && !known.iter().any(|k| text(k, "name").is_some_and(|n| n.eq_ignore_ascii_case(source))) {
+            return Err(Error::msg("that is not one of the applicant sources: add it first, or leave the source out"));
+        }
+    }
     if text(&opening, "status") != Some("open") {
         return Err(Error::msg("this opening is not open for applications"));
     }

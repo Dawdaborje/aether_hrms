@@ -1,0 +1,14 @@
+<page route="/hr/config/recruitment/opening-templates/{id}" title="Opening template" menu="false" roles="hr_recruitment.recruit_manager">
+  <view type="form" source="get_opening_template" function="update_opening_template" submit="Save" success="Saved">
+    <group title="Opening template" cols="2">
+      <field name="name" label="Template name" required="true"/>
+      <field name="title" label="Job title"/>
+      <field name="seats" label="Seats" fieldType="integer"/>
+      <field name="currency" label="Currency"/>
+      <field name="salary_min" label="Salary from"/>
+      <field name="salary_max" label="Salary to"/>
+      <field name="description" label="Description" fieldType="text"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

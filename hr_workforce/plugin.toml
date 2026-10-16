@@ -40,6 +40,8 @@ name = "requisition_filled"
 # Reads fills back from the openings.
 [[schedule]]
 name = "workforce-nightly"
+title = "Sync requisition fills"
+description = "Reads hiring fills back from recruitment for approved requisitions."
 function = "workforce_nightly"
 cron = "50 0 * * *"
 

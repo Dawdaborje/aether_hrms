@@ -1,0 +1,15 @@
+<page route="/hr/attendance/approvals/requests" title="Attendance requests to approve" icon="clipboard-check" menu_group="Approvals" sort="30">
+  <view type="list" source="attendance_requests_waiting_for_me">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="date_from" label="From" fieldType="date"/>
+      <column field="date_to" label="To" fieldType="date"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_attendance_request" confirm="Approve this request?"/>
+    </actions>
+    <empty title="Nothing waiting" description="No one on your team is waiting on a decision."/>
+  </view>
+</page>

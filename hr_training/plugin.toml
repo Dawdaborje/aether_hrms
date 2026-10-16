@@ -42,6 +42,8 @@ name = "certificate_expiring"
 
 [[schedule]]
 name = "training-nightly"
+title = "Warn of expiring certificates"
+description = "Tells people when a training certificate has 30, 7 or 0 days left."
 function = "training_nightly"
 cron = "55 0 * * *"
 

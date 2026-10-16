@@ -1,0 +1,15 @@
+<page route="/hr/config/payroll/components/{id}" title="Salary component" menu="false" roles="hr_payroll.payroll_admin">
+  <view type="form" source="get_pay_component" function="update_pay_component" submit="Save" success="Saved" redirect="/hr/config/payroll/components">
+    <group title="Component" cols="2">
+      <field name="label" label="Label" required="true"/>
+      <field name="source" label="Amount from" fieldType="selection" options="formula, input, amount"/>
+      <field name="formula" label="Formula"/>
+      <field name="input_name" label="Input name"/>
+      <field name="amount" label="Fixed amount"/>
+      <field name="when_expr" label="Only when"/>
+      <field name="is_taxable" label="Taxable earning" fieldType="boolean"/>
+      <field name="pro_rata" label="Pro-rata by days worked" fieldType="boolean"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

@@ -135,6 +135,35 @@
       "name": "notes",
       "label": "%notes%",
       "type": "text"
+    },
+    {
+      "id": "fld_yd5h55qezf",
+      "name": "resume",
+      "label": "%resume%",
+      "type": "file"
+    },
+    {
+      "id": "fld_p02duwe0yz",
+      "name": "resume_text",
+      "label": "%resume_text%",
+      "type": "text",
+      "help": "Plain text of the resume, for matching."
+    },
+    {
+      "id": "fld_vxmkprkbov",
+      "name": "parsed",
+      "label": "%parsed%",
+      "type": "json",
+      "help": "Email, phone and skills found in the resume text."
+    },
+    {
+      "id": "fld_h1aqyeyj0u",
+      "name": "source_ref",
+      "label": "%source_ref%",
+      "type": "string",
+      "max_length": 200,
+      "index": "plain",
+      "help": "The message or form this came from, so it is recorded once."
     }
   ],
   "indexes": [

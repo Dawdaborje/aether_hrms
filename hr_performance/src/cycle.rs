@@ -29,6 +29,10 @@ struct NewTemplate {
     name: String,
     kras: Value,
     criteria: Value,
+    #[serde(default)]
+    job: Option<String>,
+    #[serde(default)]
+    department: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -111,9 +115,17 @@ fn check_deadline(value: &Option<String>) -> Result<Option<String>> {
 
 fn new_template(input: NewTemplate) -> Result<Record> {
     require_admin()?;
-    check_weights(&weighted(&input.kras, "key result areas")?, "key result areas")?;
+    let kras = weighted(&input.kras, "key result areas")?;
+    check_weights(&kras, "key result areas")?;
+    crate::extras::check_kras(&kras.iter().map(|(n, _)| n.clone()).collect::<Vec<_>>())?;
     check_weights(&weighted(&input.criteria, "criteria")?, "criteria")?;
-    db::create("perf_template", &json!({ "name": input.name, "kras": input.kras, "criteria": input.criteria }))
+    let mut data = json!({ "name": input.name, "kras": input.kras, "criteria": input.criteria });
+    for (field, value) in [("job", &input.job), ("department", &input.department)] {
+        if let Some(value) = value {
+            data[field] = json!(value);
+        }
+    }
+    db::create("perf_template", &data)
         .map_err(|e| e.or("could not create the template (the name may be taken)"))
 }
 
@@ -172,7 +184,7 @@ fn open_appraisals(input: Open) -> Result<Value> {
     if !matches!(phase_of(&cycle)?, Phase::Draft | Phase::GoalSetting) {
         return Err(Error::msg("appraisals are opened while the cycle is in draft or goal setting"));
     }
-    let template = require("perf_template", text(&cycle, "template").unwrap_or_default(), "template")?;
+    let cycle_template = require("perf_template", text(&cycle, "template").unwrap_or_default(), "template")?;
     let people: Vec<Record> = match &input.employees {
         Some(ids) => ids.iter().map(|id| employee(id)).collect::<Result<_>>()?,
         None => plugins::call("hr", "list_employees", &json!({ "limit": 500 }))?,
@@ -188,6 +200,7 @@ fn open_appraisals(input: Open) -> Result<Value> {
             if db::count("perf_appraisal", Filter::eq("cycle", input.cycle.as_str()).and(Filter::eq("employee", id)))? > 0 {
                 return Ok(false);
             }
+            let template = crate::extras::template_for(person, &cycle_template)?;
             let mut data = json!({
                 "cycle": input.cycle, "employee": id, "kras": template["kras"], "criteria": template["criteria"], "phase": cycle["status"],
             });

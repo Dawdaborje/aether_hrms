@@ -11,6 +11,9 @@ group_icon = "./assets/hrms.svg"
 
 # Member plugins: each is a folder with its own plugin.toml, models and (for Rust) Cargo.toml.
 [workspace.plugins]
+hr_approvals = { path = "./hr_approvals" }
+hr_timesheet = { path = "./hr_timesheet" }
+hr_fleet = { path = "./hr_fleet" }
 hr = { path = "./hr" }
 hr_leave = { path = "./hr_leave" }
 hr_config = { path = "./hr_config" }
@@ -29,5 +32,6 @@ hr_travel = { path = "./hr_travel" }
 hr_assets = { path = "./hr_assets" }
 hr_loan = { path = "./hr_loan" }
 hr_benefits = { path = "./hr_benefits" }
+hr_insurance = { path = "./hr_insurance" }
 hr_referral = { path = "./hr_referral" }
 hr_documents = { path = "./hr_documents" }

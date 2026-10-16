@@ -11,18 +11,18 @@ use crate::common::{id_of, require, require_admin, require_clerk, require_payrol
 use crate::rules::{assignments_overlap, FIXED_FOR_A_RUN, RESERVED_INPUTS};
 
 #[derive(Deserialize)]
-struct NewStructure {
-    code: String,
-    version: String,
-    name: String,
-    definition: Value,
+pub(crate) struct NewStructure {
+    pub(crate) code: String,
+    pub(crate) version: String,
+    pub(crate) name: String,
+    pub(crate) definition: Value,
     /// Rule packs (tax, social security) the structure uses as components.
     #[serde(default)]
-    packs: Vec<PackUse>,
+    pub(crate) packs: Vec<PackUse>,
 }
 
 #[derive(Deserialize)]
-struct PackUse {
+pub(crate) struct PackUse {
     /// The pack's id, such as `gm.paye.2025`: one edition, so a payslip can be reproduced.
     pack: String,
     /// The component's id and label in the structure.
@@ -45,20 +45,35 @@ struct ImportPack {
 #[derive(Deserialize)]
 struct Setting {
     allow_unverified_rules: bool,
+    #[serde(default)]
+    periods_per_year: Option<i64>,
+    #[serde(default)]
+    require_open_period: Option<bool>,
+    #[serde(default)]
+    email_payslip: Option<bool>,
+    #[serde(default)]
+    count_pending_declarations: Option<bool>,
+    /// The company account salaries are paid from (used in the bank payment file).
+    #[serde(default)]
+    payer_name: Option<String>,
+    #[serde(default)]
+    payer_iban: Option<String>,
+    #[serde(default)]
+    payer_bic: Option<String>,
 }
 
 #[derive(Deserialize)]
-struct Assign {
-    employee: String,
+pub(crate) struct Assign {
+    pub(crate) employee: String,
     /// The structure's code; its newest active version, or the one named in `version`.
-    structure: String,
+    pub(crate) structure: String,
     #[serde(default)]
-    version: Option<String>,
-    valid_from: String,
+    pub(crate) version: Option<String>,
+    pub(crate) valid_from: String,
     #[serde(default)]
-    valid_to: Option<String>,
+    pub(crate) valid_to: Option<String>,
     #[serde(default)]
-    variables: Option<serde_json::Map<String, Value>>,
+    pub(crate) variables: Option<serde_json::Map<String, Value>>,
 }
 
 #[derive(Deserialize)]
@@ -94,7 +109,7 @@ fn sha_hex(text: &str) -> String {
     Sha256::digest(text.as_bytes()).iter().map(|b| format!("{b:02x}")).collect()
 }
 
-fn new_structure(input: NewStructure) -> Result<Record> {
+pub(crate) fn new_structure(input: NewStructure) -> Result<Record> {
     require_admin()?;
     let mut structure: Structure = serde_json::from_value(input.definition.clone()).map_err(|e| Error::msg(format!("the definition: {e}")))?;
     structure.id = input.code.clone();
@@ -137,6 +152,18 @@ fn parse_stored(record: &Record) -> Result<RulePack> {
 
 fn import_pack(input: ImportPack) -> Result<Record> {
     require_admin()?;
+    store_pack(input.description, input.expression)
+}
+
+/// Validate a pack (it parses and its own tests pass) and keep it. Used by the admin import and by the
+/// seed of the packs shipped with the plugin.
+pub(crate) fn store_pack(description_json: Value, expression: String) -> Result<Record> {
+    // A form sends the description as text; an API call may send the object itself.
+    let description_json = match description_json {
+        Value::String(raw) => serde_json::from_str(&raw).map_err(|e| Error::msg(format!("the description is not valid JSON: {e}")))?,
+        other => other,
+    };
+    let input = ImportPack { description: description_json, expression };
     let description = input.description.to_string();
     let pack = RulePack::parse(&description, &input.expression).map_err(Error::msg)?;
     let results = pack.run_tests();
@@ -169,11 +196,30 @@ pub fn unverified_allowed() -> Result<bool> {
     Ok(db::find::<Record>("pay_setting").first()?.is_some_and(|s| s.get("allow_unverified_rules") == Some(&json!(true))))
 }
 
+/// Pay periods in a year (12 unless the setting says otherwise).
+pub fn periods_per_year() -> Result<i64> {
+    Ok(db::find::<Record>("pay_setting").first()?.and_then(|s| s.get("periods_per_year").and_then(Value::as_i64)).filter(|n| *n > 0).unwrap_or(12))
+}
+
 fn set_setting(input: Setting) -> Result<Record> {
     require_admin()?;
+    if input.periods_per_year.is_some_and(|n| !matches!(n, 1 | 2 | 4 | 12 | 13 | 24 | 26 | 52)) {
+        return Err(Error::msg("pay periods per year: 1, 2, 4, 12, 13, 24, 26 or 52"));
+    }
+    let mut data = json!({ "allow_unverified_rules": input.allow_unverified_rules });
+    for (name, value) in [("periods_per_year", input.periods_per_year.map(|n| json!(n))), ("require_open_period", input.require_open_period.map(|b| json!(b))), ("email_payslip", input.email_payslip.map(|b| json!(b))), ("count_pending_declarations", input.count_pending_declarations.map(|b| json!(b)))] {
+        if let Some(value) = value {
+            data[name] = value;
+        }
+    }
+    for (name, value) in [("payer_name", &input.payer_name), ("payer_iban", &input.payer_iban), ("payer_bic", &input.payer_bic)] {
+        if let Some(value) = value {
+            data[name] = json!(value.trim());
+        }
+    }
     match db::find::<Record>("pay_setting").first()? {
-        Some(existing) => db::update("pay_setting", id_of(&existing)?, &json!({ "allow_unverified_rules": input.allow_unverified_rules }))?.ok_or_else(|| Error::msg("the setting is gone")),
-        None => db::create("pay_setting", &json!({ "allow_unverified_rules": input.allow_unverified_rules })),
+        Some(existing) => db::update("pay_setting", id_of(&existing)?, &data)?.ok_or_else(|| Error::msg("the setting is gone")),
+        None => db::create("pay_setting", &data),
     }
 }
 
@@ -186,7 +232,7 @@ pub fn find_structure(code: &str, version: Option<&str>) -> Result<Record> {
     find.first()?.ok_or_else(|| Error::msg(format!("there is no active structure `{code}`")))
 }
 
-fn assign(input: Assign) -> Result<Record> {
+pub(crate) fn assign(input: Assign) -> Result<Record> {
     require_admin()?;
     let found: Option<Record> = plugins::call("hr", "get_employee", &json!({ "id": input.employee }))?;
     if found.is_none() {
@@ -278,7 +324,16 @@ handler! {
 
     fn get_payroll_setting(_: Empty) -> Value {
         require_payroll_staff()?;
-        Ok(json!({ "allow_unverified_rules": unverified_allowed()? }))
+        let row: Option<Record> = db::find("pay_setting").first()?;
+        let flag = |name: &str, default: bool| row.as_ref().and_then(|r| r.get(name).and_then(Value::as_bool)).unwrap_or(default);
+        Ok(json!({
+            "allow_unverified_rules": unverified_allowed()?, "periods_per_year": periods_per_year()?,
+            "require_open_period": flag("require_open_period", false), "email_payslip": flag("email_payslip", false),
+            "count_pending_declarations": flag("count_pending_declarations", true),
+            "payer_name": row.as_ref().and_then(|r| r.get("payer_name").cloned()).unwrap_or(Value::Null),
+            "payer_iban": row.as_ref().and_then(|r| r.get("payer_iban").cloned()).unwrap_or(Value::Null),
+            "payer_bic": row.as_ref().and_then(|r| r.get("payer_bic").cloned()).unwrap_or(Value::Null),
+        }))
     }
 
     fn retire_structure(input: Id) -> Record {

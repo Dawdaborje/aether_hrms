@@ -1,0 +1,105 @@
+{
+  "model_id": "mdl_sm62ay26nd",
+  "name": "ins_provider",
+  "label": "%ins_provider%",
+  "plural_label": "%ins_providers%",
+  "icon": "hospital",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_hc3rnxpbn5",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_krgdjx5uj4",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "default": "clinic",
+      "options": [
+        {
+          "id": "opt_czxdgbj7nh",
+          "value": "hospital",
+          "label": "%hospital%"
+        },
+        {
+          "id": "opt_qjygm5j4hd",
+          "value": "clinic",
+          "label": "%clinic%"
+        },
+        {
+          "id": "opt_noyknkzp77",
+          "value": "pharmacy",
+          "label": "%pharmacy%"
+        },
+        {
+          "id": "opt_pjb34gscio",
+          "value": "laboratory",
+          "label": "%laboratory%"
+        },
+        {
+          "id": "opt_z4liauma2y",
+          "value": "dental",
+          "label": "%dental%"
+        },
+        {
+          "id": "opt_5t3hfvcjg5",
+          "value": "optical",
+          "label": "%optical%"
+        },
+        {
+          "id": "opt_7n3z6sa3cw",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_4ltjd3e7xi",
+      "name": "country",
+      "label": "%country%",
+      "type": "string",
+      "max_length": 2
+    },
+    {
+      "id": "fld_lzw4xqiakt",
+      "name": "city",
+      "label": "%city%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_7wsu6r7pob",
+      "name": "phone",
+      "label": "%phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_nxea6loa7q",
+      "name": "email",
+      "label": "%email%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_xaejv5b6a6",
+      "name": "is_network",
+      "label": "%is_network%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_sa77qszed2",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

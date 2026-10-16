@@ -262,7 +262,7 @@ fn submit(input: Ask) -> Result<Record> {
     }
 
     // The flow is copied now; a person with nobody above them is decided by HR instead of a manager.
-    let manager = text(&person, "manager").map(str::to_string);
+    let manager = crate::approver::deciders(&person)?.into_iter().next();
     let mut validation = text(&kind, "validation").unwrap_or("manager").to_string();
     if manager.is_none() && matches!(validation.as_str(), "manager" | "both") {
         validation = "hr".into();
@@ -337,8 +337,9 @@ fn may_decide(me: Option<&Record>, request: &Record, step: Step) -> Result<bool>
     }
     Ok(match (step, me) {
         (Step::Manager, Some(me)) => {
-            let current_manager = employee(requester)?.get("manager").and_then(Value::as_str).map(str::to_string);
-            current_manager.as_deref() == Some(id_of(me)?)
+            let deciders = crate::approver::deciders(&employee(requester)?)?;
+            let my_id = id_of(me)?;
+            deciders.iter().any(|d| d == my_id)
         }
         _ => false,
     })
@@ -478,6 +479,20 @@ fn waiting_for_me() -> Result<Vec<Record>> {
                     .limit(500)
                     .all()?,
             );
+        }
+    }
+    let covered = crate::approver::people_i_approve_for()?;
+    if !covered.is_empty() {
+        let ids: Vec<&str> = covered.iter().map(String::as_str).collect();
+        for request in db::find::<Record>("leave_request")
+            .matching(Filter::eq("state", "submitted").and(Filter::ne("validation", "hr")).and(Filter::one_of("employee", ids)))
+            .order_by("start_date")
+            .limit(500)
+            .all()?
+        {
+            if !out.iter().any(|seen| text(seen, "id") == text(&request, "id")) {
+                out.push(request);
+            }
         }
     }
     if is_admin()? {

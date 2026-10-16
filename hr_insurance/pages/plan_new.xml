@@ -1,0 +1,30 @@
+<page route="/hr/insurance/plans/new" title="New plan" menu="false" model="ins_plan" roles="ins_admin">
+  <view type="form" function="create_insurance_plan" submit="Create plan" success="Plan created" redirect="/hr/insurance/plans">
+    <group title="Plan" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="insurer" label="Insurer" fieldType="many2one" source="list_insurers" optionLabel="name" entity="insurers" required="true"/>
+      <field name="coverage_type" label="Type" fieldType="selection" options="basic, standard, premium, family, individual"/>
+      <field name="currency" label="Currency" required="true" help="Currency code, e.g. USD."/>
+    </group>
+    <group title="Cover" cols="2">
+      <field name="member_limit" label="Limit per person per year" required="true"/>
+      <field name="deductible" label="Deductible"/>
+      <field name="copay_percent" label="Copay %"/>
+      <field name="preauth_threshold" label="Preauthorisation from"/>
+      <field name="network_only" label="Network facilities only" fieldType="boolean"/>
+      <field name="claim_window_days" label="Days to claim" fieldType="integer"/>
+    </group>
+    <group title="Premium" cols="2">
+      <field name="premium_amount" label="Premium per person group" required="true"/>
+      <field name="premium_period" label="Per" fieldType="selection" options="monthly, annual"/>
+      <field name="employer_share_percent" label="Employer pays %"/>
+    </group>
+    <group title="Who can be covered" cols="2">
+      <field name="allow_spouse" label="Spouse" fieldType="boolean"/>
+      <field name="allow_children" label="Children" fieldType="boolean"/>
+      <field name="max_children" label="Most children" fieldType="integer"/>
+      <field name="child_max_age" label="Child age limit" fieldType="integer"/>
+    </group>
+  </view>
+</page>

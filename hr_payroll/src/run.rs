@@ -103,6 +103,7 @@ fn create_run(input: NewRun) -> Result<Record> {
     require_clerk()?;
     let (start, end) = (parse_date(&input.period_start)?, parse_date(&input.period_end)?);
     check_period(start, end)?;
+    crate::library::check_run_period(start, end)?;
     let batch = input.batch_size.unwrap_or(DEFAULT_BATCH);
     if !(MIN_BATCH..=MAX_BATCH).contains(&batch) {
         return Err(Error::msg(format!("a batch is {MIN_BATCH} to {MAX_BATCH} people: one call has a fixed budget of work")));
@@ -174,7 +175,12 @@ fn plan_job(plan: Plan) -> Result<Value> {
             keys.extend(text(row, "employee").map(str::to_string));
         }
     }
-    let ids = distinct(keys);
+    let mut ids = distinct(keys);
+    // A correction run recalculates only the people it names.
+    if let Some(only) = run.get("only_employees").and_then(Value::as_array).filter(|a| !a.is_empty()) {
+        let wanted: Vec<&str> = only.iter().filter_map(Value::as_str).collect();
+        ids.retain(|id| wanted.iter().any(|w| w == id || w.ends_with(id.as_str()) || id.ends_with(*w)));
+    }
     let group = text(&run, "group").unwrap_or_default().to_string();
     let batch_size = int(&run, "batch_size").max(MIN_BATCH) as usize;
     let mut batches = 0i64;
@@ -275,6 +281,10 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
     } else {
         Value::Null
     };
+    let periods_per_year = crate::setup::periods_per_year()?;
+    // A structure that declares `exemptions_annual` gets the person's declared/verified yearly exemptions.
+    let exemptions = if wants("exemptions_annual") { crate::library::exemptions_for(&ids, &format_date(end)[..4])? } else { BTreeMap::new() };
+    let other_income = if wants("other_income_annual") { crate::library::other_income_for(&ids, &format_date(end)[..4])? } else { BTreeMap::new() };
     let mut currencies: BTreeMap<String, Option<String>> = BTreeMap::new();
     let mut totals = Totals::default();
     let mut slips: Vec<(String, Value)> = Vec::new();
@@ -330,7 +340,13 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
         put("base_salary", number(wage)?);
         put("period_days", json!(period_days));
         put("days_worked", json!(days_worked));
-        put("periods_per_year", json!(12));
+        put("periods_per_year", json!(periods_per_year));
+        if let Some(total) = exemptions.get(id.as_str()) {
+            put("exemptions_annual", number(&total.to_string())?);
+        }
+        if let Some(total) = other_income.get(id.as_str()) {
+            put("other_income_annual", number(&total.to_string())?);
+        }
         put("unpaid_leave_days", number(leave[id.as_str()]["unpaid_days"].as_str().unwrap_or("0"))?);
         put("overtime_hours", number(&hours_of(attendance[id.as_str()]["overtime_minutes"].as_i64().unwrap_or(0))?.to_string())?);
         for declared_name in declared.iter().filter(|name| name.starts_with("adj_")) {
@@ -343,7 +359,7 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
                 variables.insert(name.clone(), value.clone());
             }
         }
-        match compiled.run(&PayInput { employee_id: id.clone(), variables }, false) {
+        match compiled.run(&PayInput { employee_id: id.clone(), variables: variables.clone() }, false) {
             Err(error) => errors.push((id.clone(), error.to_string())),
             Ok(slip) => {
                 let (gross, deductions, net, employer, shortfall) = (money(&slip.gross.to_string())?, money(&slip.deductions.to_string())?, money(&slip.net.to_string())?, money(&slip.employer_cost.to_string())?, money(&slip.shortfall.to_string())?);
@@ -368,6 +384,8 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
                         "run": shared.run, "employee": id, "employee_name": person["display_name"], "structure_code": text(record, "code"), "structure_version": text(record, "version"),
                         "structure_hash": text(record, "hash"), "currency": code, "gross": gross, "deductions": deductions, "net": net, "employer_cost": employer, "shortfall": shortfall,
                         "lines": serde_json::to_value(&slip.lines).map_err(|e| Error::msg(e.to_string()))?,
+                        // What the structure was given, kept so the payslip can be explained line by line later.
+                        "inputs": serde_json::to_value(&variables).map_err(|e| Error::msg(e.to_string()))?,
                     }),
                 ));
             }
@@ -512,10 +530,29 @@ fn approve(input: Id) -> Result<Record> {
     }
     let totals: Totals = serde_json::from_value(run["totals"].clone()).map_err(|e| Error::msg(format!("totals: {e}")))?;
     let today = format_date(today_date()?);
-    let approved = db::update::<Record>("pay_run", &input.id, &json!({ "status": "approved", "approved_by": who, "approved_on": today }))?.ok_or_else(|| Error::msg("the run is gone"))?;
+    // A correction run is paid and booked as the difference to the run it corrects, never in full.
+    let difference = crate::correction::net_difference(&input.id)?;
+    let mut changes = json!({ "status": "approved", "approved_by": who, "approved_on": today });
+    if let Some(net) = &difference {
+        changes["net_difference"] = json!(net);
+    }
+    let approved = db::update::<Record>("pay_run", &input.id, &changes)?.ok_or_else(|| Error::msg("the run is gone"))?;
+    // Tell people their payslip is ready, when the organisation asked for it.
+    if db::find::<Record>("pay_setting").first()?.is_some_and(|s| s.get("email_payslip") == Some(&json!(true))) {
+        // A notice that cannot be queued must not undo an approval that has happened.
+        let _ = crate::email::queue(&input.id);
+    }
     // The period is closed for extra pay: an adjustment dated inside it can no longer change.
     plugins::call::<Value>("hr_compensation", "lock_through", &json!({ "through": run["period_end"] }))?;
     let components: Vec<Value> = totals.components.iter().map(|(id, c)| json!({ "id": id, "kind": c.kind, "amount": c.amount })).collect();
+    if let Some(net) = difference {
+        // Not `payroll_run_approved`: that carries the full amounts and would be booked a second time.
+        events::emit(
+            "payroll_correction_approved",
+            &json!({ "run": input.id, "number": run["number"], "corrects": run["correction_of"], "currency": currency_of(&run)?, "period_end": run["period_end"], "net_difference": net, "reason": run["correction_reason"] }),
+        )?;
+        return Ok(approved);
+    }
     // Money amounts travel as text so no digit is lost.
     events::emit(
         "payroll_run_approved",
@@ -571,7 +608,12 @@ fn record_payment(input: Payment) -> Result<Record> {
         return Err(Error::msg("give the payment's reference"));
     }
     let paid = db::update::<Record>("pay_run", &input.id, &json!({ "status": "paid", "payment_ref": input.reference, "paid_on": format_date(today_date()?) }))?.ok_or_else(|| Error::msg("the run is gone"))?;
-    events::emit("payroll_run_paid", &json!({ "run": input.id, "number": run["number"], "reference": input.reference, "net": run["totals"]["net"] }))?;
+    // A correction is paid as the difference to the run it corrects.
+    let net = match text(&run, "net_difference") {
+        Some(difference) => json!(difference),
+        None => run["totals"]["net"].clone(),
+    };
+    events::emit("payroll_run_paid", &json!({ "run": input.id, "number": run["number"], "reference": input.reference, "net": net, "corrects": run["correction_of"] }))?;
     Ok(paid)
 }
 
@@ -589,7 +631,7 @@ fn progress(input: Id) -> Result<Value> {
     }))
 }
 
-fn my_payslip_ids() -> Result<Vec<String>> {
+pub(crate) fn my_payslip_ids() -> Result<Vec<String>> {
     let Some(me) = my_employee()? else { return Ok(Vec::new()) };
     let runs: Vec<Record> = db::find("pay_run").matching(Filter::one_of("status", ["approved", "paid"])).limit(500).all()?;
     let run_ids: Vec<String> = runs.iter().filter_map(|r| text(r, "id").map(str::to_string)).collect();

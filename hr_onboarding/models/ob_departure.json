@@ -103,6 +103,24 @@
       "name": "cancel_reason",
       "label": "%cancel_reason%",
       "type": "text"
+    },
+    {
+      "id": "fld_0sepn3zrrh",
+      "name": "notice_days_required",
+      "label": "%notice_days_required%",
+      "type": "int"
+    },
+    {
+      "id": "fld_57hwqyt0xe",
+      "name": "notice_shortfall_days",
+      "label": "%notice_shortfall_days%",
+      "type": "int"
+    },
+    {
+      "id": "fld_8fbfswman7",
+      "name": "notice_waived_reason",
+      "label": "%notice_waived_reason%",
+      "type": "text"
     }
   ],
   "view": {

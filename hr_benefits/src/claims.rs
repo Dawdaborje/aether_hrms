@@ -482,6 +482,25 @@ handler! {
         decide(input)
     }
 
+    fn approve_benefit_claim(input: Id) -> Record {
+        decide(Decide { id: input.id, approve: true, note: None })
+    }
+
+    /// The reason recorded is "Declined"; use `decide_benefit_claim` for a note.
+    fn reject_benefit_claim(input: Id) -> Record {
+        decide(Decide { id: input.id, approve: false, note: Some("Declined".into()) })
+    }
+
+    /// Submitted claims the caller may decide: all of them for an administrator, theirs to approve otherwise.
+    fn benefit_claims_waiting_for_me(_: Empty) -> Vec<Record> {
+        let mut q = db::find::<Record>("bnf_claim").filter("state", "submitted");
+        if !is_admin()? {
+            let Some(me) = me_id()? else { return Ok(Vec::new()) };
+            q = q.filter("approver", me.as_str());
+        }
+        q.limit(500).all()
+    }
+
     fn cancel_benefit_claim(input: Id) -> Record {
         cancel(input)
     }
@@ -498,6 +517,11 @@ handler! {
     fn my_benefit_claims(_: Empty) -> Vec<Record> {
         let Some(me) = me_id()? else { return Ok(Vec::new()) };
         db::find("bnf_claim").filter("employee", me.as_str()).limit(500).all()
+    }
+
+    /// Covered dependents the caller may see (the rules decide; `hr_insurance` reads them all when it migrates).
+    fn list_benefit_dependents(_: Empty) -> Vec<Record> {
+        db::find("bnf_dependent").limit(20_000).all()
     }
 
     fn list_benefit_enrolments(_: Empty) -> Vec<Record> {

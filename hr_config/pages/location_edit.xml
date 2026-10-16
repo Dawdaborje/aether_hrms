@@ -1,0 +1,12 @@
+<page route="/hr/config/attendance/locations/{id}" title="Location" menu="false" roles="hr_attendance.att_admin">
+  <view type="form" source="get_location" function="update_location" submit="Save" success="Saved" redirect="/hr/config/attendance/locations">
+    <group title="Location" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="latitude" label="Latitude"/>
+      <field name="longitude" label="Longitude"/>
+      <field name="radius_m" label="Radius (m)" fieldType="integer"/>
+      <field name="geo_mode" label="Geo mode" fieldType="selection" options="off, record, enforce"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

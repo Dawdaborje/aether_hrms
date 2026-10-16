@@ -216,6 +216,13 @@
       "type": "string",
       "max_length": 200,
       "help": "Why the terms changed: hire, promotion, transfer, renewal..."
+    },
+    {
+      "id": "fld_0m9kuaz15h",
+      "name": "cost_center",
+      "label": "%cost_center%",
+      "type": "string",
+      "max_length": 60
     }
   ],
   "indexes": [

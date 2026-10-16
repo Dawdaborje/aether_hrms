@@ -1,0 +1,18 @@
+<page route="/hr/insurance/premiums" title="Premiums" model="ins_premium" icon="coins" sort="60">
+  <view type="list" model="ins_premium" source="list_insurance_premiums" create="/hr/insurance/premiums/generate" create_label="Create a month's premiums">
+    <filter field="state" options="scheduled,deducted,remitted,waived" label="State"/>
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="period_end" label="Period end" fieldType="date"/>
+      <column field="total" label="Total"/>
+      <column field="employee_share" label="Employee pays"/>
+      <column field="employer_share" label="Employer pays"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="remit" label="Remit" function="remit_insurance_premium" confirm="Record this premium as paid to the insurer?"/>
+    </actions>
+    <empty title="No premiums" description="Premiums are created each month for active enrolments."/>
+  </view>
+</page>

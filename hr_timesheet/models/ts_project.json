@@ -1,0 +1,40 @@
+{
+  "model_id": "mdl_mtp3i9eif2",
+  "name": "ts_project",
+  "label": "%ts_project%",
+  "plural_label": "%ts_projects%",
+  "icon": "folder-kanban",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_hpbpwz1s4b",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_vjn5b9d2rn",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_2m56r27jst",
+      "name": "cost_per_hour",
+      "label": "%cost_per_hour%",
+      "type": "decimal"
+    },
+    {
+      "id": "fld_dnuqel1ppp",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

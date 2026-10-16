@@ -1,0 +1,12 @@
+<page route="/hr/my-payslips/{id}" title="How this payslip was worked out" menu="false" model="payslip">
+  <view type="list" source="explain_payslip_lines">
+    <columns>
+      <column field="label" label="Line"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="amount" label="Amount"/>
+      <column field="formula" label="Worked out as"/>
+      <column field="reads" label="Using"/>
+    </columns>
+    <empty title="No explanation" description="This payslip was calculated before explanations were kept. Ask payroll to recalculate the run."/>
+  </view>
+</page>

@@ -17,6 +17,17 @@ See docs/design.md in this plugin (hr_recruitment/docs/design.md).
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "party", "currency"]
 capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+# The career site: anonymous visitors may list open jobs and apply, nothing else.
+public_functions = ["career_jobs", "career_apply"]
+public_capabilities = ["db::query", "db::mutate", "plugins::call"]
+public_access_models = [
+  { name = "rec_opening", permissions = ["read"] },
+  { name = "rec_stage", permissions = ["read"] },
+  { name = "rec_application", permissions = ["read", "write"] },
+  { name = "rec_source", permissions = ["read"] },
+  { name = "rec_pool", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
 access_models = [
   { name = "rec_stage", permissions = ["read", "write"] },
   { name = "rec_reject_reason", permissions = ["read", "write"] },
@@ -26,6 +37,10 @@ access_models = [
   { name = "rec_interview", permissions = ["read", "write"] },
   { name = "rec_feedback", permissions = ["read", "write"] },
   { name = "rec_offer", permissions = ["read", "write"] },
+  { name = "rec_source", permissions = ["read", "write"] },
+  { name = "rec_opening_template", permissions = ["read", "write"] },
+  { name = "rec_offer_term", permissions = ["read", "write"] },
+  { name = "rec_offer_template", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
@@ -70,10 +85,19 @@ name = "candidate_hired"
 # Reveal feedback and decide interviews that have enough of it; remind panels; close expired openings.
 [[schedule]]
 name = "recruitment-tick"
+title = "Update interviews and openings"
+description = "Marks past interviews as held, scores finished ones, reminds interviewers a day ahead and closes stale openings and offers."
 function = "recruitment_tick"
 every = "10m"
 
-# No [app]: pages fold into the HR workspace host sidebar (Frappe-style module under HR).
+# No [app]: pages fold into the HR workspace host sidebar (a module under HR).
+
+[[command]]
+name = "seed"
+function = "install_seed"
+help = "Create the usual recruitment stages when there are none (idempotent)"
+on_install = true
+on_upgrade = true
 
 [[command]]
 name = "demo_rec_reject_reason"

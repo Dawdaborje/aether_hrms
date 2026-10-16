@@ -11,7 +11,7 @@ use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
 use crate::common::{employee, id_of, my_employee, require, require_manager, require_officer, text, today_date, works_here, Record};
-use crate::rules::{check_close, net_settlement, status_on, Clearance, DepartureStatus};
+use crate::rules::{check_close, net_settlement, notice_shortfall, status_on, Clearance, DepartureStatus};
 use crate::run::{anchors_of, gate_clear, rebase, refresh, start, void_run, Anchors, Start};
 use crate::setup::pick_template;
 
@@ -125,6 +125,17 @@ fn run_of(departure_id: &str) -> Result<Option<Record>> {
     db::find("ob_run").filter("departure", departure_id).first()
 }
 
+/// The notice the person owes and the days short of it, as fields to store on the departure.
+fn notice_fields(person: &Record, notice: Option<aether_sdk::dates::NaiveDate>, last: aether_sdk::dates::NaiveDate) -> Result<Value> {
+    let days = person.get("notice_days").and_then(Value::as_i64).unwrap_or(0);
+    let start = match notice {
+        Some(n) => n,
+        None => today_date()?,
+    };
+    let (_, short) = notice_shortfall(start, days, last);
+    Ok(json!({ "notice_days_required": days, "notice_shortfall_days": short }))
+}
+
 fn begin(input: Begin) -> Result<Record> {
     require_officer()?;
     let person = employee(&input.employee)?;
@@ -154,6 +165,11 @@ fn begin(input: Begin) -> Result<Record> {
     }
     if let Some(description) = &input.description {
         data["description"] = json!(description);
+    }
+    if let Some(fields) = notice_fields(&person, notice, last)?.as_object() {
+        for (k, v) in fields {
+            data[k] = v.clone();
+        }
     }
     db::create("ob_departure", &data).map_err(|e| e.or("could not record the departure"))
 }
@@ -212,6 +228,14 @@ fn change(input: Change) -> Result<Record> {
     }
     if let Some(day) = notice.filter(|_| input.notice_date.is_some()) {
         changes["notice_date"] = json!(format_date(day));
+    }
+    if input.last_day.is_some() || input.notice_date.is_some() {
+        let person = employee(text(&departure, "employee").unwrap_or_default())?;
+        if let Some(fields) = notice_fields(&person, notice, last)?.as_object() {
+            for (k, v) in fields {
+                changes[k] = v.clone();
+            }
+        }
     }
     if let Some(reason) = &input.reason {
         require("ob_departure_reason", reason, "reason")?;
@@ -375,6 +399,24 @@ fn close(input: Close) -> Result<Record> {
         }
     };
     check_close(clearance, last, today, input.override_reason.as_deref())?;
+    // Departures recorded before notice was tracked have no figure stored: work it out now.
+    let short = match departure.get("notice_shortfall_days").and_then(Value::as_i64) {
+        Some(n) => n,
+        None => {
+            let person = employee(text(&departure, "employee").unwrap_or_default())?;
+            let notice = text(&departure, "notice_date").map(parse_date).transpose()?;
+            notice_fields(&person, notice, last)?.get("notice_shortfall_days").and_then(Value::as_i64).unwrap_or(0)
+        }
+    };
+    if short > 0
+        && text(&departure, "notice_waived_reason").is_none_or(str::is_empty)
+        && input.override_reason.as_deref().is_none_or(|r| r.trim().is_empty())
+        && db::count("ob_settlement_line", Filter::eq("departure", input.id.as_str()).and(Filter::eq("source", "notice_shortfall")))? == 0
+    {
+        return Err(Error::msg(format!(
+            "the notice is {short} days short: build the settlement with a daily rate to recover it, waive it with a reason, or close with an override reason"
+        )));
+    }
     let person = employee(text(&departure, "employee").unwrap_or_default())?;
     let reason = require("ob_departure_reason", text(&departure, "reason").unwrap_or_default(), "reason")?;
     let status = status_for(&reason);
@@ -439,7 +481,27 @@ fn tick() -> Result<Value> {
     Ok(json!({ "moved_to_clearance": moved, "overdue_announced": late, "failures": failures }))
 }
 
+#[derive(Deserialize)]
+struct Waive {
+    id: String,
+    reason: String,
+}
+
+/// A manager excuses the missing notice days, and says why.
+fn waive_notice(input: Waive) -> Result<Record> {
+    require_manager()?;
+    live(&input.id)?;
+    if input.reason.trim().is_empty() {
+        return Err(Error::msg("say why the notice shortfall is waived"));
+    }
+    db::update("ob_departure", &input.id, &json!({ "notice_waived_reason": input.reason.trim() }))?.ok_or_else(|| Error::msg("the departure is gone"))
+}
+
 handler! {
+    fn waive_notice_shortfall(input: Waive) -> Record {
+        waive_notice(input)
+    }
+
     fn begin_departure(input: Begin) -> Record {
         begin(input)
     }

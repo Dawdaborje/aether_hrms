@@ -1,0 +1,12 @@
+<page route="/hr/fleet/services" title="Services" model="flt_service" icon="wrench" roles="hr_fleet.fleet_admin">
+  <view type="list" model="flt_service" source="list_services" create="/hr/fleet/services/new" create_label="Record service">
+    <columns>
+      <column field="service_date" label="Date" fieldType="date"/>
+      <column field="vehicle" label="Vehicle"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="cost" label="Cost"/>
+      <column field="next_due" label="Next due" fieldType="date"/>
+    </columns>
+    <empty title="No services" description="Maintenance, repairs and inspections appear here."/>
+  </view>
+</page>

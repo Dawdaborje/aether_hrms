@@ -1,5 +1,5 @@
 <page route="/hr/grievances" title="Grievances" model="grv_case" icon="megaphone">
-  <view type="list" model="grv_case" source="list_grievances">
+  <view type="list" model="grv_case" source="list_grievances" create="/hr/grievances/new" create_label="Raise a concern">
     <columns>
       <column field="reference" label="Reference"/>
       <column field="subject" label="Subject"/>

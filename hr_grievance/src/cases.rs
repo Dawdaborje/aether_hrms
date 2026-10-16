@@ -498,7 +498,38 @@ fn nightly() -> Result<Value> {
     Ok(json!({ "escalated": escalated, "closed": closed }))
 }
 
+/// (code, name, days to resolve, severity, confidential)
+const SEED_CATEGORIES: &[(&str, &str, i64, &str, bool)] = &[
+    ("HARASSMENT", "Harassment or discrimination", 14, "high", true),
+    ("SAFETY", "Health and safety", 7, "high", false),
+    ("PAY", "Pay or benefits", 21, "medium", false),
+    ("CONDUCT", "Conduct of a colleague or manager", 21, "medium", true),
+    ("WORKPLACE", "Workplace or equipment", 30, "low", false),
+    ("OTHER", "Other", 30, "low", false),
+];
+
+/// Starter grievance categories, each only when its code is free.
+fn seed_categories() -> Result<Value> {
+    let mut added = 0;
+    for (code, name, sla_days, severity, confidential) in SEED_CATEGORIES {
+        if db::find::<Record>("grv_category").filter("code", *code).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>(
+            "grv_category",
+            &json!({ "code": code, "name": name, "sla_days": sla_days, "default_severity": severity, "confidential": confidential, "is_active": true }),
+        )?;
+        added += 1;
+    }
+    Ok(json!({ "categories": added }))
+}
+
 handler! {
+    /// Starter grievance categories; runs on install and upgrade.
+    fn seed_grievance_categories(_: Empty) -> Value {
+        seed_categories()
+    }
+
     /// File a grievance (for yourself; a case manager may file for someone). It may be anonymous.
     fn file_grievance(input: File) -> Record {
         file(input)

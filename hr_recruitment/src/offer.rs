@@ -21,6 +21,9 @@ struct Draft {
     currency: Option<String>,
     #[serde(default)]
     terms: Option<String>,
+    /// An offer template to take the terms from when `terms` is left out.
+    #[serde(default)]
+    template: Option<String>,
     #[serde(default)]
     valid_until: Option<String>,
     #[serde(default)]
@@ -84,6 +87,17 @@ fn draft(input: Draft) -> Result<Record> {
     }
     if let Some(terms) = &input.terms {
         data["terms"] = json!(terms);
+    } else if let Some(template) = &input.template {
+        let candidate: Record = plugins::call("party", "get_party", &json!({ "id": application["candidate"] }))?;
+        let vars = [
+            ("candidate", text(&candidate, "display_name").or(text(&candidate, "name")).unwrap_or_default().to_string()),
+            ("salary", salary.to_string()),
+            ("currency", data["currency"].as_str().unwrap_or_default().to_string()),
+            ("start_date", format_date(start)),
+            ("valid_until", input.valid_until.clone().unwrap_or_default()),
+            ("opening", text(&opening, "title").unwrap_or_default().to_string()),
+        ];
+        data["terms"] = json!(crate::library::render_terms(template, &vars)?);
     }
     if let Some(valid) = &input.valid_until {
         data["valid_until"] = json!(format_date(parse_date(valid)?));

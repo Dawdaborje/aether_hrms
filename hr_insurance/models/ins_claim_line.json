@@ -1,0 +1,92 @@
+{
+  "model_id": "mdl_oeur5bpivi",
+  "name": "ins_claim_line",
+  "label": "%ins_claim_line%",
+  "plural_label": "%ins_claim_lines%",
+  "icon": "list",
+  "title_field": "description",
+  "fields": [
+    {
+      "id": "fld_n2ieiyzjk2",
+      "name": "claim",
+      "label": "%claim%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_claim"
+    },
+    {
+      "id": "fld_rjkir57al5",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_ffd3cyl5xn",
+      "name": "service_date",
+      "label": "%service_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_ut5quchrn2",
+      "name": "category",
+      "label": "%category%",
+      "type": "select",
+      "required": true,
+      "default": "consultation",
+      "options": [
+        {
+          "id": "opt_cro6ljqo27",
+          "value": "consultation",
+          "label": "%consultation%"
+        },
+        {
+          "id": "opt_n5qcoqri7b",
+          "value": "hospital",
+          "label": "%hospital%"
+        },
+        {
+          "id": "opt_k4jbyusi33",
+          "value": "pharmacy",
+          "label": "%pharmacy%"
+        },
+        {
+          "id": "opt_ufxra67nrd",
+          "value": "laboratory",
+          "label": "%laboratory%"
+        },
+        {
+          "id": "opt_wncifhcag7",
+          "value": "dental",
+          "label": "%dental%"
+        },
+        {
+          "id": "opt_sd5vykgncj",
+          "value": "optical",
+          "label": "%optical%"
+        },
+        {
+          "id": "opt_xb2wtl5jzs",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_mak4qyisfl",
+      "name": "description",
+      "label": "%description%",
+      "type": "string",
+      "required": true,
+      "max_length": 240
+    },
+    {
+      "id": "fld_tvvhqgnzfb",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    }
+  ]
+}

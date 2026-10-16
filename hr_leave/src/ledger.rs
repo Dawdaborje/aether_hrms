@@ -40,6 +40,14 @@ struct ForEmployee {
 }
 
 #[derive(Deserialize, Default)]
+struct AssistantBalances {
+    #[serde(default)]
+    leave_type: Option<String>,
+    #[serde(default)]
+    on: Option<String>,
+}
+
+#[derive(Deserialize, Default)]
 struct YearlyRun {
     #[serde(default)]
     year: Option<i32>,
@@ -383,7 +391,93 @@ pub fn nightly_ledger(today: NaiveDate) -> Result<Value> {
     Ok(json!({ "accrued": accrued, "planned": planned, "expired": expired }))
 }
 
+#[derive(Deserialize)]
+struct BulkGrant {
+    leave_type: String,
+    days: Decimal,
+    #[serde(default)]
+    valid_from: Option<String>,
+    #[serde(default)]
+    valid_to: Option<String>,
+    /// A leave period instead of dates.
+    #[serde(default)]
+    period: Option<String>,
+    #[serde(default)]
+    note: Option<String>,
+    /// Named people, or everyone in a department (with those below it), or everyone at work when both are left out.
+    #[serde(default)]
+    employees: Vec<String>,
+    #[serde(default)]
+    department: Option<String>,
+}
+
+/// Give many people the same allocation. Safe to repeat: a person who already has this bulk grant (same type,
+/// start and days) is skipped, not given it twice.
+fn bulk_grant(input: BulkGrant) -> Result<Value> {
+    require_admin()?;
+    require("leave_type", &input.leave_type, "leave type")?;
+    if input.days.is_zero() || input.days.is_negative() {
+        return Err(Error::msg("a grant is a positive number of days"));
+    }
+    input.days.with_scale(SCALE).map_err(|_| Error::msg("days have at most 2 digits after the point"))?;
+    let (start, end) = match &input.period {
+        Some(period) => {
+            let (a, b) = crate::approver::period_dates(period)?;
+            (a, Some(b))
+        }
+        None => (input.valid_from.clone().ok_or_else(|| Error::msg("give a period or a start date"))?, input.valid_to.clone()),
+    };
+    let from = parse_date(&start)?;
+    let to = end.as_deref().map(parse_date).transpose()?;
+    if to.is_some_and(|to| to < from) {
+        return Err(Error::msg("the grant ends before it starts"));
+    }
+    let people: Vec<Record> = if !input.employees.is_empty() {
+        let mut found = Vec::new();
+        for id in &input.employees {
+            found.push(crate::common::employee(id)?);
+        }
+        found
+    } else if let Some(department) = &input.department {
+        plugins::call::<Vec<Record>>("hr", "list_employees", &json!({ "department": department, "with_subdepartments": true, "limit": 500 }))?.into_iter().filter(works_here).collect()
+    } else {
+        present_employees()?
+    };
+    if people.len() > 500 {
+        return Err(Error::msg("at most 500 people at once: name a department or a list"));
+    }
+    let who = context::current()?.actor.id.unwrap_or_default();
+    let key = format!("bulk:{}:{}", format_date(from), input.days);
+    let (mut granted, mut skipped, mut failed) = (0u64, 0u64, Vec::new());
+    for person in people {
+        let id = id_of(&person)?;
+        let outcome = post_once(Post {
+            employee: id,
+            leave_type: &input.leave_type,
+            kind: "allocation",
+            days: input.days,
+            date: from,
+            valid_to: to,
+            key: Some(key.clone()),
+            reverses: None,
+            source: &format!("bulk:{who}"),
+            note: input.note.as_deref(),
+        });
+        match outcome {
+            Ok(Some(_)) => granted += 1,
+            Ok(None) => skipped += 1,
+            Err(e) => failed.push(json!({ "employee": id, "error": e.to_string() })),
+        }
+    }
+    Ok(json!({ "granted": granted, "skipped": skipped, "failed": failed }))
+}
+
 handler! {
+    /// Give many people the same days of a leave type (leave administrators): a list, a department, or everyone.
+    fn bulk_allocate_leave(input: BulkGrant) -> Value {
+        bulk_grant(input)
+    }
+
     /// Give an employee days of a leave type over a period (leave administrators).
     fn allocate_leave(input: Grant) -> Record {
         grant(input, "allocation")
@@ -406,6 +500,12 @@ handler! {
     /// Allocated, spent, pending, available and expiring-soon days of each leave type.
     fn leave_balances(input: ForEmployee) -> Vec<Value> {
         balance_report(input)
+    }
+
+    /// The caller's own balances, for the AI assistant (which does not know employee ids).
+    fn assistant_leave_balances(input: AssistantBalances) -> Vec<Value> {
+        let me = crate::common::my_employee()?.ok_or_else(|| Error::msg("you have no employee record"))?;
+        balance_report(ForEmployee { employee: id_of(&me)?.to_string(), leave_type: input.leave_type, on: input.on })
     }
 
     /// The ledger of one person and type, newest first.

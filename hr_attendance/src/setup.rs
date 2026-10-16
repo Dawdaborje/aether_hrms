@@ -15,6 +15,20 @@ const SHIFT_FIELDS: &[&str] = &[
 const LOCATION_FIELDS: &[&str] = &["name", "latitude", "longitude", "radius_m", "geo_mode", "is_active"];
 
 #[derive(Deserialize)]
+struct BulkAssign {
+    employees: Vec<String>,
+    #[serde(default)]
+    shift: Option<String>,
+    #[serde(default)]
+    rotation: Option<String>,
+    #[serde(default)]
+    location: Option<String>,
+    valid_from: String,
+    #[serde(default)]
+    valid_to: Option<String>,
+}
+
+#[derive(Deserialize)]
 struct Assign {
     employee: String,
     #[serde(default)]
@@ -46,9 +60,9 @@ pub fn shift_of(record: &Record) -> Result<Shift> {
     })
 }
 
-fn new_shift(input: Record) -> Result<Record> {
-    require_admin()?;
-    let data = pick(&input, SHIFT_FIELDS);
+/// The checks every shift passes, whether it is new or edited: it does not overlap itself, no figure is
+/// negative, and the break leaves some working time.
+fn check_shift(data: &Record) -> Result<()> {
     let mut merged = data.clone();
     merged["utc_offset_min"] = data.get("utc_offset_min").cloned().unwrap_or(json!(0));
     merged["early_window_min"] = data.get("early_window_min").cloned().unwrap_or(json!(60));
@@ -65,7 +79,31 @@ fn new_shift(input: Record) -> Result<Record> {
     if shift.scheduled_minutes() == 0 {
         return Err(Error::msg("the break takes the whole shift"));
     }
+    Ok(())
+}
+
+fn new_shift(input: Record) -> Result<Record> {
+    require_admin()?;
+    let data = pick(&input, SHIFT_FIELDS);
+    check_shift(&data)?;
     db::create("att_shift", &data).map_err(|e| e.or("could not create the shift (the code may be taken)"))
+}
+
+/// Change a shift. The code stays. People already on it get the new times from today on.
+fn edit_shift(input: Record) -> Result<Record> {
+    require_admin()?;
+    let id = text(&input, "id").ok_or_else(|| Error::msg("which shift?"))?.to_string();
+    let existing = require("att_shift", &id, "shift")?;
+    let mut changes = pick(&input, SHIFT_FIELDS);
+    if let Some(fields) = changes.as_object_mut() {
+        fields.remove("code");
+    }
+    let mut merged = pick(&existing, SHIFT_FIELDS);
+    for (key, value) in changes.as_object().cloned().unwrap_or_default() {
+        merged[key] = value;
+    }
+    check_shift(&merged)?;
+    db::update("att_shift", &id, &changes)?.ok_or_else(|| Error::msg("the shift is gone"))
 }
 
 /// Used by Desk demo generation (`demo` module).
@@ -73,9 +111,7 @@ pub(crate) fn create_shift_for_demo(input: Record) -> Result<Record> {
     new_shift(input)
 }
 
-fn new_location(input: Record) -> Result<Record> {
-    require_admin()?;
-    let data = pick(&input, LOCATION_FIELDS);
+fn check_location(data: &Record) -> Result<()> {
     if text(&data, "name").is_none() {
         return Err(Error::msg("a location needs a name"));
     }
@@ -93,7 +129,27 @@ fn new_location(input: Record) -> Result<Record> {
     {
         return Err(Error::msg("a location with a radius needs its latitude and longitude"));
     }
+    Ok(())
+}
+
+fn new_location(input: Record) -> Result<Record> {
+    require_admin()?;
+    let data = pick(&input, LOCATION_FIELDS);
+    check_location(&data)?;
     db::create("att_location", &data).map_err(|e| e.or("could not create the location (the name may be taken)"))
+}
+
+fn edit_location(input: Record) -> Result<Record> {
+    require_admin()?;
+    let id = text(&input, "id").ok_or_else(|| Error::msg("which location?"))?.to_string();
+    let existing = require("att_location", &id, "location")?;
+    let changes = pick(&input, LOCATION_FIELDS);
+    let mut merged = pick(&existing, LOCATION_FIELDS);
+    for (key, value) in changes.as_object().cloned().unwrap_or_default() {
+        merged[key] = value;
+    }
+    check_location(&merged)?;
+    db::update("att_location", &id, &changes)?.ok_or_else(|| Error::msg("the location is gone"))
 }
 
 /// Used by Desk demo generation (`demo` module).
@@ -124,7 +180,7 @@ fn assign(input: Assign) -> Result<Record> {
         return Err(Error::msg("the assignment ends before it starts"));
     }
     let existing: Vec<Record> = db::find::<Record>("att_shift_assignment").filter("employee", input.employee.as_str()).limit(500).all()?;
-    for other in &existing {
+    for other in existing.iter().filter(|o| text(o, "source_request").is_none()) {
         let (of, ot) = (
             parse_date(text(other, "valid_from").unwrap_or_default())?,
             text(other, "valid_to").map(parse_date).transpose()?,
@@ -162,11 +218,14 @@ fn assign(input: Assign) -> Result<Record> {
 /// The assignment in force for a person on a day, shift or rotation.
 fn assignment_row(employee_id: &str, day: aether_sdk::dates::NaiveDate) -> Result<Option<Record>> {
     let on = format_date(day);
-    let found = db::find::<Record>("att_shift_assignment")
+    // The newest start that has not ended: a temporary assignment (a shift request) that is over steps aside
+    // for the standing one underneath it.
+    let rows = db::find::<Record>("att_shift_assignment")
         .matching(Filter::eq("employee", employee_id).and(Filter::lte("valid_from", on.as_str())))
         .order_by("-valid_from")
-        .first()?;
-    Ok(found.filter(|a| !text(a, "valid_to").is_some_and(|end| end < on.as_str())))
+        .limit(20)
+        .all()?;
+    Ok(rows.into_iter().find(|a| !text(a, "valid_to").is_some_and(|end| end < on.as_str())))
 }
 
 /// The assignment and shift in force for a person on a day.
@@ -263,7 +322,118 @@ mod tests {
     }
 }
 
+
+/// Ids of the people in a department (and below) who work here, as `hr` lists them. At most 100.
+pub(crate) fn department_people(department: &str) -> Result<Vec<String>> {
+    let found: Value = plugins::call(
+        "hr",
+        "list_employees",
+        &json!({ "department": department, "with_subdepartments": true, "limit": 100 }),
+    )?;
+    let rows = found.get("rows").and_then(Value::as_array).cloned().or_else(|| found.as_array().cloned()).unwrap_or_default();
+    Ok(rows
+        .iter()
+        .filter(|r| r.get("status").and_then(Value::as_str).is_none_or(|s| !matches!(s, "resigned" | "terminated" | "retired" | "deceased")))
+        .filter_map(|r| r.get("id").and_then(Value::as_str).map(str::to_string))
+        .collect())
+}
+
+#[derive(Deserialize)]
+struct ShiftByDepartment {
+    department: String,
+    #[serde(default)]
+    shift: Option<String>,
+    #[serde(default)]
+    rotation: Option<String>,
+    #[serde(default)]
+    location: Option<String>,
+    valid_from: String,
+    #[serde(default)]
+    valid_to: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct WeekRotation {
+    name: String,
+    anchor_date: String,
+    #[serde(default)]
+    day_1: Option<String>,
+    #[serde(default)]
+    day_2: Option<String>,
+    #[serde(default)]
+    day_3: Option<String>,
+    #[serde(default)]
+    day_4: Option<String>,
+    #[serde(default)]
+    day_5: Option<String>,
+    #[serde(default)]
+    day_6: Option<String>,
+    #[serde(default)]
+    day_7: Option<String>,
+    /// Number of days in the cycle (1 to 7); seven when left out.
+    #[serde(default)]
+    days: Option<usize>,
+}
+
+/// A standard office shift when the organization has no shift at all.
+fn seed_shift() -> Result<Value> {
+    if db::find::<Record>("att_shift").first()?.is_some() {
+        return Ok(json!({ "shift": false }));
+    }
+    db::create::<Record>(
+        "att_shift",
+        &json!({
+            "code": "GENERAL", "name": "General shift", "start_time": "09:00", "end_time": "17:00",
+            "utc_offset_min": 0, "early_window_min": 60, "late_window_min": 60, "break_min": 60,
+            "grace_late_min": 10, "grace_early_min": 10, "is_active": true,
+        }),
+    )?;
+    Ok(json!({ "shift": true }))
+}
+
 handler! {
+    /// A General shift when there is none; runs on install and upgrade.
+    fn seed_general_shift(_: Empty) -> Value {
+        seed_shift()
+    }
+
+    /// Create a rotation from a form: a cycle of up to seven days, an empty day being a day off.
+    fn create_rotation_simple(input: WeekRotation) -> Record {
+        let days = input.days.unwrap_or(7).clamp(1, 7);
+        let all = [input.day_1, input.day_2, input.day_3, input.day_4, input.day_5, input.day_6, input.day_7];
+        let steps: Vec<Option<String>> = all
+            .into_iter()
+            .take(days)
+            .map(|d| d.map(|s| s.trim().to_string()).filter(|s| !s.is_empty()))
+            .collect();
+        new_rotation(NewRotation { name: input.name, anchor_date: input.anchor_date, steps })
+    }
+
+    fn list_rotations(_: Empty) -> Vec<Record> {
+        db::find("att_rotation").order_by("name").limit(200).all()
+    }
+
+    /// Put everyone in a department (up to 100) on a shift or rotation.
+    fn bulk_assign_shift_by_department(input: ShiftByDepartment) -> Value {
+        require_admin()?;
+        let (mut done, mut failed) = (Vec::new(), Vec::new());
+        for employee in department_people(&input.department)? {
+            let one = Assign {
+                employee: employee.clone(),
+                shift: input.shift.clone(),
+                rotation: input.rotation.clone(),
+                location: input.location.clone(),
+                valid_from: input.valid_from.clone(),
+                valid_to: input.valid_to.clone(),
+            };
+            match assign(one) {
+                Ok(row) => done.push(row["id"].clone()),
+                Err(e) => failed.push(json!({ "employee": employee, "error": e.to_string() })),
+            }
+        }
+        Ok(json!({ "assigned": done, "failed": failed }))
+    }
+
     /// A cycle of shifts and days off that repeats from an anchor day (attendance administrators).
     fn create_rotation(input: NewRotation) -> Record {
         new_rotation(input)
@@ -271,6 +441,22 @@ handler! {
 
     fn create_shift(input: Record) -> Record {
         new_shift(input)
+    }
+
+    fn update_shift(input: Record) -> Record {
+        edit_shift(input)
+    }
+
+    fn get_shift(input: Record) -> Option<Record> {
+        db::get("att_shift", text(&input, "id").unwrap_or_default())
+    }
+
+    fn update_location(input: Record) -> Record {
+        edit_location(input)
+    }
+
+    fn get_location(input: Record) -> Option<Record> {
+        db::get("att_location", text(&input, "id").unwrap_or_default())
     }
 
     fn list_shifts(_: Empty) -> Vec<Record> {
@@ -288,5 +474,29 @@ handler! {
     /// Put a person on a shift from a day.
     fn assign_shift(input: Assign) -> Record {
         assign(input)
+    }
+
+    /// Put many people on the same shift or rotation; each failure is reported, the rest are done.
+    fn bulk_assign_shift(input: BulkAssign) -> Value {
+        require_admin()?;
+        if input.employees.len() > 100 {
+            return Err(Error::msg("at most 100 people per call"));
+        }
+        let (mut done, mut failed) = (Vec::new(), Vec::new());
+        for employee in input.employees {
+            let one = Assign {
+                employee: employee.clone(),
+                shift: input.shift.clone(),
+                rotation: input.rotation.clone(),
+                location: input.location.clone(),
+                valid_from: input.valid_from.clone(),
+                valid_to: input.valid_to.clone(),
+            };
+            match assign(one) {
+                Ok(row) => done.push(row["id"].clone()),
+                Err(e) => failed.push(json!({ "employee": employee, "error": e.to_string() })),
+            }
+        }
+        Ok(json!({ "assigned": done, "failed": failed }))
     }
 }

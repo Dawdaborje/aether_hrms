@@ -1,0 +1,122 @@
+{
+  "model_id": "mdl_nt3et9lcd9",
+  "name": "pay_exemption_declaration",
+  "label": "%pay_exemption_declaration%",
+  "plural_label": "%pay_exemption_declarations%",
+  "icon": "file-check",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_o876d41tme",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_1k1lhnn1wy",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "target": "pay_exemption_category",
+      "required": true
+    },
+    {
+      "id": "fld_ezgt56gbq7",
+      "name": "year",
+      "label": "%year%",
+      "type": "string",
+      "max_length": 4,
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_4qxot6qvsc",
+      "name": "declared",
+      "label": "%declared%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_ph4v3vcw2a",
+      "name": "verified",
+      "label": "%verified%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_8pbnrgnqxc",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_8d0flygovs",
+          "value": "declared",
+          "label": "%declared%"
+        },
+        {
+          "id": "opt_xp04seobuv",
+          "value": "proof_submitted",
+          "label": "%proof_submitted%"
+        },
+        {
+          "id": "opt_48c3fd8b9w",
+          "value": "verified",
+          "label": "%verified%"
+        },
+        {
+          "id": "opt_n3tcdff3jt",
+          "value": "rejected",
+          "label": "%rejected%"
+        }
+      ],
+      "required": true,
+      "default": "declared",
+      "index": "plain"
+    },
+    {
+      "id": "fld_lz2i7e04p9",
+      "name": "proof_note",
+      "label": "%proof_note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_unv0lbdyi6",
+      "name": "reviewed_by",
+      "label": "%reviewed_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_e62owojng3",
+      "name": "proof_file",
+      "label": "%proof_file%",
+      "type": "file"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_zeys1j3xrs",
+      "fields": [
+        "employee",
+        "category",
+        "year"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "category",
+      "year",
+      "declared",
+      "status"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "model": "att_kiosk_pin",
+  "access": [
+    {
+      "name": "admin",
+      "roles": [
+        "att_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "model_id": "mdl_j2aqhd2w9v",
+  "name": "hr_setting",
+  "label": "%hr_setting%",
+  "plural_label": "%hr_settings%",
+  "icon": "settings",
+  "title_field": "default_notice_days",
+  "fields": [
+    {
+      "id": "fld_lgyn2s2vyc",
+      "name": "default_probation_days",
+      "label": "%default_probation_days%",
+      "type": "int",
+      "default": 0,
+      "help": "New hires without a probation end get one this many days after they join; 0 means none."
+    },
+    {
+      "id": "fld_ty0ge84alk",
+      "name": "default_notice_days",
+      "label": "%default_notice_days%",
+      "type": "int",
+      "default": 30,
+      "help": "Notice period given to a new hire who has none set."
+    },
+    {
+      "id": "fld_6i3e40djfq",
+      "name": "retirement_age",
+      "label": "%retirement_age%",
+      "type": "int",
+      "default": 0,
+      "help": "Used by reports and alerts; 0 means not set."
+    },
+    {
+      "id": "fld_yp4x6tng1v",
+      "name": "probation_alert_days",
+      "label": "%probation_alert_days%",
+      "type": "int",
+      "default": 14,
+      "help": "How many days ahead probation endings are flagged."
+    }
+  ]
+}

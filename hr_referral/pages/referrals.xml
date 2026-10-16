@@ -1,5 +1,5 @@
 <page route="/hr/referrals" title="Referrals" model="ref_referral" icon="user-plus">
-  <view type="list" model="ref_referral" source="my_referrals">
+  <view type="list" model="ref_referral" source="my_referrals" create="/hr/referrals/new" create_label="Refer someone">
     <columns>
       <column field="reference" label="Reference"/>
       <column field="candidate_name" label="Candidate"/>

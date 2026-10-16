@@ -4,6 +4,7 @@
 //! And then spend; a cancellation is a reversal); a request costs working days by the person's
 //! Holiday calendar and is decided by their manager, by HR, or both, never by themselves.
 
+mod approver;
 mod common;
 mod demo;
 mod ledger;

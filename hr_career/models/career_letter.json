@@ -1,0 +1,65 @@
+{
+  "model_id": "mdl_05pz9cu2qz",
+  "name": "career_letter",
+  "label": "%career_letter%",
+  "plural_label": "%career_letters%",
+  "icon": "file-text",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_1lfvn5889f",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "max_length": 60,
+      "required": true,
+      "index": "unique"
+    },
+    {
+      "id": "fld_qk797dtrap",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_ad2ido64mz",
+      "name": "template",
+      "label": "%template%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_9b5njqmggo",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "string",
+      "max_length": 30
+    },
+    {
+      "id": "fld_hn2nhqbo2m",
+      "name": "issued_on",
+      "label": "%issued_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_5qw5il558x",
+      "name": "body",
+      "label": "%body%",
+      "type": "text"
+    },
+    {
+      "id": "fld_olxwctk9i2",
+      "name": "accepted_on",
+      "label": "%accepted_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_6imjwy5nwm",
+      "name": "accepted_by",
+      "label": "%accepted_by%",
+      "type": "string"
+    }
+  ]
+}

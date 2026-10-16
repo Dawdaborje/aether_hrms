@@ -15,11 +15,11 @@ use crate::rules::status;
 
 /// The fields of the terms themselves (not who or when).
 const TERMS: &[&str] = &[
-    "department", "job", "position", "manager", "employment_type", "work_location", "grade", "wage", "currency",
+    "department", "job", "position", "manager", "employment_type", "work_location", "cost_center", "grade", "wage", "currency",
     "pay_frequency", "contract_start", "contract_end", "fixed_term", "trial_end", "reason",
 ];
 /// The terms that the employee row mirrors while they are current.
-const PLACEMENT: &[&str] = &["department", "job", "position", "manager", "employment_type", "work_location"];
+const PLACEMENT: &[&str] = &["department", "job", "position", "manager", "employment_type", "work_location", "cost_center"];
 
 #[derive(Deserialize)]
 struct Id {
@@ -177,7 +177,7 @@ pub fn refresh(employee_id: &str) -> Result<()> {
 /// What a new record carries over from the terms in force before it: placement and pay, never the
 /// contract period (a new contract is its own thing). Say `null` to clear one.
 const CARRIED: &[&str] = &[
-    "department", "job", "position", "manager", "employment_type", "work_location", "grade", "wage", "currency", "pay_frequency",
+    "department", "job", "position", "manager", "employment_type", "work_location", "cost_center", "grade", "wage", "currency", "pay_frequency",
 ];
 
 /// The record whose terms were in force on `day`: the latest one starting on or before it.
@@ -213,6 +213,32 @@ pub fn create(employee: &Record, date_from: &str, terms: &Record) -> Result<Reco
     let created: Record = explain(db::create("employment", &data), "there may already be terms starting that day")?;
     refresh(employee_id)?;
     Ok(db::get::<Record>("employment", id_of(&created)?)?.unwrap_or(created))
+}
+
+/// The placement fields a form edits (department, job, position, manager, type, location).
+pub const PLACEMENT_FIELDS: &[&str] = PLACEMENT;
+
+/// Make placement changes (`changes` holds only fields that differ) effective today and keep the
+/// history: a record already starting today is corrected, otherwise a new record starts today and
+/// carries the rest of the terms over. Unchanged fields are not touched.
+pub fn apply_from_today(employee: &Record, changes: &Record) -> Result<()> {
+    let employee_id = id_of(employee)?;
+    let day = format_date(parse_date(&today()?)?);
+    let starting_today: Option<Record> = db::find::<Record>("employment")
+        .filter("employee", employee_id)
+        .filter("date_from", day.as_str())
+        .first()?;
+    match starting_today {
+        Some(row) => {
+            change(Change { id: id_of(&row)?.to_string(), terms: changes.clone() })?;
+        }
+        None => {
+            let mut terms = changes.clone();
+            terms["reason"] = json!("change");
+            create(employee, &day, &terms)?;
+        }
+    }
+    Ok(())
 }
 
 fn add(input: New) -> Result<Record> {

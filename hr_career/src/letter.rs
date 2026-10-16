@@ -58,7 +58,104 @@ fn make(input: Make) -> Result<Record> {
     db::update("career_change", &input.change, &json!({ "letter": letter }))?.ok_or_else(|| Error::msg("the change is gone"))
 }
 
+#[derive(Deserialize)]
+struct Issue {
+    employee: String,
+    template: String,
+    #[serde(default)]
+    issued_on: Option<String>,
+    /// Further `{{placeholders}}` the template uses, such as `last_day` on a relieving letter.
+    #[serde(default)]
+    values: std::collections::BTreeMap<String, String>,
+    /// Shortcut for the usual extra value of a relieving or experience letter.
+    #[serde(default)]
+    last_day: Option<String>,
+}
+
+/// An appointment, relieving or experience letter for a person, from a template of that kind.
+fn issue(input: Issue) -> Result<Record> {
+    require_admin()?;
+    let person = employee(&input.employee)?;
+    let by_code = db::find::<Record>("career_letter_template").filter("code", input.template.as_str()).first()?;
+    let template = match by_code {
+        Some(t) => t,
+        None => require("career_letter_template", &input.template, "template")?,
+    };
+    let kind = text(&template, "kind").unwrap_or_default();
+    if !matches!(kind, "appointment" | "relieving" | "experience" | "any") {
+        return Err(Error::msg("this template is for a career change; make it from the change"));
+    }
+    let issued_on = match &input.issued_on {
+        Some(day) => aether_sdk::dates::format_date(aether_sdk::dates::parse_date(day)?),
+        None => aether_sdk::dates::format_date(crate::common::today_date()?),
+    };
+    let mut values = vec![
+        ("employee", text(&person, "display_name").unwrap_or_default().to_string()),
+        ("employee_no", text(&person, "employee_no").unwrap_or_default().to_string()),
+        ("hire_date", text(&person, "hire_date").unwrap_or_default().to_string()),
+        ("job", name_of("get_job", text(&person, "job"))?),
+        ("department", name_of("get_department", text(&person, "department"))?),
+        ("issue_date", issued_on.clone()),
+    ];
+    let mut input_values = input.values;
+    if let Some(day) = input.last_day.filter(|d| !d.is_empty()) {
+        input_values.insert("last_day".into(), day);
+    }
+    let extra: Vec<(String, String)> = input_values.into_iter().collect();
+    values.extend(extra.iter().map(|(k, v)| (k.as_str(), v.clone())));
+    let body = render(text(&template, "body").unwrap_or_default(), &values)?;
+    let data = json!({
+        "reference": crate::common::next_number("letter", "LTR-", 6)?,
+        "employee": input.employee, "template": text(&template, "code").unwrap_or_default(), "kind": kind,
+        "issued_on": issued_on, "body": body,
+    });
+    db::create("career_letter", &data).map_err(|e| e.or("could not keep the letter"))
+}
+
+#[derive(Deserialize)]
+struct Accept {
+    id: String,
+}
+
+/// The person confirms they received and accept their letter. Only they can; it is recorded once.
+fn accept(input: Accept) -> Result<Record> {
+    let letter = require("career_letter", &input.id, "letter")?;
+    let me = crate::common::my_employee()?.ok_or_else(|| Error::msg("you are not an employee here"))?;
+    if text(&letter, "employee") != text(&me, "id") {
+        return Err(Error::msg("a letter is accepted by the person it is addressed to"));
+    }
+    if text(&letter, "accepted_on").is_some() {
+        return Err(Error::msg("this letter is already accepted"));
+    }
+    let today = aether_sdk::dates::format_date(crate::common::today_date()?);
+    let by = crate::common::actor()?;
+    db::update("career_letter", &input.id, &json!({ "accepted_on": today, "accepted_by": by }))?.ok_or_else(|| Error::msg("the letter is gone"))
+}
+
 handler! {
+    /// The addressed person accepts their letter (an acknowledgement, not a cryptographic signature).
+    fn accept_employee_letter(input: Accept) -> Record {
+        accept(input)
+    }
+
+    /// Issue an appointment, relieving or experience letter to a person; every placeholder must have a value.
+    fn issue_employee_letter(input: Issue) -> Record {
+        issue(input)
+    }
+
+    fn my_letters(_: Empty) -> Vec<Record> {
+        let Some(me) = crate::common::my_employee()? else { return Ok(Vec::new()) };
+        db::find("career_letter").filter("employee", text(&me, "id").unwrap_or_default()).order_by("-issued_on").limit(100).all()
+    }
+
+    fn list_employee_letters(input: Option<Record>) -> Vec<Record> {
+        let mut q = db::find::<Record>("career_letter");
+        if let Some(e) = input.as_ref().and_then(|i| text(i, "employee")) {
+            q = q.filter("employee", e);
+        }
+        q.order_by("-issued_on").limit(200).all()
+    }
+
     fn create_letter_template(input: Record) -> Record {
         new_template(input)
     }

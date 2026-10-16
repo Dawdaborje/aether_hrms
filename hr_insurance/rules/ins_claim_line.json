@@ -1,0 +1,14 @@
+{
+  "model": "ins_claim_line",
+  "access": [
+    {
+      "name": "all",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

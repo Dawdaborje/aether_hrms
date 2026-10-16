@@ -19,6 +19,8 @@ Leave types with per-type rules, an append-only day ledger, requests with manage
 | `leave_plan` / `leave_plan_level` / `leave_plan_assignment` | Accrual plans by service milestone |
 | `leave_encashment` | Encashment of leave days |
 | `leave_comp_claim` | Compensatory leave claims |
+| `leave_approver` | Department approvers: decide for people with no manager (nearest department above that has any); none → HR |
+| `leave_period` | Named dates for bulk allocations (`bulk_allocate_leave` with `period`) |
 | `counter` | Numbering |
 
 ## Design
@@ -30,7 +32,7 @@ Leave types with per-type rules, an append-only day ledger, requests with manage
 
 ## Functions, commands, events
 
-**Handlers (selected):** type/block/plan CRUD; `request_leave`, `approve_leave`, `reject_leave`, `cancel_leave`, `revert_leave`; `allocate_leave`, `adjust_leave`, `allocate_yearly`, `leave_balances`, `leave_ledger_entries`; encashment and compensatory claim flows; `payroll_leave_summary`, `leave_on_date`, `preview_leave_days`, `who_is_away_between`; `leave_nightly`.
+**Handlers (selected):** type/block/plan CRUD; `request_leave`, `approve_leave`, `reject_leave`, `cancel_leave`, `revert_leave`; `allocate_leave`, `adjust_leave`, `allocate_yearly`, `bulk_allocate_leave` (list / department / everyone; repeat-safe), `leave_balances`, `leave_ledger_entries`; encashment and compensatory claim flows; `payroll_leave_summary`, `leave_on_date`, `preview_leave_days`, `who_is_away_between`; `leave_nightly`.
 
 **Schedule:** `leave-nightly` → `leave_nightly`; `leave-yearly` → `allocate_yearly`.
 
@@ -55,6 +57,8 @@ Leave types with per-type rules, an append-only day ledger, requests with manage
 app (`hr_config`): `/hr/config/leave-types`, not in this app’s sidebar. Handlers
 `list_all_leave_types` / `get_leave_type` / `create_leave_type` / `update_leave_type`
 remain here; Configurations calls them.
+
+Leave periods and department approvers are also set up in `hr_config` (`/hr/config/leave/periods`, `/hr/config/leave/approvers`).
 
 Org **Settings** / **Users** in the shell Navigate menu are separate: they need
 `org_admin` / `user_manager`, not `leave_admin`.

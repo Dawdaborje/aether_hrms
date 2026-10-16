@@ -1,0 +1,17 @@
+<page route="/hr/insurance/enrolments" title="Enrolments" model="ins_enrolment" icon="users" roles="ins_admin" sort="40">
+  <view type="list" model="ins_enrolment" source="list_insurance_enrolments" open="/hr/insurance/enrolments/{id}" create="/hr/insurance/enrolments/new" create_label="Enrol an employee">
+    <filter field="state" options="active,ended,cancelled" label="State"/>
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="policy" label="Policy"/>
+      <column field="start_date" label="From" fieldType="date"/>
+      <column field="end_date" label="To" fieldType="date"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="end" label="End" function="end_insurance_enrolment" confirm="End this enrolment today?" danger="true"/>
+    </actions>
+    <empty title="No enrolments" description="Enrol an employee on a policy."/>
+  </view>
+</page>

@@ -1,0 +1,9 @@
+<page route="/hr/my-other-income/new" title="Declare other income" menu="false" model="pay_other_income">
+  <view type="form" function="declare_other_income" submit="Submit" success="Declared" redirect="/hr/my-other-income">
+    <group title="Income" cols="2">
+      <field name="year" label="Year (e.g. 2026)" required="true"/>
+      <field name="label" label="What it is" required="true"/>
+      <field name="amount" label="Amount for the year" required="true"/>
+    </group>
+  </view>
+</page>

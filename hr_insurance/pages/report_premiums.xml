@@ -1,0 +1,14 @@
+<page route="/hr/insurance/reports/premiums" title="Premiums against claims" model="ins_premium" icon="chart-no-axes-combined" roles="ins_admin" menu_group="Reports" sort="81">
+  <view type="list" source="insurance_premium_utilisation">
+    <columns>
+      <column field="policy" label="Policy"/>
+      <column field="premiums" label="Premiums"/>
+      <column field="employer_share" label="Employer"/>
+      <column field="employee_share" label="Employees"/>
+      <column field="claims_paid" label="Claims approved"/>
+      <column field="claims" label="Claims"/>
+      <column field="loss_ratio_percent" label="Claims / premiums %"/>
+    </columns>
+    <empty title="Nothing yet" description="Appears once premiums or claims exist."/>
+  </view>
+</page>

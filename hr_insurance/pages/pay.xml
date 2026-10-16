@@ -1,0 +1,15 @@
+<page route="/hr/insurance/pay" title="Claims to pay" model="ins_claim" icon="wallet" roles="ins_admin" sort="25">
+  <view type="list" model="ins_claim" source="insurance_claims_to_pay" open="/hr/insurance/claims/{id}">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="approved_amount" label="Approved"/>
+      <column field="decided_on" label="Decided" fieldType="date"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="pay" label="Pay through payroll" function="pay_insurance_claim" confirm="Pay this claim as a payroll reimbursement?"/>
+    </actions>
+    <empty title="Nothing to pay" description="Approved claims waiting for payment appear here."/>
+  </view>
+</page>

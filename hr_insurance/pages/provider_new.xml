@@ -1,0 +1,12 @@
+<page route="/hr/insurance/providers/new" title="New health facility" menu="false" model="ins_provider" roles="ins_admin">
+  <view type="form" function="create_insurance_provider" submit="Create facility" success="Facility created" redirect="/hr/insurance/providers">
+    <group title="Facility" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="hospital, clinic, pharmacy, laboratory, dental, optical, other"/>
+      <field name="city" label="City"/>
+      <field name="phone" label="Phone"/>
+      <field name="email" label="Email"/>
+      <field name="is_network" label="In the insurer's network" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,13 @@
+<page route="/hr/fleet/log" title="Log vehicle use" menu="false" model="flt_log">
+  <view type="form" function="log_vehicle_use" submit="Save" success="Logged" redirect="/hr/fleet/mine">
+    <group title="Use" cols="2">
+      <field name="vehicle" label="Vehicle" fieldType="many2one" source="list_vehicles" optionLabel="plate" entity="vehicles" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="fuel, trip, toll, other" required="true"/>
+      <field name="date" label="Date" fieldType="date"/>
+      <field name="odometer" label="Odometer" fieldType="integer" required="true"/>
+      <field name="litres" label="Litres"/>
+      <field name="cost" label="Cost"/>
+      <field name="note" label="Note"/>
+    </group>
+  </view>
+</page>

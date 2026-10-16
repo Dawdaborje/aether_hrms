@@ -1,0 +1,53 @@
+{
+  "model": "ins_preauth",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "ins_admin",
+        "ins_reviewer",
+        "via:self"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "state",
+        "approved_amount",
+        "consumed_amount",
+        "decided_by",
+        "valid_until"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

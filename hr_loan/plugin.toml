@@ -46,6 +46,8 @@ name = "loan_instalment_overdue"
 
 [[schedule]]
 name = "loan-nightly"
+title = "Flag overdue instalments"
+description = "Reports, once each, loan instalments that are past their due date."
 function = "loan_nightly"
 cron = "40 1 * * *"
 

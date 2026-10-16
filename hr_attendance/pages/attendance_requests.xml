@@ -1,0 +1,12 @@
+<page route="/hr/attendance/requests" title="Attendance requests" icon="home" sort="40">
+  <view type="list" source="my_attendance_requests" create="/hr/attendance/requests/new" create_label="Ask">
+    <columns>
+      <column field="reference" label="Ref"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="date_from" label="From"/>
+      <column field="date_to" label="To"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No requests" description="Ask to be marked present for work from home, on duty, or a half day."/>
+  </view>
+</page>
