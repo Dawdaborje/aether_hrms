@@ -15,7 +15,7 @@ const IDENTITY: &[&str] = &[
 ];
 /// Private details, kept in `employee_private` (readable only by the person and HR).
 const PRIVATE: &[&str] = &[
-    "legal_name", "date_of_birth", "place_of_birth", "marital_status", "nationality", "national_id", "passport_no",
+    "legal_name", "date_of_birth", "place_of_birth", "marital_status", "nationality", "passport_no",
     "passport_expiry", "visa_no", "work_permit_expiry", "private_email", "private_phone", "private_address",
     "emergency_name", "emergency_relation", "emergency_phone", "education_level", "study_field", "bank_account_no", "bank_name",
 ];
@@ -615,7 +615,7 @@ handler! {
         if let Ok(Some(private)) = db::find::<Record>("employee_private").filter("employee", input.id.as_str()).first() {
             if let (Some(row), Some(private)) = (row.as_object_mut(), crate::people::private_part(&private).as_object()) {
                 for (key, value) in private {
-                    row.entry(key.clone()).or_insert_with(|| value.clone());
+                    row.insert(key.clone(), value.clone());
                 }
             }
         }

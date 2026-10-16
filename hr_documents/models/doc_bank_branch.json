@@ -1,0 +1,58 @@
+{
+  "model_id": "mdl_3a99c0a4b3",
+  "name": "doc_bank_branch",
+  "label": "%doc_bank_branch%",
+  "plural_label": "%doc_bank_branchs%",
+  "icon": "map-pin",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_6aea09f553",
+      "name": "bank",
+      "label": "%bank%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "doc_bank_org"
+    },
+    {
+      "id": "fld_4fda36c81c",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_ec5d94dfd4",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_e007e3994f",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_09af5a919f",
+      "fields": [
+        "bank",
+        "name"
+      ]
+    }
+  ],
+  "view": {
+    "list": [
+      "bank",
+      "name",
+      "code",
+      "is_active"
+    ]
+  }
+}

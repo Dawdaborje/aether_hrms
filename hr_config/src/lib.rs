@@ -124,4 +124,12 @@ forward! {
     close_leave_period => "hr_leave";
     list_leave_approvers => "hr_leave";
     set_leave_approver => "hr_leave";
+    list_all_banks => "hr_documents";
+    create_bank => "hr_documents";
+    get_bank => "hr_documents";
+    update_bank => "hr_documents";
+    list_all_bank_branches => "hr_documents";
+    create_bank_branch => "hr_documents";
+    get_bank_branch => "hr_documents";
+    update_bank_branch => "hr_documents";
 }

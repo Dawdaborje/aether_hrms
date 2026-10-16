@@ -26,11 +26,19 @@
     },
     {
       "id": "fld_q2kb6bszuh",
+      "name": "relation_text",
+      "label": "%relation_text%",
+      "type": "string",
+      "max_length": 60,
+      "help": "Previous free-text relation; cleared after migrate_links."
+    },
+    {
+      "id": "fld_b0df715c2f",
       "name": "relation",
       "label": "%relation%",
-      "type": "string",
-      "required": true,
-      "max_length": 60
+      "type": "link",
+      "index": "plain",
+      "target": "doc_relation"
     },
     {
       "id": "fld_fdmdyznta2",

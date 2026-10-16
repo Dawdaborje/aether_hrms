@@ -5,7 +5,7 @@
         <field name="kind" label="Kind" required="true" fieldType="selection"
                options="passport, national_id, visa, work_permit, driving_licence, other"/>
         <field name="number" label="Number" required="true"/>
-        <field name="country" label="Country" fieldType="many2one" source="list_countries" optionLabel="name" entity="countries"/>
+        <field name="country" label="Country" fieldType="many2one" source="country.list_countries" optionLabel="name" entity="countries"/>
         <field name="issued_on" label="Issued" fieldType="date"/>
         <field name="expires_on" label="Expires" fieldType="date"/>
         <field name="is_primary" label="Primary document" fieldType="boolean"/>

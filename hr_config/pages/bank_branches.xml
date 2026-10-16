@@ -1,0 +1,11 @@
+<page route="/hr/config/documents/branches" title="Bank branches" menu_group="Documents" icon="map-pin" sort="20" roles="hr_documents.documents_admin,hr.hr_manager">
+  <view type="list" source="list_all_bank_branches" open="/hr/config/documents/branches/{id}" create="/hr/config/documents/branches/new" create_label="New">
+    <columns>
+      <column field="bank" label="Bank" fieldType="link" modelTarget="hr_documents.doc_bank_org"/>
+      <column field="name" label="Branch"/>
+      <column field="code" label="Code"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No branches" description="Branches are optional; add them when employees should pick a branch for a bank."/>
+  </view>
+</page>

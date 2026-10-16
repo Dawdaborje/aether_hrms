@@ -5,10 +5,11 @@
       "name": "own",
       "operations": [
         "read",
+        "create",
         "write"
       ],
       "when": {
-        "employee": "$employee"
+        "employee": "$hr.employee"
       }
     },
     {

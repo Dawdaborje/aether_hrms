@@ -27,15 +27,6 @@
       <field name="work_email" label="Work email"/>
       <field name="work_phone" label="Work phone"/>
     </group>
-    <notebook>
-      <page title="Personal">
-        <group title="Personal details" cols="2">
-          <field name="date_of_birth" label="Date of birth" fieldType="date"/>
-          <field name="marital_status" label="Marital status" fieldType="selection"
-                   options="single, married, divorced, widowed"/>
-          <field name="national_id" label="National ID"/>
-        </group>
-      </page>
-    </notebook>
+    <notebook/>
   </view>
 </page>

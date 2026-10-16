@@ -1,0 +1,11 @@
+<page route="/hr/config/documents/banks" title="Banks" menu_group="Documents" menu_group_icon="folder" icon="landmark" sort="10" roles="hr_documents.documents_admin,hr.hr_manager">
+  <view type="list" source="list_all_banks" open="/hr/config/documents/banks/{id}" create="/hr/config/documents/banks/new" create_label="New">
+    <columns>
+      <column field="name" label="Bank"/>
+      <column field="code" label="Code"/>
+      <column field="swift" label="SWIFT"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No banks" description="Add the banks employees can pick when entering a salary account."/>
+  </view>
+</page>

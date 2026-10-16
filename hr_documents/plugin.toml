@@ -18,9 +18,25 @@ access_models = [
   { name = "doc_identity", permissions = ["read", "write"] },
   { name = "doc_emergency", permissions = ["read", "write"] },
   { name = "doc_bank", permissions = ["read", "write"] },
+  { name = "doc_relation", permissions = ["read", "write"] },
+  { name = "doc_bank_org", permissions = ["read", "write"] },
+  { name = "doc_bank_branch", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_relations"
+help = "Create the usual emergency-contact relationships (idempotent)"
+on_install = true
+on_upgrade = true
+
+[[command]]
+name = "migrate_links"
+function = "migrate_links"
+help = "Move free-text relation/bank/branch values onto the link fields (idempotent)"
+on_upgrade = true
 
 [[roles]]
 name = "documents_admin"

@@ -1,0 +1,32 @@
+{
+  "model_id": "mdl_b5297ba2cc",
+  "name": "doc_relation",
+  "label": "%doc_relation%",
+  "plural_label": "%doc_relations%",
+  "icon": "users",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_a4be7827c5",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 60,
+      "index": "unique"
+    },
+    {
+      "id": "fld_d2dd478285",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "is_active"
+    ]
+  }
+}

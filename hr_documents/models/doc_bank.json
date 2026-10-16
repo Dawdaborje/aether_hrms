@@ -34,18 +34,35 @@
     },
     {
       "id": "fld_lz6lj7at6x",
-      "name": "bank_name",
-      "label": "%bank_name%",
+      "name": "bank_text",
+      "label": "%bank_text%",
       "type": "string",
-      "required": true,
-      "max_length": 120
+      "max_length": 120,
+      "help": "Previous free-text bank name; cleared after migrate_links."
+    },
+    {
+      "id": "fld_a954255679",
+      "name": "bank",
+      "label": "%bank%",
+      "type": "link",
+      "index": "plain",
+      "target": "doc_bank_org"
     },
     {
       "id": "fld_nfv73iyort",
+      "name": "branch_text",
+      "label": "%branch_text%",
+      "type": "string",
+      "max_length": 120,
+      "help": "Previous free-text branch; cleared after migrate_links."
+    },
+    {
+      "id": "fld_8baea6b780",
       "name": "branch",
       "label": "%branch%",
-      "type": "string",
-      "max_length": 120
+      "type": "link",
+      "index": "plain",
+      "target": "doc_bank_branch"
     },
     {
       "id": "fld_tqccbi7wcy",

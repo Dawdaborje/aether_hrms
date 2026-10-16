@@ -4,8 +4,10 @@
       <view type="form" function="add_bank_account" submit="Add" success="Account added">
         <field name="account_name" label="Account name" required="true"/>
         <field name="account_no" label="Account number" required="true"/>
-        <field name="bank_name" label="Bank" required="true"/>
-        <field name="branch" label="Branch"/>
+        <field name="bank" label="Bank" required="true" fieldType="many2one"
+               source="list_banks" optionLabel="name" entity="banks"/>
+        <field name="branch" label="Branch" fieldType="many2one"
+               source="list_bank_branches" optionLabel="name" entity="branches" depends="bank"/>
         <field name="share_percent" label="Share of net salary (%)" fieldType="float" required="true"/>
         <field name="iban" label="IBAN"/>
         <field name="swift" label="SWIFT"/>
@@ -15,7 +17,8 @@
     <view type="list" model="doc_bank" source="list_bank_accounts">
       <columns>
         <column field="account_name" label="Account"/>
-        <column field="bank_name" label="Bank"/>
+        <column field="bank" label="Bank" fieldType="link" modelTarget="doc_bank_org"/>
+        <column field="branch" label="Branch" fieldType="link" modelTarget="doc_bank_branch"/>
         <column field="account_no" label="Number"/>
         <column field="share_percent" label="Share %"/>
         <column field="is_active" label="Active" fieldType="boolean"/>

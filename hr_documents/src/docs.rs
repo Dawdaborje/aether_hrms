@@ -51,7 +51,7 @@ struct BankIn {
     employee: Option<String>,
     account_name: String,
     account_no: String,
-    bank_name: String,
+    bank: String,
     share_percent: Decimal,
     #[serde(default)]
     branch: Option<String>,
@@ -88,6 +88,31 @@ struct Who {
 }
 
 #[derive(Deserialize)]
+struct RelationName {
+    name: String,
+}
+
+const SEED_RELATIONS: &[&str] = &[
+    "Spouse",
+    "Partner",
+    "Parent",
+    "Mother",
+    "Father",
+    "Sibling",
+    "Brother",
+    "Sister",
+    "Child",
+    "Son",
+    "Daughter",
+    "Friend",
+    "Relative",
+    "Guardian",
+    "Colleague",
+    "Grandparent",
+    "Other",
+];
+
+#[derive(Deserialize)]
 struct ChangeBank {
     id: String,
     #[serde(default)]
@@ -97,7 +122,7 @@ struct ChangeBank {
     #[serde(default)]
     account_name: Option<String>,
     #[serde(default)]
-    bank_name: Option<String>,
+    bank: Option<String>,
     #[serde(default)]
     branch: Option<String>,
     #[serde(default)]
@@ -226,12 +251,74 @@ fn remove_identity(input: Id) -> Result<Value> {
     Ok(json!({ "removed": input.id }))
 }
 
+fn relation_id(raw: &str) -> Result<String> {
+    let id = raw.trim();
+    if id.is_empty() {
+        return Err(Error::msg("relation is required"));
+    }
+    let row = require("doc_relation", id, "relation")?;
+    if row.get("is_active") == Some(&json!(false)) {
+        return Err(Error::msg("that relation is not in use"));
+    }
+    Ok(id_of(&row)?.to_string())
+}
+
+fn find_relation_by_name(name: &str) -> Result<Option<Record>> {
+    let needle = name.to_lowercase();
+    let rows: Vec<Record> = db::find("doc_relation").limit(500).all()?;
+    Ok(rows
+        .into_iter()
+        .find(|r| text(r, "name").map(|n| n.to_lowercase()) == Some(needle.clone())))
+}
+
+pub(crate) fn ensure_relation_named(name: &str) -> Result<Record> {
+    let name = name.trim();
+    if name.is_empty() {
+        return Err(Error::msg("name is required"));
+    }
+    if name.len() > 60 {
+        return Err(Error::msg("relation name is too long"));
+    }
+    if let Some(found) = find_relation_by_name(name)? {
+        return Ok(found);
+    }
+    db::create("doc_relation", &json!({ "name": name, "is_active": true }))
+}
+
+fn seed_relation_rows() -> Result<Value> {
+    let mut added = 0;
+    for name in SEED_RELATIONS {
+        if find_relation_by_name(name)?.is_some() {
+            continue;
+        }
+        db::create::<Record>("doc_relation", &json!({ "name": *name, "is_active": true }))?;
+        added += 1;
+    }
+    Ok(json!({ "relations": added }))
+}
+
+fn relations_list() -> Result<Vec<Record>> {
+    let rows: Vec<Record> = db::find("doc_relation").limit(500).all()?;
+    let mut active: Vec<Record> = rows
+        .into_iter()
+        .filter(|r| r.get("is_active") != Some(&json!(false)))
+        .collect();
+    active.sort_by(|a, b| {
+        text(a, "name")
+            .unwrap_or_default()
+            .to_lowercase()
+            .cmp(&text(b, "name").unwrap_or_default().to_lowercase())
+    });
+    Ok(active)
+}
+
 fn add_contact(input: ContactIn) -> Result<Record> {
     let who = target_employee(input.employee)?;
     require_owner_or_admin(&who)?;
-    if input.name.trim().is_empty() || input.phone.trim().is_empty() || input.relation.trim().is_empty() {
+    if input.name.trim().is_empty() || input.phone.trim().is_empty() {
         return Err(Error::msg("name, relation and phone are required"));
     }
+    let relation = relation_id(&input.relation)?;
     if input.is_primary {
         clear_primary_contact(&who, None)?;
     } else {
@@ -242,7 +329,7 @@ fn add_contact(input: ContactIn) -> Result<Record> {
     db::create(
         "doc_emergency",
         &json!({
-            "employee": who, "name": input.name.trim(), "relation": input.relation.trim(), "phone": input.phone.trim(),
+            "employee": who, "name": input.name.trim(), "relation": relation, "phone": input.phone.trim(),
             "email": input.email, "is_primary": input.is_primary, "notes": input.notes,
         }),
     )
@@ -258,9 +345,10 @@ fn remove_contact(input: Id) -> Result<Value> {
 fn add_bank(input: BankIn) -> Result<Record> {
     let who = target_employee(input.employee)?;
     require_owner_or_admin(&who)?;
-    if input.account_name.trim().is_empty() || input.account_no.trim().is_empty() || input.bank_name.trim().is_empty() {
+    if input.account_name.trim().is_empty() || input.account_no.trim().is_empty() || input.bank.trim().is_empty() {
         return Err(Error::msg("account name, number and bank are required"));
     }
+    let (bank, branch) = crate::banks::resolve_bank_and_branch(&input.bank, input.branch.as_deref())?;
     let share = input.share_percent.with_scale(2)?;
     let mut shares = active_shares(&who, None, None, None, None)?;
     if input.is_active {
@@ -273,7 +361,7 @@ fn add_bank(input: BankIn) -> Result<Record> {
         "doc_bank",
         &json!({
             "employee": who, "account_name": input.account_name.trim(), "account_no": input.account_no.trim(),
-            "bank_name": input.bank_name.trim(), "branch": input.branch, "iban": input.iban, "swift": input.swift,
+            "bank": bank, "branch": branch, "iban": input.iban, "swift": input.swift,
             "currency": input.currency.map(|c| c.to_uppercase()), "share_percent": share, "is_active": input.is_active,
             "notes": input.notes,
         }),
@@ -302,11 +390,22 @@ fn change_bank(input: ChangeBank) -> Result<Record> {
     if let Some(v) = input.account_name {
         data.insert("account_name".into(), json!(v));
     }
-    if let Some(v) = input.bank_name {
-        data.insert("bank_name".into(), json!(v));
-    }
-    if let Some(v) = input.branch {
-        data.insert("branch".into(), json!(v));
+    if input.bank.is_some() || input.branch.is_some() {
+        let bank = input
+            .bank
+            .as_deref()
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .or_else(|| text(&row, "bank"))
+            .ok_or_else(|| Error::msg("bank is required"))?;
+        let branch = match &input.branch {
+            Some(v) if v.trim().is_empty() => None,
+            Some(v) => Some(v.as_str()),
+            None => text(&row, "branch"),
+        };
+        let (bank, branch) = crate::banks::resolve_bank_and_branch(bank, branch)?;
+        data.insert("bank".into(), json!(bank));
+        data.insert("branch".into(), json!(branch));
     }
     if let Some(v) = input.notes {
         data.insert("notes".into(), json!(v));
@@ -410,11 +509,6 @@ fn nightly() -> Result<Value> {
 }
 
 handler! {
-    /// Active countries for the identity-document country picker.
-    fn list_countries(input: Option<Value>) -> Value {
-        plugins::call("country", "list_countries", &input.unwrap_or_else(|| json!({})))
-    }
-
     fn add_identity_document(input: IdentityIn) -> Record {
         add_identity(input)
     }
@@ -445,6 +539,20 @@ handler! {
 
     fn list_emergency_contacts(input: Who) -> Vec<Record> {
         list_for("doc_emergency", input)
+    }
+
+    /// Usual emergency-contact relationships; runs on install and upgrade.
+    fn seed_relations(_: Empty) -> Value {
+        seed_relation_rows()
+    }
+
+    fn list_relations(_: Empty) -> Vec<Record> {
+        relations_list()
+    }
+
+    /// Find a relationship by name (case-insensitive) or create it.
+    fn ensure_relation(input: RelationName) -> Record {
+        ensure_relation_named(&input.name)
     }
 
     fn add_bank_account(input: BankIn) -> Record {

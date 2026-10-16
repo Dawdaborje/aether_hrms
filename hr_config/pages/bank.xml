@@ -1,0 +1,10 @@
+<page route="/hr/config/documents/banks/{id}" title="Bank" menu="false" roles="hr_documents.documents_admin,hr.hr_manager">
+  <view type="form" source="get_bank" function="update_bank" submit="Save" success="Saved">
+    <group title="Bank" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="code" label="Code"/>
+      <field name="swift" label="SWIFT"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

@@ -12,7 +12,11 @@ struct Id {
 
 #[derive(Deserialize)]
 struct ForEmployee {
-    employee: String,
+    #[serde(default)]
+    employee: Option<String>,
+    /// Route `{id}` from the employee page when the tab does not remap params.
+    #[serde(default)]
+    id: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -22,6 +26,15 @@ struct Skills {
     add: Vec<String>,
     #[serde(default)]
     remove: Vec<String>,
+}
+
+fn employee_key(employee: Option<&str>, id: Option<&str>) -> Result<String> {
+    employee
+        .or(id)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+        .ok_or_else(|| Error::msg("an employee is required"))
 }
 
 fn new_dependent(input: Record) -> Result<Record> {
@@ -59,14 +72,17 @@ fn set_skills(input: Skills) -> Result<Vec<Record>> {
 }
 
 const PRIVATE: &[&str] = &[
-    "legal_name", "date_of_birth", "place_of_birth", "marital_status", "nationality", "national_id", "passport_no",
+    "legal_name", "date_of_birth", "place_of_birth", "marital_status", "nationality", "passport_no",
     "passport_expiry", "visa_no", "work_permit_expiry", "private_email", "private_phone", "private_address",
     "emergency_name", "emergency_relation", "emergency_phone", "education_level", "study_field", "bank_account_no", "bank_name",
 ];
 
 #[derive(Deserialize)]
 struct PrivateChange {
-    employee: String,
+    #[serde(default)]
+    employee: Option<String>,
+    #[serde(default)]
+    id: Option<String>,
     #[serde(flatten)]
     fields: Record,
 }
@@ -74,7 +90,8 @@ struct PrivateChange {
 /// Change the private details of an employee, creating them the first time. The kernel's rules
 /// decide who may: the person themselves and HR.
 fn set_private(input: PrivateChange) -> Result<Record> {
-    let employee = require("employee", &input.employee, "employee")?;
+    let who = employee_key(input.employee.as_deref(), input.id.as_deref())?;
+    let employee = require("employee", &who, "employee")?;
     let employee_id = crate::common::id_of(&employee)?;
     let data = pick(&input.fields, PRIVATE);
     if data.as_object().is_some_and(|fields| fields.is_empty()) {
@@ -108,8 +125,15 @@ pub fn save_private(employee_id: &str, data: Record) -> Result<Record> {
 
 handler! {
     /// The private details of an employee (only the person and HR can read them).
-    fn get_private_details(input: ForEmployee) -> Option<Record> {
-        db::find("employee_private").filter("employee", input.employee.as_str()).first()
+    /// When none exist yet, returns an empty record so the form can create them.
+    fn get_private_details(input: ForEmployee) -> Record {
+        let who = employee_key(input.employee.as_deref(), input.id.as_deref())?;
+        let employee = require("employee", &who, "employee")?;
+        let employee_id = id_of(&employee)?;
+        match db::find::<Record>("employee_private").filter("employee", employee_id).first()? {
+            Some(row) => Ok(row),
+            None => Ok(json!({ "employee": employee_id })),
+        }
     }
 
     fn update_private_details(input: PrivateChange) -> Record {
@@ -121,7 +145,8 @@ handler! {
     }
 
     fn list_dependents(input: ForEmployee) -> Vec<Record> {
-        db::find("dependent").filter("employee", input.employee.as_str()).order_by("name").limit(200).all()
+        let who = employee_key(input.employee.as_deref(), input.id.as_deref())?;
+        db::find("dependent").filter("employee", who.as_str()).order_by("name").limit(200).all()
     }
 
     fn remove_dependent(input: Id) -> Option<Record> {
@@ -145,7 +170,8 @@ handler! {
     }
 
     fn employee_skills(input: ForEmployee) -> Vec<Record> {
-        db::related("employee", "skills", &input.employee)
+        let who = employee_key(input.employee.as_deref(), input.id.as_deref())?;
+        db::related("employee", "skills", who.as_str())
     }
 
     /// Who has a skill.
