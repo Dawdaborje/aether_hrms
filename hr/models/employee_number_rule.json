@@ -1,0 +1,98 @@
+{
+  "model_id": "mdl_empnorule01",
+  "name": "employee_number_rule",
+  "label": "%employee_number_rule%",
+  "plural_label": "%employee_number_rules%",
+  "icon": "hash",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_enrname001",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "plain"
+    },
+    {
+      "id": "fld_enrpatn001",
+      "name": "pattern",
+      "label": "%pattern%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "help": "Template such as EMP-{department_code}-{year}-{number:4}. Tokens: {number}, {number:N}, {year}, {yy}, {month}, {mm}, {department_code}, {department}, {employment_type}."
+    },
+    {
+      "id": "fld_enrdept001",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "department",
+      "index": "plain",
+      "help": "When set, this rule applies only to hires in that department."
+    },
+    {
+      "id": "fld_enrtype001",
+      "name": "employment_type",
+      "label": "%employment_type%",
+      "type": "select",
+      "options": [
+        { "id": "opt_enrperm01", "value": "permanent", "label": "%permanent%" },
+        { "id": "opt_enrcont01", "value": "contract", "label": "%contract%" },
+        { "id": "opt_enrtemp01", "value": "temporary", "label": "%temporary%" },
+        { "id": "opt_enrintr01", "value": "intern", "label": "%intern%" },
+        { "id": "opt_enrcasl01", "value": "casual", "label": "%casual%" }
+      ],
+      "help": "When set, this rule applies only to that employment type."
+    },
+    {
+      "id": "fld_enrprio001",
+      "name": "priority",
+      "label": "%priority%",
+      "type": "int",
+      "default": 0,
+      "help": "Higher priority wins when two rules are equally specific."
+    },
+    {
+      "id": "fld_enrrset001",
+      "name": "reset",
+      "label": "%reset%",
+      "type": "select",
+      "default": "never",
+      "options": [
+        { "id": "opt_enrnevr01", "value": "never", "label": "%never%" },
+        { "id": "opt_enryear01", "value": "yearly", "label": "%yearly%" },
+        { "id": "opt_enrmnth01", "value": "monthly", "label": "%monthly%" }
+      ],
+      "help": "When the {number} sequence restarts."
+    },
+    {
+      "id": "fld_enrdefl001",
+      "name": "is_default",
+      "label": "%is_default%",
+      "type": "bool",
+      "default": false,
+      "help": "Preferred fallback among rules that match everyone."
+    },
+    {
+      "id": "fld_enractv001",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "pattern",
+      "department",
+      "employment_type",
+      "reset",
+      "is_default",
+      "is_active"
+    ]
+  }
+}

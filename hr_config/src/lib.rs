@@ -140,4 +140,9 @@ forward! {
     create_cost_center => "hr";
     get_cost_center => "hr";
     update_cost_center => "hr";
+    list_all_employee_number_rules => "hr";
+    create_employee_number_rule => "hr";
+    get_employee_number_rule => "hr";
+    update_employee_number_rule => "hr";
+    preview_employee_number => "hr";
 }

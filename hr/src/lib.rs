@@ -15,6 +15,7 @@ mod demo;
 mod department;
 mod employee;
 mod employment;
+mod numbering;
 mod people;
 mod position;
 mod reports;

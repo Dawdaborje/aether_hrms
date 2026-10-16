@@ -1,0 +1,26 @@
+{
+  "model": "employee_number_rule",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "hr_user",
+        "hr_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "manager",
+      "roles": [
+        "hr_manager"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

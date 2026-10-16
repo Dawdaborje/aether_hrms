@@ -2,7 +2,7 @@
 name = "hr"
 icon_path = "assets/logo.svg"
 label = "Human Resources"
-version = "0.1.9"
+version = "0.2.0"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
@@ -26,6 +26,7 @@ access_models = [
   { name = "cost_center", permissions = ["read", "write"] },
   { name = "hire_hold", permissions = ["read", "write"] },
   { name = "hr_setting", permissions = ["read", "write"] },
+  { name = "employee_number_rule", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
@@ -82,6 +83,13 @@ args = [{ name = "count", type = "int", default = 10 }]
 name = "migrate_catalog_links"
 function = "migrate_catalog_links"
 help = "Move free-text work location and cost centre values onto the catalog link fields"
+
+[[command]]
+name = "seed_employee_number_rules"
+function = "seed_employee_number_rules"
+help = "Ensure a default EMP-{number:5} employee number rule exists"
+on_install = true
+on_upgrade = true
 
 [[command]]
 name = "demo_skill"

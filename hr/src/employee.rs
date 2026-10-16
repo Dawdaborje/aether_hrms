@@ -5,8 +5,9 @@ use aether_sdk::dates::{age_on, check_order, format_date, parse_date, parse_opti
 use aether_sdk::db::{Filter, Walk};
 use aether_sdk::prelude::*;
 
-use crate::common::{explain, id_of, next_number, pick, require, text, today, Record};
+use crate::common::{explain, id_of, pick, require, text, today, Record};
 use crate::employment;
+use crate::numbering::{self, NumberContext};
 use crate::rules::{status, MIN_WORKING_AGE};
 
 /// What an HR officer may set on the employee row itself.
@@ -223,7 +224,11 @@ fn hire(input: Hire) -> Result<Record> {
     data["status"] = json!(if probation_end.is_some() { "probation" } else { "active" });
     data["party"] = json!(party_id);
     data["display_name"] = party.get("display_name").or_else(|| party.get("name")).cloned().unwrap_or(Value::Null);
-    data["employee_no"] = json!(next_number("employee", "EMP-", 5)?);
+    data["employee_no"] = json!(numbering::allocate(&NumberContext {
+        department: text(&input.fields, "department").map(str::to_string),
+        employment_type: text(&input.fields, "employment_type").map(str::to_string),
+        hire_date: start.clone(),
+    })?);
     let employee: Record = match explain(db::create("employee", &data), "could not create this employee") {
         Ok(row) => row,
         Err(error) => {

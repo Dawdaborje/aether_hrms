@@ -2,7 +2,7 @@
 name = "hr_config"
 icon_path = "assets/logo.svg"
 label = "HR Configuration"
-version = "0.1.1"
+version = "0.1.2"
 description = "HRMS setup: HR defaults, leave, attendance and payroll configuration."
 long_description = """
 A single Apps tile for HRMS configuration. The home page lists setup areas
