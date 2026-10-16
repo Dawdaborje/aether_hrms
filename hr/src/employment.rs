@@ -81,7 +81,12 @@ fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Op
             return Err(Error::msg("a wage cannot be negative"));
         }
     }
-    for (field, model, what) in [("department", "department", "department"), ("job", "job", "job"), ("work_location", "work_location", "work location")] {
+    for (field, model, what) in [
+        ("department", "department", "department"),
+        ("job", "job", "job"),
+        ("work_location", "work_location", "work location"),
+        ("cost_center", "cost_center", "cost centre"),
+    ] {
         if let Some(id) = text(terms, field) {
             let found = require(model, id, what)?;
             if is_off(&found, "is_active") {

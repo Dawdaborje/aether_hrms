@@ -1,0 +1,41 @@
+{
+  "model_id": "mdl_cc7k2m9p4w",
+  "name": "cost_center",
+  "label": "%cost_center%",
+  "plural_label": "%cost_centers%",
+  "icon": "wallet",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_ccname01a2",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_cccode01b3",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain"
+    },
+    {
+      "id": "fld_ccactv01c4",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "code",
+      "is_active"
+    ]
+  }
+}

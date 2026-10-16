@@ -43,10 +43,20 @@
     },
     {
       "id": "fld_gmhgff2rkz",
+      "name": "cost_center_text",
+      "label": "%cost_center_text%",
+      "type": "string",
+      "max_length": 40,
+      "help": "Previous free-text cost centre; cleared after migrate_catalog_links."
+    },
+    {
+      "id": "fld_deptccnlnk1",
       "name": "cost_center",
       "label": "%cost_center%",
-      "type": "string",
-      "max_length": 40
+      "type": "link",
+      "index": "plain",
+      "target": "cost_center",
+      "track": true
     },
     {
       "id": "fld_7rpjnxruxe",

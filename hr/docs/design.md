@@ -20,7 +20,8 @@ Core people and organization: department tree, jobs, positions (seats with headc
 | `employment` | Dated terms (job, dept, manager, wage, calendar, contract) |
 | `dependent` | Family members |
 | `skill` | Skill catalog + employee skill links |
-| `work_location` | Site / branch with address and timezone |
+| `work_location` | Site / branch with address and timezone (catalog in HR Configuration) |
+| `cost_center` | Cost centre catalog picked on people and departments |
 | `hire_hold` | Blocks hire until another plugin releases |
 | `hr_setting` | Organisation defaults: probation days, notice days, retirement age; applied when a hire gives none |
 | `counter` | Numbering |

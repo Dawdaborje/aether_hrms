@@ -11,7 +11,7 @@ use crate::rules::{status, MIN_WORKING_AGE};
 
 /// What an HR officer may set on the employee row itself.
 const IDENTITY: &[&str] = &[
-    "company", "gender", "image", "work_email", "work_phone", "work_location", "notice_days", "probation_end",
+    "company", "gender", "image", "work_email", "work_phone", "notice_days", "probation_end",
 ];
 /// Private details, kept in `employee_private` (readable only by the person and HR).
 const PRIVATE: &[&str] = &[
@@ -21,8 +21,8 @@ const PRIVATE: &[&str] = &[
 ];
 /// The fields of a first set of terms, taken from the hire form.
 const TERMS: &[&str] = &[
-    "department", "job", "position", "manager", "employment_type", "work_location", "grade", "wage", "currency",
-    "pay_frequency", "contract_start", "contract_end", "fixed_term", "trial_end",
+    "department", "job", "position", "manager", "employment_type", "work_location", "cost_center", "grade", "wage",
+    "currency", "pay_frequency", "contract_start", "contract_end", "fixed_term", "trial_end",
 ];
 
 #[derive(Deserialize)]
@@ -284,11 +284,7 @@ fn change(input: Change) -> Result<Record> {
     //  - placement (department, job, position, manager, type, location): the employment history,
     //    from today, only where the value actually differs,
     //  - private details: the private record.
-    let mut identity = pick(&input.fields, IDENTITY);
-    if let Some(fields) = identity.as_object_mut() {
-        // Where someone works is a term: it is kept in the history and mirrored on the row.
-        fields.remove("work_location");
-    }
+    let identity = pick(&input.fields, IDENTITY);
     let mut placement = serde_json::Map::new();
     if let Some(sent) = input.fields.as_object() {
         for field in employment::PLACEMENT_FIELDS {

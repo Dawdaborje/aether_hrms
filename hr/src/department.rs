@@ -64,6 +64,12 @@ fn check_references(data: &Record, current: Option<&str>) -> Result<()> {
             return Err(Error::msg("the manager no longer works here"));
         }
     }
+    if let Some(centre) = text(data, "cost_center") {
+        let centre = require("cost_center", centre, "cost centre")?;
+        if centre.get("is_active") == Some(&json!(false)) {
+            return Err(Error::msg("the cost centre is closed"));
+        }
+    }
     Ok(())
 }
 

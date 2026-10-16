@@ -9,6 +9,7 @@
 //! The rules that need no data (status changes) live in `rules`, and date arithmetic comes from
 //! The SDK's `dates`; the rest reads and writes the records and calls those rules.
 
+mod catalog;
 mod common;
 mod demo;
 mod department;

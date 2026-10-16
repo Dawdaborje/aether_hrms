@@ -132,4 +132,12 @@ forward! {
     create_bank_branch => "hr_documents";
     get_bank_branch => "hr_documents";
     update_bank_branch => "hr_documents";
+    list_all_work_locations => "hr";
+    create_work_location => "hr";
+    get_work_location => "hr";
+    update_work_location => "hr";
+    list_all_cost_centers => "hr";
+    create_cost_center => "hr";
+    get_cost_center => "hr";
+    update_cost_center => "hr";
 }

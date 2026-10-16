@@ -1,0 +1,9 @@
+<page route="/hr/config/cost-centres/{id}" title="Cost centre" menu="false" roles="hr.hr_user,hr.hr_manager">
+  <view type="form" source="get_cost_center" function="update_cost_center" submit="Save" success="Saved">
+    <group title="Cost centre" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="code" label="Code"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

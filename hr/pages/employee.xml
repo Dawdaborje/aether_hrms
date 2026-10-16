@@ -20,8 +20,10 @@
                entity="positions"/>
       <field name="manager" label="Reports to" fieldType="many2one" source="list_employees"
                optionLabel="display_name" entity="employees"/>
-      <field name="work_location" label="Work location"/>
-      <field name="cost_center" label="Cost centre"/>
+      <field name="work_location" label="Work location" fieldType="many2one"
+               source="list_work_locations" optionLabel="name" entity="work_locations"/>
+      <field name="cost_center" label="Cost centre" fieldType="many2one"
+               source="list_cost_centers" optionLabel="name" entity="cost_centers"/>
     </group>
     <group title="Contact" cols="2">
       <field name="work_email" label="Work email"/>

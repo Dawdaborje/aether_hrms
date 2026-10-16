@@ -5,6 +5,7 @@
     <field name="parent" label="Part of" fieldType="many2one" source="list_departments" entity="departments"/>
     <field name="manager" label="Manager" fieldType="many2one" source="list_employees"
                optionLabel="display_name" entity="employees"/>
-    <field name="cost_center" label="Cost centre"/>
+    <field name="cost_center" label="Cost centre" fieldType="many2one"
+               source="list_cost_centers" optionLabel="name" entity="cost_centers"/>
   </view>
 </page>

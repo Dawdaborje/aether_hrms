@@ -1,0 +1,10 @@
+<page route="/hr/config/cost-centres" title="Cost centres" menu_group="General" icon="wallet" sort="30" roles="hr.hr_user,hr.hr_manager">
+  <view type="list" source="list_all_cost_centers" open="/hr/config/cost-centres/{id}" create="/hr/config/cost-centres/new" create_label="New">
+    <columns>
+      <column field="name" label="Cost centre"/>
+      <column field="code" label="Code"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No cost centres" description="Add the cost centres employees and departments can pick."/>
+  </view>
+</page>

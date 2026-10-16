@@ -5,6 +5,8 @@
   </group>
   <group title="General" cols="2">
     <button label="HR defaults" href="/hr/config/hr" variant="outline"/>
+    <button label="Work locations" href="/hr/config/locations" variant="outline"/>
+    <button label="Cost centres" href="/hr/config/cost-centres" variant="outline"/>
   </group>
   <group title="Leave" cols="2">
     <button label="Leave types" href="/hr/config/leave-types" variant="outline"/>

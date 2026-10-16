@@ -2,7 +2,7 @@
 name = "hr"
 icon_path = "assets/logo.svg"
 label = "Human Resources"
-version = "0.1.7"
+version = "0.1.8"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
@@ -23,6 +23,7 @@ access_models = [
   { name = "employment", permissions = ["read", "write"] },
   { name = "employee_private", permissions = ["read", "write"] },
   { name = "work_location", permissions = ["read", "write"] },
+  { name = "cost_center", permissions = ["read", "write"] },
   { name = "hire_hold", permissions = ["read", "write"] },
   { name = "hr_setting", permissions = ["read", "write"] },
   { name = "counter", permissions = ["read", "write"] },
@@ -76,6 +77,11 @@ function = "generate_demo_work_location"
 help = "Generate demo work locations"
 demo_model = "work_location"
 args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "migrate_catalog_links"
+function = "migrate_catalog_links"
+help = "Move free-text work location and cost centre values onto the catalog link fields"
 
 [[command]]
 name = "demo_skill"

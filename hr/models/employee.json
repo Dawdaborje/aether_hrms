@@ -228,10 +228,20 @@
     },
     {
       "id": "fld_l74bn3ow7h",
+      "name": "work_location_text",
+      "label": "%work_location_text%",
+      "type": "string",
+      "max_length": 120,
+      "help": "Previous free-text work location; cleared after migrate_catalog_links."
+    },
+    {
+      "id": "fld_emploclink1",
       "name": "work_location",
       "label": "%work_location%",
-      "type": "string",
-      "max_length": 120
+      "type": "link",
+      "index": "plain",
+      "target": "work_location",
+      "track": true
     },
     {
       "id": "fld_wvziqtagmg",
@@ -281,10 +291,20 @@
     },
     {
       "id": "fld_l0apgmnh3z",
+      "name": "cost_center_text",
+      "label": "%cost_center_text%",
+      "type": "string",
+      "max_length": 60,
+      "help": "Previous free-text cost centre; cleared after migrate_catalog_links."
+    },
+    {
+      "id": "fld_empccnlink1",
       "name": "cost_center",
       "label": "%cost_center%",
-      "type": "string",
-      "max_length": 60
+      "type": "link",
+      "index": "plain",
+      "target": "cost_center",
+      "track": true
     }
   ],
   "indexes": [
