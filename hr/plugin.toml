@@ -101,7 +101,7 @@ cron = "10 0 * * *"
 
 [app]
 icon = "users"
-route = "/hr/employees"
+route = "/hr"
 description = "People and organization"
 
 [plugin.api]

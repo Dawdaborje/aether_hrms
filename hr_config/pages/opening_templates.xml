@@ -1,4 +1,4 @@
-<page route="/hr/config/recruitment/opening-templates" title="Opening templates" menu_group="Recruitment" icon="list" roles="hr_recruitment.recruit_manager">
+<page route="/hr/config/recruitment/opening-templates" title="Opening templates" menu_group="Recruitment" icon="list" sort="50" roles="hr_recruitment.recruit_manager">
   <view type="list" source="list_opening_templates" create="/hr/config/recruitment/opening-templates/new" create_label="New" open="/hr/config/recruitment/opening-templates/{id}">
     <columns>
       <column field="name" label="Template"/>

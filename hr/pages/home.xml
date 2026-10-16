@@ -1,0 +1,18 @@
+<page route="/hr" title="Home" icon="layout-dashboard" sort="1">
+  <group title="People and organization" cols="1">
+    <alert title="Human Resources"
+           description="Pick an area below, or use the sidebar. Hire people, keep the org tree, and check turnover."/>
+  </group>
+  <group title="People" cols="2">
+    <button label="My profile" href="/hr/me" variant="outline"/>
+    <button label="Employees" href="/hr/employees" variant="outline"/>
+    <button label="Hire someone" href="/hr/employees/hire" variant="outline"/>
+  </group>
+  <group title="Organization" cols="2">
+    <button label="Departments" href="/hr/departments" variant="outline"/>
+    <button label="Organisation chart" href="/hr/org-chart" variant="outline"/>
+  </group>
+  <group title="Reports" cols="2">
+    <button label="Turnover" href="/hr/reports/turnover" variant="outline"/>
+  </group>
+</page>

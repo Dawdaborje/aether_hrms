@@ -1,4 +1,4 @@
-<page route="/hr/employees" title="Employees" model="employee" menu_group="Employee" icon="users" sort="10" roles="hr_user,hr_manager">
+<page route="/hr/employees" title="Employees" model="employee" menu_group="Employee" menu_group_icon="users" icon="users" sort="10" roles="hr_user,hr_manager">
   <view type="list" model="employee" source="list_employees" open="/hr/employees/{id}"
         create="/hr/employees/hire" create_label="New" page_size="50" default_order="display_name">
     <search fields="display_name,employee_no,work_email"/>

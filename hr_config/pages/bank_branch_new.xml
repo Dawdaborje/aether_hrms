@@ -1,5 +1,5 @@
-<page route="/hr/config/documents/branches/new" title="New branch" menu="false" roles="hr_documents.documents_admin,hr.hr_manager">
-  <view type="form" function="create_bank_branch" submit="Create" success="Created" redirect="/hr/config/documents/branches">
+<page route="/hr/config/payroll/branches/new" title="New branch" menu="false" roles="hr_documents.documents_admin,hr.hr_manager">
+  <view type="form" function="create_bank_branch" submit="Create" success="Created" redirect="/hr/config/payroll/branches">
     <group title="Branch" cols="2">
       <field name="bank" label="Bank" required="true" fieldType="many2one" source="list_all_banks" optionLabel="name" entity="banks"/>
       <field name="name" label="Name" required="true"/>

@@ -1,5 +1,5 @@
-<page route="/hr/config/documents/banks" title="Banks" menu_group="Documents" menu_group_icon="folder" icon="landmark" sort="10" roles="hr_documents.documents_admin,hr.hr_manager">
-  <view type="list" source="list_all_banks" open="/hr/config/documents/banks/{id}" create="/hr/config/documents/banks/new" create_label="New">
+<page route="/hr/config/payroll/banks" title="Banks" menu_group="Payroll" icon="banknote" sort="45" roles="hr_documents.documents_admin,hr.hr_manager">
+  <view type="list" source="list_all_banks" open="/hr/config/payroll/banks/{id}" create="/hr/config/payroll/banks/new" create_label="New">
     <columns>
       <column field="name" label="Bank"/>
       <column field="code" label="Code"/>

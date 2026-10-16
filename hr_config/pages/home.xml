@@ -1,0 +1,39 @@
+<page route="/hr/config" title="Home" icon="layout-dashboard" sort="1">
+  <group title="What you can configure" cols="1">
+    <alert title="HR Configuration"
+           description="Pick an area below, or use the sidebar. Each screen is owned by the matching HR app; this place only gathers the setup."/>
+  </group>
+  <group title="General" cols="2">
+    <button label="HR defaults" href="/hr/config/hr" variant="outline"/>
+  </group>
+  <group title="Leave" cols="2">
+    <button label="Leave types" href="/hr/config/leave-types" variant="outline"/>
+    <button label="Leave periods" href="/hr/config/leave/periods" variant="outline"/>
+    <button label="Leave approvers" href="/hr/config/leave/approvers" variant="outline"/>
+  </group>
+  <group title="Attendance" cols="2">
+    <button label="Shifts" href="/hr/config/attendance/shifts" variant="outline"/>
+    <button label="Rotations" href="/hr/config/attendance/rotations" variant="outline"/>
+    <button label="Punch locations" href="/hr/config/attendance/locations" variant="outline"/>
+    <button label="Overtime rules" href="/hr/config/attendance/overtime" variant="outline"/>
+  </group>
+  <group title="Payroll" cols="2">
+    <button label="Payroll settings" href="/hr/config/payroll/settings" variant="outline"/>
+    <button label="Salary components" href="/hr/config/payroll/components" variant="outline"/>
+    <button label="Payroll periods" href="/hr/config/payroll/periods" variant="outline"/>
+    <button label="Tax slabs" href="/hr/config/payroll/tax-slabs" variant="outline"/>
+    <button label="Banks" href="/hr/config/payroll/banks" variant="outline"/>
+    <button label="Bank branches" href="/hr/config/payroll/branches" variant="outline"/>
+  </group>
+  <group title="Recruitment" cols="2">
+    <button label="Applicant sources" href="/hr/config/recruitment/sources" variant="outline"/>
+    <button label="Interviewer pools" href="/hr/config/recruitment/pools" variant="outline"/>
+    <button label="Opening templates" href="/hr/config/recruitment/opening-templates" variant="outline"/>
+    <button label="Offer terms" href="/hr/config/recruitment/offer-terms" variant="outline"/>
+    <button label="Offer templates" href="/hr/config/recruitment/offer-templates" variant="outline"/>
+  </group>
+  <group title="Career and offboarding" cols="2">
+    <button label="Employee letters" href="/hr/config/letters" variant="outline"/>
+    <button label="Departures" href="/hr/config/departures" variant="outline"/>
+  </group>
+</page>

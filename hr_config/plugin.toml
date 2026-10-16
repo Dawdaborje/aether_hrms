@@ -5,9 +5,9 @@ label = "HR Configuration"
 version = "0.1.0"
 description = "HRMS setup: HR defaults, leave, attendance and payroll configuration."
 long_description = """
-A single Apps tile for HRMS configuration. Leave types and other setup screens
-live here so day-to-day apps (Leave, Attendance, …) stay focused on work, not
-admin. Handlers call into the owning plugins (for example hr_leave).
+A single Apps tile for HRMS configuration. The home page lists setup areas
+(leave, attendance, payroll, banks, recruitment, …) so day-to-day apps stay
+focused on work, not admin. Handlers call into the owning plugins.
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "hr_leave", "hr_attendance", "hr_payroll", "hr_recruitment", "hr_onboarding", "hr_career", "hr_documents"]
@@ -17,8 +17,8 @@ wasm_file = "out/plugin.wasm"
 
 [app]
 icon = "settings"
-route = "/hr/config/leave-types"
-description = "Configure leave types and other HRMS setup"
+route = "/hr/config"
+description = "Configure leave, attendance, payroll, banks, and other HRMS setup"
 standalone = true
 
 [plugin.api]

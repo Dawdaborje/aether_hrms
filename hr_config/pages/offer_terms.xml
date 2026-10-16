@@ -1,4 +1,4 @@
-<page route="/hr/config/recruitment/offer-terms" title="Offer terms" menu_group="Recruitment" icon="list" roles="hr_recruitment.recruit_manager">
+<page route="/hr/config/recruitment/offer-terms" title="Offer terms" menu_group="Recruitment" icon="list" sort="40" roles="hr_recruitment.recruit_manager">
   <view type="list" source="list_offer_terms" open="/hr/config/recruitment/offer-terms/{id}" create="/hr/config/recruitment/offer-terms/new" create_label="New">
     <columns>
       <column field="name" label="Term"/>

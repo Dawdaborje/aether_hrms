@@ -1,4 +1,4 @@
-<page route="/hr/config/recruitment/offer-templates" title="Offer templates" menu_group="Recruitment" icon="list" roles="hr_recruitment.recruit_manager">
+<page route="/hr/config/recruitment/offer-templates" title="Offer templates" menu_group="Recruitment" icon="list" sort="30" roles="hr_recruitment.recruit_manager">
   <view type="list" source="list_offer_templates" create="/hr/config/recruitment/offer-templates/new" create_label="New" open="/hr/config/recruitment/offer-templates/{id}">
     <columns>
       <column field="name" label="Template"/>
