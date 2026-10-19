@@ -56,11 +56,17 @@ fn phones_in(text: &str) -> Vec<String> {
 /// What a resume's text says: emails, phones, and which of the organisation's skills it mentions.
 fn read_resume(input: Resume) -> Result<Record> {
     require_recruiter()?;
-    if input.text.len() > 100_000 {
+    if input.text.len() > MAX_RESUME_TEXT {
         return Err(Error::msg("the resume text is at most 100,000 characters"));
     }
     require("rec_application", &input.application, "application")?;
-    let tokens = words(&input.text);
+    apply_resume(&input.application, &input.text, json!({}))
+}
+
+/// Keep a resume's text on the application and what it says. No role check: callers have made theirs (the
+/// recruiter's own call, or the kernel's call back when a queued read ends).
+fn apply_resume(application: &str, resume_text: &str, extra: Value) -> Result<Record> {
+    let tokens = words(resume_text);
     let lower: Vec<String> = tokens.iter().map(|w| w.to_lowercase()).collect();
     let skills: Vec<Record> = plugins::call("hr", "list_skills", &json!({}))?;
     let mut matched: Vec<String> = Vec::new();
@@ -73,8 +79,75 @@ fn read_resume(input: Resume) -> Result<Record> {
             }
         }
     }
-    let parsed = json!({ "emails": emails_in(&tokens), "phones": phones_in(&input.text), "skills": matched });
-    db::update("rec_application", &input.application, &json!({ "resume_text": input.text, "parsed": parsed }))?.ok_or_else(|| Error::msg("the application is gone"))
+    let mut parsed = json!({ "emails": emails_in(&tokens), "phones": phones_in(resume_text), "skills": matched });
+    if let (Some(into), Some(from)) = (parsed.as_object_mut(), extra.as_object()) {
+        into.extend(from.clone());
+    }
+    db::update("rec_application", application, &json!({ "resume_text": resume_text, "parsed": parsed }))?.ok_or_else(|| Error::msg("the application is gone"))
+}
+
+const MAX_RESUME_TEXT: usize = 100_000;
+
+fn clipped(text: &str) -> &str {
+    let mut end = text.len().min(MAX_RESUME_TEXT);
+    while !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    &text[..end]
+}
+
+/// Whether the reader could not finish in the time a call may take, so the file should be read as a job instead.
+fn too_slow(error: &Error) -> bool {
+    let message = error.to_string();
+    message.contains("within") || message.contains("busy") || message.contains("did not answer")
+}
+
+#[derive(Deserialize)]
+struct ResumeFile {
+    application: String,
+}
+
+/// Read the application's attached resume file (a PDF, Word file or scan) with the kernel's document parsing, then
+/// do what `read_resume_text` does with its text. A file the reader cannot finish within a call is queued, and
+/// `resume_parsed` finishes the job when the kernel calls back; the answer then says `queued`.
+fn read_file(input: ResumeFile) -> Result<Value> {
+    require_recruiter()?;
+    let application = require("rec_application", &input.application, "application")?;
+    let key = text(&application, "resume").ok_or_else(|| Error::msg("this application has no resume file"))?;
+    match ocr::parse(&json!({ "media_key": key })) {
+        Ok(read) => {
+            let body = read["text"].as_str().unwrap_or_default();
+            if body.trim().is_empty() {
+                return Err(Error::msg("no text could be read from the resume file"));
+            }
+            let note = json!({ "ocr_used": read["ocr_used"], "truncated": read["truncated"].as_bool().unwrap_or(false) || body.len() > MAX_RESUME_TEXT });
+            let saved = apply_resume(&input.application, clipped(body), note)?;
+            Ok(json!({ "queued": false, "application": saved }))
+        }
+        Err(error) if too_slow(&error) => {
+            ocr::submit(&json!({ "media_key": key, "on_done": "resume_parsed", "ref": input.application }))?;
+            Ok(json!({ "queued": true }))
+        }
+        Err(error) => Err(error),
+    }
+}
+
+/// The kernel's call back when a queued resume read ends: `{ event: "ocr.done", cache_key, status, error, ref }`.
+fn resume_done(event: &Value) -> Result<Value> {
+    let Some(application) = event["ref"].as_str() else { return Ok(json!({ "ignored": true })) };
+    if event["status"] != "done" {
+        let reason = event["error"].as_str().unwrap_or("the resume could not be read");
+        let _ = db::update::<Record>("rec_application", application, &json!({ "parsed": { "ocr_error": reason } }));
+        return Ok(json!({ "read": false }));
+    }
+    let stored = ocr::result(&json!({ "cache_key": event["cache_key"] }))?;
+    let body = stored["result"]["text"].as_str().unwrap_or_default();
+    if body.trim().is_empty() {
+        return Ok(json!({ "read": false }));
+    }
+    let note = json!({ "ocr_used": stored["ocr_used"], "truncated": stored["result"]["truncated"] });
+    apply_resume(application, clipped(body), note)?;
+    Ok(json!({ "read": true }))
 }
 
 // ---- applications by email --------------------------------------------------------------------------------
@@ -234,6 +307,16 @@ handler! {
         read_resume(input)
     }
 
+    /// Read the application's attached resume file and do the same (recruiters). Slow files are read in the background.
+    fn read_resume_file(input: ResumeFile) -> Value {
+        read_file(input)
+    }
+
+    /// The kernel's call back when a queued resume read ends.
+    fn resume_parsed(event: Value) -> Value {
+        resume_done(&event)
+    }
+
     /// An email that is an application (mail connector with a recruiter account).
     fn ingest_application_email(input: Mail) -> Value {
         ingest(input)
@@ -295,5 +378,31 @@ handler! {
 
     fn create_offer_template_form(input: SlottedTemplate) -> Record {
         slotted_template(input)
+    }
+}
+
+#[cfg(test)]
+mod ocr_tests {
+    use super::*;
+
+    #[test]
+    fn only_a_reader_that_ran_out_of_time_or_room_gets_a_queued_job() {
+        assert!(too_slow(&Error::msg("LiteParse did not finish within 8 seconds")));
+        assert!(too_slow(&Error::msg("the document reader is busy: try again in a moment")));
+        assert!(!too_slow(&Error::msg("this kind of file is not parsed")));
+        assert!(!too_slow(&Error::msg("that file does not exist")));
+    }
+
+    #[test]
+    fn resume_text_is_cut_on_a_character_boundary() {
+        let long = "é".repeat(MAX_RESUME_TEXT);
+        assert!(clipped(&long).len() <= MAX_RESUME_TEXT && long.starts_with(clipped(&long)));
+        assert_eq!(clipped("short"), "short");
+    }
+
+    #[test]
+    fn a_callback_without_a_reference_is_ignored() -> Result<()> {
+        assert_eq!(resume_done(&json!({ "status": "done" }))?, json!({ "ignored": true }));
+        Ok(())
     }
 }

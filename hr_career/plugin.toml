@@ -2,7 +2,7 @@
 name = "hr_career"
 icon_path = "assets/logo.svg"
 label = "Career"
-version = "0.1.0"
+version = "0.1.1"
 description = "Promotions, transfers and pay changes as approved change sets, grade ladders and letters."
 long_description = """
 A career move is a request, not an edit: a promotion, demotion, transfer, grade change or pay change names the
@@ -31,6 +31,13 @@ wasm_file = "out/plugin.wasm"
 name = "career_admin"
 label = "Career administrator"
 description = "Sets up grades and letter templates, requests and decides career changes"
+
+[[command]]
+name = "seed"
+function = "seed_letter_templates"
+help = "Create appointment, relieving and experience letter templates (idempotent)"
+on_install = true
+on_upgrade = true
 
 [[events]]
 name = "career_change_approved"

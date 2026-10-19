@@ -35,8 +35,10 @@
     <button label="Offer terms" href="/hr/config/recruitment/offer-terms" variant="outline"/>
     <button label="Offer templates" href="/hr/config/recruitment/offer-templates" variant="outline"/>
   </group>
+  <group title="Templates" cols="2">
+    <button label="Issue letter template" href="/hr/config/letters/templates" variant="outline"/>
+  </group>
   <group title="Career and offboarding" cols="2">
-    <button label="Employee letters" href="/hr/config/letters" variant="outline"/>
     <button label="Departures" href="/hr/config/departures" variant="outline"/>
   </group>
 </page>

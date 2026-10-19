@@ -16,7 +16,7 @@ See docs/design.md in this plugin (hr_recruitment/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "party", "currency"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "ocr::parse"]
 # The career site: anonymous visitors may list open jobs and apply, nothing else.
 public_functions = ["career_jobs", "career_apply"]
 public_capabilities = ["db::query", "db::mutate", "plugins::call"]

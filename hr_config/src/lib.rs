@@ -78,8 +78,8 @@ forward! {
     waive_notice_shortfall => "hr_onboarding";
     list_letter_templates => "hr_career";
     create_letter_template => "hr_career";
-    issue_employee_letter => "hr_career";
-    list_employee_letters => "hr_career";
+    update_letter_template => "hr_career";
+    get_letter_template => "hr_career";
     get_hr_setting => "hr";
     set_hr_setting => "hr";
     get_payroll_setting => "hr_payroll";

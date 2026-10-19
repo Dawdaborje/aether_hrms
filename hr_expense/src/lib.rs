@@ -6,6 +6,7 @@
 mod advance;
 mod common;
 mod decision;
+mod receipt;
 mod report;
 mod rules;
 mod setup;

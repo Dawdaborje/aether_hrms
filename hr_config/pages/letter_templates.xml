@@ -1,0 +1,12 @@
+<page route="/hr/config/letters/templates" title="Issue letter template" roles="hr_career.career_admin" icon="file-text" menu_group="Templates" menu_group_icon="file-text" sort="10">
+  <view type="list" source="list_letter_templates" open="/hr/config/letters/templates/{id}"
+        create="/hr/config/letters/templates/new" create_label="New">
+    <columns>
+      <column field="name" label="Template"/>
+      <column field="code" label="Code"/>
+      <column field="kind" label="Kind"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No templates" description="Appointment, relieving and experience letters are filled from these."/>
+  </view>
+</page>

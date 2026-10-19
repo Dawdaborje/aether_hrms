@@ -46,7 +46,7 @@ Openings (seat-checked), applications on `party`, interview rounds with blind fe
 
 ## Resumes and email
 
-`resume` (file) and `resume_text` live on the application. `read_resume_text` pulls emails, phones and which organisation skills the text mentions (plain word matching, not a parser). `ingest_application_email` is for a mail connector: idempotent by message id, and records only when the subject names exactly one open job.
+`resume` (file) and `resume_text` live on the application. `read_resume_text` pulls emails, phones and which organisation skills the text mentions (plain word matching, not a parser). `read_resume_file` does it from the attached resume file (PDF, Word or a scan) using the kernel's `ocr::parse`; a file the reader cannot finish within a call is queued with `ocr::submit` and `resume_parsed` finishes it when the kernel calls back (the application's `parsed.ocr_error` says why when it fails). `ingest_application_email` is for a mail connector: idempotent by message id, and records only when the subject names exactly one open job.
 
 ## Roles
 

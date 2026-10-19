@@ -12,13 +12,108 @@ struct Make {
     template: String,
 }
 
-fn new_template(input: Record) -> Result<Record> {
-    require_admin()?;
-    let data = pick(&input, &["code", "name", "kind", "body", "is_active"]);
-    let body = text(&data, "body").ok_or_else(|| Error::msg("a template needs a body"))?;
+const FIELDS: &[&str] = &["code", "name", "kind", "body", "is_active"];
+
+const KINDS: &[&str] = &[
+    "appointment", "relieving", "experience", "any", "promotion", "demotion", "transfer", "grade_change", "pay_change",
+];
+
+/// Kinds the Issue letter screen can fill. The others are made from a career change.
+const ISSUE_KINDS: &[&str] = &["appointment", "relieving", "experience", "any"];
+
+/// (code, name, kind, body). Skipped on install and upgrade when that code already exists.
+const SEED: &[(&str, &str, &str, &str)] = &[
+    (
+        "APPOINTMENT",
+        "Appointment letter",
+        "appointment",
+        "{{issue_date}}\n\nDear {{employee}},\n\nThis confirms your appointment as {{job}} in {{department}}. Your employee number is {{employee_no}} and your first day is {{hire_date}}.\n",
+    ),
+    (
+        "RELIEVING",
+        "Relieving letter",
+        "relieving",
+        "{{issue_date}}\n\nThis confirms that {{employee}} ({{employee_no}}), {{job}} in {{department}}, who joined on {{hire_date}}, is relieved of duties on {{last_day}}.\n",
+    ),
+    (
+        "EXPERIENCE",
+        "Experience letter",
+        "experience",
+        "{{issue_date}}\n\nThis certifies that {{employee}} ({{employee_no}}) worked as {{job}} in {{department}} from {{hire_date}} to {{last_day}}.\n",
+    ),
+];
+
+#[derive(Deserialize)]
+struct Change {
+    id: String,
+    #[serde(flatten)]
+    fields: Record,
+}
+
+fn placeholders_closed(body: &str) -> Result<()> {
     // A broken placeholder is caught now, not when the first letter is made.
     render(body, &[]).or_else(|e| if e.to_string().contains("not closed") { Err(e) } else { Ok(String::new()) })?;
+    Ok(())
+}
+
+fn check_template(data: &Record) -> Result<()> {
+    if text(data, "code").is_none() || text(data, "name").is_none() {
+        return Err(Error::msg("a template needs a code and a name"));
+    }
+    let kind = text(data, "kind").unwrap_or("");
+    if !KINDS.contains(&kind) {
+        return Err(Error::msg("choose a letter kind"));
+    }
+    let body = text(data, "body").ok_or_else(|| Error::msg("a template needs a body"))?;
+    placeholders_closed(body)
+}
+
+fn new_template(input: Record) -> Result<Record> {
+    require_admin()?;
+    let data = pick(&input, FIELDS);
+    check_template(&data)?;
     db::create("career_letter_template", &data).map_err(|e| e.or("could not create the template (the code may be taken)"))
+}
+
+fn change_template(input: Change) -> Result<Record> {
+    require_admin()?;
+    let existing = require("career_letter_template", &input.id, "template")?;
+    let data = pick(&input.fields, FIELDS);
+    let mut merged = existing.clone();
+    for (key, value) in data.as_object().cloned().unwrap_or_default() {
+        merged[key] = value;
+    }
+    check_template(&merged)?;
+    db::update("career_letter_template", &input.id, &data)?.ok_or_else(|| Error::msg("the template is gone"))
+}
+
+fn templates(active_only: bool, issue_only: bool) -> Result<Vec<Record>> {
+    require_admin()?;
+    let rows: Vec<Record> = db::find("career_letter_template").order_by("name").limit(200).all()?;
+    Ok(rows
+        .into_iter()
+        .filter(|row| {
+            let active = row.get("is_active").and_then(Value::as_bool) != Some(false);
+            let kind = text(row, "kind").unwrap_or("");
+            (!active_only || active) && (!issue_only || ISSUE_KINDS.contains(&kind))
+        })
+        .collect())
+}
+
+/// Appointment, relieving and experience letters, each only when its code is free.
+fn seed_templates() -> Result<Value> {
+    let mut added = 0;
+    for (code, name, kind, body) in SEED {
+        if db::find::<Record>("career_letter_template").filter("code", *code).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>(
+            "career_letter_template",
+            &json!({ "code": code, "name": name, "kind": kind, "body": body, "is_active": true }),
+        )?;
+        added += 1;
+    }
+    Ok(json!({ "letter_templates": added }))
 }
 
 fn name_of(plugin_fn: &str, id: Option<&str>) -> Result<String> {
@@ -160,8 +255,27 @@ handler! {
         new_template(input)
     }
 
+    fn update_letter_template(input: Change) -> Record {
+        change_template(input)
+    }
+
+    fn get_letter_template(input: Accept) -> Option<Record> {
+        require_admin()?;
+        db::get("career_letter_template", &input.id)
+    }
+
     fn list_letter_templates(_: Empty) -> Vec<Record> {
-        db::find("career_letter_template").order_by("code").limit(200).all()
+        templates(false, false)
+    }
+
+    /// Active templates the Issue letter screen can fill.
+    fn list_issue_templates(_: Empty) -> Vec<Record> {
+        templates(true, true)
+    }
+
+    /// Starter appointment, relieving and experience templates. Runs on install and upgrade.
+    fn seed_letter_templates(_: Empty) -> Value {
+        seed_templates()
     }
 
     /// Fill a template from an approved change and keep the text on the change.

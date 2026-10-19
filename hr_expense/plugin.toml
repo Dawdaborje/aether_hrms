@@ -15,7 +15,7 @@ See docs/design.md in this plugin (hr_expense/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "currency"]
-capabilities = ["db::query", "db::mutate", "events::emit", "db::transaction", "plugins::call", "storage::read", "storage::write"]
+capabilities = ["db::query", "db::mutate", "events::emit", "db::transaction", "plugins::call", "storage::read", "storage::write", "ocr::parse"]
 access_models = [
   { name = "expense_category", permissions = ["read", "write"] },
   { name = "expense_policy", permissions = ["read", "write"] },
