@@ -207,7 +207,11 @@ fn build(input: Build) -> Result<Value> {
                 if amount.is_zero() || amount.is_negative() {
                     continue;
                 }
-                let label = format!("Loan payoff ({id})");
+                let label = if loan.get("asset").is_some_and(|a| !a.is_null()) {
+                    format!("Hire purchase payoff ({id}): settle it and the employee keeps the asset")
+                } else {
+                    format!("Loan payoff ({id})")
+                };
                 let line = add_line(&input.departure, "receivable", &label, amount, currency, &key)?;
                 have.insert(key);
                 added_lines.push(line);
@@ -226,10 +230,12 @@ fn build(input: Build) -> Result<Value> {
                     skipped.push(key);
                     continue;
                 }
+                let financed = text(&asset, "financed_by").is_some();
                 let name = format!(
-                    "{} ({})",
+                    "{} ({}){}",
                     text(&asset, "name").unwrap_or("Asset"),
-                    text(&asset, "tag").unwrap_or(&id)
+                    text(&asset, "tag").unwrap_or(&id),
+                    if financed { ": return it, or settle its hire purchase loan instead" } else { "" }
                 );
                 let item = add_return(&input.departure, &name, &key)?;
                 have.insert(key);

@@ -94,6 +94,35 @@ fn principal_f(amount: Decimal) -> f64 {
     amount.to_string().parse().unwrap_or(0.0)
 }
 
+/// The interest an employee does not pay because the loan charges less than the market rate: for each instalment
+/// due in `from..=to`, the scheduled balance before it times the rate gap, per month. Instalments due after
+/// `stop` (the day the loan was closed early) carry none. Nothing when the loan charges the market rate or more.
+pub fn foregone_interest(
+    schedule: &[Instalment],
+    actual_bps: i64,
+    market_bps: i64,
+    from: NaiveDate,
+    to: NaiveDate,
+    stop: Option<NaiveDate>,
+) -> Result<Vec<(i64, Decimal)>> {
+    let gap = market_bps - actual_bps;
+    let mut out = Vec::new();
+    if gap <= 0 {
+        return Ok(out);
+    }
+    for (i, inst) in schedule.iter().enumerate() {
+        if inst.due < from || inst.due > to || stop.is_some_and(|s| inst.due > s) {
+            continue;
+        }
+        let mut balance = Decimal::zero(inst.principal.scale());
+        for later in &schedule[i..] {
+            balance = balance + later.principal;
+        }
+        out.push((inst.n, balance.times_ratio(gap, 12 * 10_000)?));
+    }
+    Ok(out)
+}
+
 /// Spread a repayment over instalments in order, each taking at most what it still owes. Returns what each
 /// took and what is left over.
 pub fn allocate(owed: &[(i64, Decimal)], amount: Decimal) -> Result<(Vec<(i64, Decimal)>, Decimal)> {
@@ -234,5 +263,28 @@ mod tests {
         assert_eq!(quote, expected);
         assert!(quote < rows.iter().fold(Decimal::zero(2), |s, r| s + r.total()));
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod benefit_tests {
+    use super::*;
+
+    fn d(s: &str) -> Decimal {
+        Decimal::parse(s).unwrap()
+    }
+
+    #[test]
+    fn benefit_is_gap_on_balance_and_stops_when_closed() {
+        let first = NaiveDate::from_ymd_opt(2026, 1, 1).unwrap();
+        let sched = schedule(d("1200.00"), 12, 0, Method::Flat, first).unwrap();
+        // 6% market vs 0% charged: 0.5% a month on 1200 = 6.00 for the first instalment, 5.50 for the second.
+        let all = foregone_interest(&sched, 0, 6_00, first, NaiveDate::from_ymd_opt(2026, 12, 1).unwrap(), None).unwrap();
+        assert_eq!(all[0], (1, d("6.00")));
+        assert_eq!(all[1], (2, d("5.50")));
+        assert_eq!(all.len(), 12);
+        let stopped = foregone_interest(&sched, 0, 6_00, first, NaiveDate::from_ymd_opt(2026, 12, 1).unwrap(), Some(NaiveDate::from_ymd_opt(2026, 2, 15).unwrap())).unwrap();
+        assert_eq!(stopped.len(), 2);
+        assert!(foregone_interest(&sched, 6_00, 6_00, first, first, None).unwrap().is_empty());
     }
 }

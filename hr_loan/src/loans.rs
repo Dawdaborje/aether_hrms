@@ -18,7 +18,7 @@ use crate::common::{
     approver_of, currency_places, decimal_of, id_of, is_admin, my_employee, next_number, require, require_admin, text, today_date,
     Record,
 };
-use crate::rules::{allocate, deduction, foreclosure, schedule, Instalment, Method};
+use crate::rules::{allocate, deduction, foregone_interest, foreclosure, schedule, Instalment, Method};
 
 #[derive(Deserialize)]
 struct ProductInput {
@@ -36,6 +36,21 @@ struct ProductInput {
     min_tenure_months: Option<i64>,
     #[serde(default)]
     allow_multiple: bool,
+    /// The loan buys a company asset that passes to the employee once the loan is paid off.
+    #[serde(default)]
+    hire_purchase: bool,
+    /// Yearly market rate (hundredths of a percent); the gap to the rate charged is a taxable benefit.
+    #[serde(default)]
+    market_bps: Option<i64>,
+}
+
+#[derive(Deserialize)]
+struct BenefitAsk {
+    from: String,
+    to: String,
+    /// One person, or everyone with a loan when left out.
+    #[serde(default)]
+    employee: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -47,6 +62,9 @@ struct Ask {
     purpose: Option<String>,
     #[serde(default)]
     first_due: Option<String>,
+    /// Hire purchase products only: the asset being bought.
+    #[serde(default)]
+    asset: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -151,6 +169,10 @@ fn product(input: ProductInput) -> Result<Record> {
     if !(0..=10_000_00).contains(&bps) {
         return Err(Error::msg("the yearly rate is between 0 and 100 percent (in hundredths of a percent)"));
     }
+    let market = input.market_bps.unwrap_or(0);
+    if !(0..=10_000_00).contains(&market) {
+        return Err(Error::msg("the market rate is between 0 and 100 percent (in hundredths of a percent)"));
+    }
     if input.max_amount.is_negative() || input.max_amount.is_zero() {
         return Err(Error::msg("the largest loan is more than zero"));
     }
@@ -159,7 +181,7 @@ fn product(input: ProductInput) -> Result<Record> {
         &json!({
             "code": input.code, "name": input.name, "currency": currency, "max_amount": input.max_amount.with_scale(places)?, "max_months": input.max_months,
             "annual_bps": bps, "method": input.method, "max_deduction_percent": percent_of(input.max_deduction_percent, 30)?,
-            "min_tenure_months": input.min_tenure_months.unwrap_or(0), "allow_multiple": input.allow_multiple, "is_active": true,
+            "min_tenure_months": input.min_tenure_months.unwrap_or(0), "allow_multiple": input.allow_multiple, "hire_purchase": input.hire_purchase, "market_bps": market, "is_active": true,
         }),
     )
     .map_err(|e| e.or("could not create the product (the code may be taken)"))
@@ -207,6 +229,7 @@ fn ask(input: Ask) -> Result<Record> {
             return Err(Error::msg("you already have an open loan of this kind"));
         }
     }
+    let (asset, down_payment) = hire_purchase_asset(&prod, input.asset.as_deref(), amount, places)?;
     let first_due = match input.first_due {
         Some(d) => parse_date(&d)?,
         None => {
@@ -226,7 +249,7 @@ fn ask(input: Ask) -> Result<Record> {
         &json!({
             "reference": next_number("loan", "LN-", 5)?, "employee": me_id, "product": input.product, "purpose": input.purpose, "principal": amount,
             "months": input.months, "annual_bps": bps, "method": text(&prod, "method"), "currency": currency,
-            "max_deduction_percent": prod.get("max_deduction_percent"), "first_due": format_date(first_due), "state": "requested", "approver": approver,
+            "max_deduction_percent": prod.get("max_deduction_percent"), "first_due": format_date(first_due), "state": "requested", "approver": approver, "asset": asset, "asset_transferred": false, "down_payment": down_payment, "market_bps": prod.get("market_bps"),
             "paid_total": Decimal::zero(places), "interest_waived": Decimal::zero(places), "entry_seq": 0,
         }),
     )?;
@@ -241,6 +264,36 @@ fn ask(input: Ask) -> Result<Record> {
     }
     events::emit("loan_requested", &json!({ "loan": loan["id"], "employee": me_id, "amount": amount, "approver": approver }))?;
     Ok(loan)
+}
+
+/// A hire purchase product needs a free asset, and the loan may not exceed its cost; any other product takes none.
+/// Returns the asset and the down payment (its cost less the loan), when the cost is known.
+fn hire_purchase_asset(prod: &Record, asset: Option<&str>, amount: Decimal, places: u32) -> Result<(Option<String>, Option<Decimal>)> {
+    let hire = prod.get("hire_purchase").and_then(Value::as_bool).unwrap_or(false);
+    let Some(asset) = asset.filter(|a| !a.trim().is_empty()) else {
+        return if hire { Err(Error::msg("this is a hire purchase product: choose the asset it buys")) } else { Ok((None, None)) };
+    };
+    if !hire {
+        return Err(Error::msg("only a hire purchase product buys an asset"));
+    }
+    let found: Value = plugins::call("hr_assets", "asset_for_hire_purchase", &json!({ "id": asset }))?;
+    if found.get("available_for_hire_purchase") != Some(&json!(true)) {
+        return Err(Error::msg("this asset is not available for hire purchase"));
+    }
+    let mut down_payment = None;
+    if let Some(cost) = decimal_of(&found, "purchase_cost")? {
+        let cost = cost.with_scale(places)?;
+        if amount > cost {
+            return Err(Error::msg(format!("the loan is more than the asset costs ({cost})")));
+        }
+        down_payment = Some(cost - amount);
+    }
+    let id = text(&found, "id").unwrap_or(asset).to_string();
+    let taken: Vec<Record> = db::find("loan").filter("asset", id.as_str()).limit(50).all()?;
+    if taken.iter().any(|l| matches!(text(l, "state"), Some("requested" | "approved" | "disbursed"))) {
+        return Err(Error::msg("another hire purchase already covers this asset"));
+    }
+    Ok((Some(id), down_payment))
 }
 
 fn decide(input: Decide) -> Result<Record> {
@@ -310,10 +363,27 @@ fn disburse(input: Disburse) -> Result<Value> {
     }
     let places = places_of(&loan)?;
     let amount = money(&loan, "principal", places)?;
-    let made = entry(
+    let asset = text(&loan, "asset");
+    if let Some(asset) = asset {
+        // Handing over the asset is part of paying out. hr_assets trusts calls that come through this plugin, and
+        // repeating it for the same loan is harmless, so a payout that failed below can simply be asked again.
+        let _: Record = plugins::call("hr_assets", "finance_asset", &json!({ "asset": asset, "employee": loan["employee"], "loan": input.loan }))
+            .map_err(|e| e.or("the asset could not be handed over (is the asset still free?)"))?;
+    }
+    let made = match entry(
         &input.loan, "disbursement", amount, &input.reference, None, None, None,
         json!({ "state": "disbursed", "disbursed_on": format_date(today_date()?) }),
-    )?;
+    ) {
+        Ok(made) => made,
+        Err(error) => {
+            // The two plugins do not share a transaction: take the asset back so it is not held under a loan
+            // that was never paid out. The payout's own error is what the caller needs to see.
+            if let Some(asset) = asset {
+                let _: Result<Record> = plugins::call("hr_assets", "unfinance_asset", &json!({ "asset": asset, "loan": input.loan }));
+            }
+            return Err(error);
+        }
+    };
     events::emit("loan_disbursed", &json!({ "loan": input.loan, "employee": loan["employee"], "amount": amount, "currency": loan["currency"] }))?;
     Ok(json!({ "entry": made, "repeated": false }))
 }
@@ -399,10 +469,34 @@ fn apply(loan_id: &str, amount: Decimal, reference: &str, close_out: bool) -> Re
         changes["closed_on"] = json!(format_date(today));
     }
     let made = entry(loan_id, "repayment", amount, reference, Some(Value::Array(allocations)), None, None, changes)?;
+    let mut transferred = false;
     if closed {
-        events::emit("loan_closed", &json!({ "loan": loan_id, "employee": loan["employee"] }))?;
+        events::emit("loan_closed", &json!({ "loan": loan_id, "employee": loan["employee"], "asset": loan["asset"] }))?;
+        transferred = hand_over_asset(loan_id, &loan).is_ok();
     }
-    Ok(json!({ "entry": made, "repeated": false, "closed": closed }))
+    Ok(json!({ "entry": made, "repeated": false, "closed": closed, "asset_transferred": transferred }))
+}
+
+/// Paid off: the employee owns the asset. A failure is not fatal to the repayment; `complete_hire_purchase` and the
+/// nightly run repeat it.
+fn hand_over_asset(loan_id: &str, loan: &Record) -> Result<()> {
+    let Some(asset) = text(loan, "asset") else { return Ok(()) };
+    let _: Record = plugins::call("hr_assets", "transfer_asset_ownership", &json!({ "asset": asset, "loan": loan_id }))?;
+    db::update::<Record>("loan", loan_id, &json!({ "asset_transferred": true }))?;
+    Ok(())
+}
+
+fn complete(input: Id) -> Result<Value> {
+    require_admin()?;
+    let loan = require("loan", &input.id, "loan")?;
+    if text(&loan, "asset").is_none() {
+        return Err(Error::msg("this loan buys no asset"));
+    }
+    if text(&loan, "state") != Some("closed") {
+        return Err(Error::msg("the asset passes to the employee only when the loan is paid off"));
+    }
+    hand_over_asset(&input.id, &loan)?;
+    Ok(json!({ "loan": input.id, "asset": loan["asset"], "asset_transferred": true }))
 }
 
 fn reverse(input: Reverse) -> Result<Value> {
@@ -418,6 +512,9 @@ fn reverse(input: Reverse) -> Result<Value> {
     let loan_id = text(&target, "loan").unwrap_or_default().to_string();
     let loan = require("loan", &loan_id, "loan")?;
     let places = places_of(&loan)?;
+    if loan.get("asset_transferred") == Some(&json!(true)) {
+        return Err(Error::msg("the asset already belongs to the employee; it cannot be taken back by reversing a repayment"));
+    }
     let amount = money(&target, "amount", places)?;
     let mut changes = json!({});
     match text(&target, "kind") {
@@ -464,7 +561,7 @@ fn quote(input: Id) -> Result<Value> {
         open.push((inst, money(&r, "paid", places)?));
     }
     let to_close = foreclosure(&open, today)?;
-    Ok(json!({ "loan": input.id, "on": format_date(today), "to_close_today": to_close, "scheduled_remaining": remaining, "interest_saved": remaining - to_close }))
+    Ok(json!({ "loan": input.id, "asset": loan["asset"], "on": format_date(today), "to_close_today": to_close, "scheduled_remaining": remaining, "interest_saved": remaining - to_close }))
 }
 
 fn plan(input: Plan) -> Result<Value> {
@@ -544,6 +641,56 @@ fn leaver(input: Who) -> Result<Value> {
     Ok(json!({ "employee": input.employee, "loans": lines }))
 }
 
+/// For payroll: the interest each person did not pay on cheap loans in a period, which tax rules may treat as a
+/// benefit. Reads only; payroll decides how it is taxed.
+fn benefit(input: BenefitAsk) -> Result<Value> {
+    let from = parse_date(&input.from)?;
+    let to = parse_date(&input.to)?;
+    if to < from {
+        return Err(Error::msg("the period ends before it starts"));
+    }
+    let me = me_id()?;
+    match input.employee.as_deref() {
+        Some(who) if me.as_deref() == Some(who) => {}
+        _ => require_admin()?,
+    }
+    let mut loans: Vec<Record> = db::find::<Record>("loan").limit(5000).all()?;
+    loans.retain(|l| matches!(text(l, "state"), Some("disbursed" | "closed")) && input.employee.as_deref().is_none_or(|w| text(l, "employee") == Some(w)));
+    let mut people: Vec<(String, Vec<Value>)> = Vec::new();
+    for loan in loans {
+        let market = loan.get("market_bps").and_then(Value::as_i64).unwrap_or(0);
+        let actual = loan.get("annual_bps").and_then(Value::as_i64).unwrap_or(0);
+        if market <= actual {
+            continue;
+        }
+        let places = places_of(&loan)?;
+        let mut sched = Vec::new();
+        for r in instalments_of(id_of(&loan)?)? {
+            sched.push(Instalment { n: r["n"].as_i64().unwrap_or(0), due: date_of(&r, "due_date")?, principal: money(&r, "principal", places)?, interest: money(&r, "interest", places)? });
+        }
+        let stop = text(&loan, "closed_on").map(parse_date).transpose()?;
+        let rows = foregone_interest(&sched, actual, market, from, to, stop)?;
+        let mut total = Decimal::zero(places);
+        for (_, amount) in &rows {
+            total = total + *amount;
+        }
+        if total.is_zero() {
+            continue;
+        }
+        let line = json!({
+            "loan": loan["id"], "reference": loan["reference"], "currency": loan["currency"], "charged_bps": actual, "market_bps": market,
+            "benefit": total, "instalments": rows.iter().map(|(n, a)| json!({ "n": n, "benefit": a })).collect::<Vec<_>>(),
+        });
+        let who = text(&loan, "employee").unwrap_or_default().to_string();
+        match people.iter_mut().find(|(e, _)| *e == who) {
+            Some((_, lines)) => lines.push(line),
+            None => people.push((who, vec![line])),
+        }
+    }
+    let employees: Vec<Value> = people.into_iter().map(|(employee, loans)| json!({ "employee": employee, "loans": loans })).collect();
+    Ok(json!({ "from": input.from, "to": input.to, "employees": employees }))
+}
+
 fn statement(input: Id) -> Result<Value> {
     let loan = require("loan", &input.id, "loan")?;
     let mut entries: Vec<Record> = db::find("loan_entry").filter("loan", input.id.as_str()).limit(2000).all()?;
@@ -567,6 +714,14 @@ fn waiting() -> Result<Vec<Record>> {
 /// Report an instalment that is overdue, once.
 fn nightly() -> Result<Value> {
     let today = today_date()?;
+    // Paid-off hire purchase loans whose asset could not be handed over at the time.
+    let mut retried = 0;
+    let stuck: Vec<Record> = db::find::<Record>("loan").filter("state", "closed").limit(2000).all()?;
+    for loan in stuck {
+        if text(&loan, "asset").is_some() && loan.get("asset_transferred") != Some(&json!(true)) && hand_over_asset(id_of(&loan)?, &loan).is_ok() {
+            retried += 1;
+        }
+    }
     let rows: Vec<Record> = db::find::<Record>("loan_instalment").filter("state", "due").limit(20_000).all()?;
     let mut flagged = 0;
     for r in rows {
@@ -577,12 +732,18 @@ fn nightly() -> Result<Value> {
         events::emit("loan_instalment_overdue", &json!({ "loan": r["loan"], "employee": r["employee"], "n": r["n"], "due": r["due_date"] }))?;
         flagged += 1;
     }
-    Ok(json!({ "flagged": flagged }))
+    Ok(json!({ "flagged": flagged, "assets_handed_over": retried }))
 }
 
 handler! {
     fn create_loan_product(input: ProductInput) -> Record {
         product(input)
+    }
+
+    /// The assets free to be bought by hire purchase, for the request form. Asked through this plugin so that an
+    /// employee, who may not read the asset register, can still choose one.
+    fn assets_for_hire_purchase(_: Empty) -> Vec<Record> {
+        plugins::call("hr_assets", "assets_for_hire_purchase", &json!({}))
     }
 
     fn list_loan_products(_: Empty) -> Vec<Record> {
@@ -652,6 +813,16 @@ handler! {
     /// For the final settlement: what each open loan costs to close today.
     fn leaver_loan_balance(input: Who) -> Value {
         leaver(input)
+    }
+
+    /// Hire purchase: pass the asset to the employee after the loan closed (repeat if it could not be done then).
+    fn complete_hire_purchase(input: Id) -> Value {
+        complete(input)
+    }
+
+    /// For payroll: interest not paid on loans charging less than the market rate, per person and loan, in a period.
+    fn loan_interest_benefit(input: BenefitAsk) -> Value {
+        benefit(input)
     }
 
     fn loan_statement(input: Id) -> Value {

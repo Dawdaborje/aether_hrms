@@ -75,6 +75,11 @@
           "id": "opt_2fi25ghpxq",
           "value": "odometer",
           "label": "%odometer%"
+        },
+        {
+          "id": "opt_5xwt6ypabkdgjdl5xbj7",
+          "value": "transferred",
+          "label": "%transferred%"
         }
       ]
     },

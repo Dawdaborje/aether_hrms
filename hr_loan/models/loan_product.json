@@ -100,6 +100,20 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_kjxdgptshxi4xd3e2hy4",
+      "name": "hire_purchase",
+      "label": "%hire_purchase%",
+      "type": "bool",
+      "help": "The loan buys a specific company asset; the employee owns it once the loan is paid off."
+    },
+    {
+      "id": "fld_25twbs3iwt4cgim3fymi",
+      "name": "market_bps",
+      "label": "%market_bps%",
+      "type": "int",
+      "help": "Yearly market rate in hundredths of a percent. When above the rate charged, the difference is a taxable benefit for payroll."
     }
   ]
 }

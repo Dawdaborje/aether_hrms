@@ -20,6 +20,16 @@
         "read",
         "create"
       ]
+    },
+    {
+      "name": "hire_purchase",
+      "roles": [
+        "via:hr_loan"
+      ],
+      "operations": [
+        "read",
+        "create"
+      ]
     }
   ]
 }

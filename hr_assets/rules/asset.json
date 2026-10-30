@@ -21,6 +21,16 @@
         "create",
         "write"
       ]
+    },
+    {
+      "name": "hire_purchase",
+      "roles": [
+        "via:hr_loan"
+      ],
+      "operations": [
+        "read",
+        "write"
+      ]
     }
   ]
 }

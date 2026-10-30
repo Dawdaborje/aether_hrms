@@ -329,7 +329,9 @@ struct ForEmployee {
 /// One row per covered member of the employee's active enrolments: limit, used and left for the policy year.
 fn summary(input: ForEmployee) -> Result<Vec<Value>> {
     let who = match input.employee {
-        Some(id) => id,
+        // The tab passes the route's `{id}`, which may be the bare key.
+        Some(id) if id.contains(':') => id,
+        Some(id) => format!("employee:{id}"),
         None => my_employee_id()?.ok_or_else(|| Error::msg("you are not an employee"))?,
     };
     require_self_or_staff(&who)?;

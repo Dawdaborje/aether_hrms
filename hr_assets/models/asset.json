@@ -122,6 +122,25 @@
       "label": "%event_seq%",
       "type": "int",
       "default": 0
+    },
+    {
+      "id": "fld_3bbdqhbdqftahm4chb6i",
+      "name": "owner",
+      "label": "%owner%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "help": "Set when ownership passes to the employee; empty while the company owns it."
+    },
+    {
+      "id": "fld_ek3dsfl3z7mmr2qgig5l",
+      "name": "financed_by",
+      "label": "%financed_by%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain",
+      "help": "The hire purchase loan paying for this asset; the company keeps ownership until it is paid off."
     }
   ]
 }

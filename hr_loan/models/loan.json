@@ -194,6 +194,37 @@
       "label": "%entry_seq%",
       "type": "int",
       "default": 0
+    },
+    {
+      "id": "fld_j3q6i3fqgl735m3ib3zk",
+      "name": "asset",
+      "label": "%asset%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain",
+      "help": "Hire purchase: the asset being bought."
+    },
+    {
+      "id": "fld_tgsgzl5veeetuxyy7tj4",
+      "name": "asset_transferred",
+      "label": "%asset_transferred%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_26ourdg57xedybrgjyc2",
+      "name": "down_payment",
+      "label": "%down_payment%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "Hire purchase: the part of the asset's cost the employee pays up front (cost less the loan)."
+    },
+    {
+      "id": "fld_qwfromkm7dlpavjxfa4d",
+      "name": "market_bps",
+      "label": "%market_bps%",
+      "type": "int",
+      "help": "Market rate copied from the product when requested."
     }
   ]
 }

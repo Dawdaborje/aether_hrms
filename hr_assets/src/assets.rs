@@ -54,6 +54,19 @@ struct Assign {
 }
 
 #[derive(Deserialize)]
+struct Finance {
+    asset: String,
+    employee: String,
+    loan: String,
+}
+
+#[derive(Deserialize)]
+struct Transfer {
+    asset: String,
+    loan: String,
+}
+
+#[derive(Deserialize)]
 struct Return {
     asset: String,
     condition: String,
@@ -164,16 +177,22 @@ fn register(input: NewAsset) -> Result<Record> {
 
 fn assign(input: Assign) -> Result<Record> {
     require_admin()?;
+    assign_checked(input, json!({}))
+}
+
+/// Assign an available asset; `extra` is written in the same update as the assignment.
+fn assign_checked(input: Assign, extra: Value) -> Result<Record> {
     let asset = require("asset", &input.asset, "asset")?;
     let to = next(state_of(&asset)?, Move::Assign).ok_or_else(|| Error::msg("only an available asset can be assigned (it is held, in maintenance or retired)"))?;
     let person = employee(&input.employee)?;
     if !matches!(text(&person, "status"), Some("active" | "probation") | None) {
         return Err(Error::msg("only someone who is working can hold an asset"));
     }
-    let out = record(
-        &input.asset, "assigned", Some(&input.employee), None, None, input.note.as_deref(),
-        json!({ "state": to.name(), "holder": input.employee, "assigned_on": format_date(today_date()?), "acknowledged": false, "unacknowledged_notified": false }),
-    )?;
+    let mut changes = json!({ "state": to.name(), "holder": input.employee, "assigned_on": format_date(today_date()?), "acknowledged": false, "unacknowledged_notified": false });
+    if let (Some(changes), Some(extra)) = (changes.as_object_mut(), extra.as_object()) {
+        changes.extend(extra.clone());
+    }
+    let out = record(&input.asset, "assigned", Some(&input.employee), None, None, input.note.as_deref(), changes)?;
     events::emit("asset_assigned", &json!({ "asset": out["id"], "employee": input.employee }))?;
     Ok(out)
 }
@@ -193,6 +212,9 @@ fn acknowledge(input: Note) -> Result<Record> {
 fn give_back(input: Return) -> Result<Record> {
     require_admin()?;
     let asset = require("asset", &input.asset, "asset")?;
+    if text(&asset, "owner").is_some() {
+        return Err(Error::msg("this asset belongs to the employee now (hire purchase paid off); it is not handed back"));
+    }
     let condition = Condition::parse(&input.condition).ok_or_else(|| Error::msg("condition is good, damaged or lost"))?;
     let to = next(state_of(&asset)?, Move::Return(condition)).ok_or_else(|| Error::msg("only an assigned asset can be returned"))?;
     if condition != Condition::Good && input.note.as_deref().is_none_or(|n| n.trim().is_empty()) {
@@ -210,6 +232,71 @@ fn give_back(input: Return) -> Result<Record> {
     let out = record(&input.asset, "returned", holder.as_deref(), Some(&input.condition), input.odometer, input.note.as_deref(), changes)?;
     events::emit("asset_returned", &json!({ "asset": out["id"], "employee": holder, "condition": input.condition }))?;
     Ok(out)
+}
+
+/// What a hire purchase request needs to know about an asset: whether it is free to be financed, and its cost.
+fn for_hire_purchase(input: Id) -> Result<Value> {
+    let asset = require("asset", &input.id, "asset")?;
+    let free = state_of(&asset)? == State::Available && text(&asset, "financed_by").is_none() && text(&asset, "owner").is_none();
+    Ok(json!({
+        "id": asset["id"], "tag": asset["tag"], "name": asset["name"], "purchase_cost": asset["purchase_cost"],
+        "available_for_hire_purchase": free,
+    }))
+}
+
+/// Assets an employee may ask to buy by hire purchase: free, and not tied to a loan.
+fn buyable() -> Result<Vec<Record>> {
+    let mut rows: Vec<Record> = db::find::<Record>("asset").filter("state", "available").limit(2000).all()?;
+    rows.retain(|r| text(r, "financed_by").is_none() && text(r, "owner").is_none());
+    Ok(rows)
+}
+
+// The hire purchase functions check no role of their own: the asset rules let an asset administrator, or a call
+// that came through hr_loan (`via:hr_loan`, whose functions check the loan administrator), make these writes.
+
+/// Hand an asset to the employee under a hire purchase loan: it is assigned as usual, and marked as financed (in
+/// the same write) so the company keeps ownership until the loan is paid off. Asking again for the same loan and
+/// employee returns the asset as it is, so a payout that failed after this step can be repeated.
+fn finance(input: Finance) -> Result<Record> {
+    let asset = require("asset", &input.asset, "asset")?;
+    if text(&asset, "financed_by") == Some(input.loan.as_str()) && text(&asset, "holder") == Some(input.employee.as_str()) {
+        return Ok(asset);
+    }
+    if text(&asset, "financed_by").is_some() || text(&asset, "owner").is_some() {
+        return Err(Error::msg("this asset is already part of a hire purchase or belongs to an employee"));
+    }
+    let note = format!("Hire purchase {}", input.loan);
+    assign_checked(Assign { asset: input.asset, employee: input.employee, note: Some(note) }, json!({ "financed_by": input.loan }))
+}
+
+/// Undo `finance` when the payout it was part of did not go through: the asset comes back, free again.
+fn unfinance(input: Transfer) -> Result<Record> {
+    let asset = require("asset", &input.asset, "asset")?;
+    if text(&asset, "financed_by") != Some(input.loan.as_str()) {
+        return Err(Error::msg("this asset is not financed by that loan"));
+    }
+    let to = next(state_of(&asset)?, Move::Return(Condition::Good)).ok_or_else(|| Error::msg("only an assigned asset can be returned"))?;
+    let holder = text(&asset, "holder").map(str::to_string);
+    record(
+        &input.asset, "returned", holder.as_deref(), Some("good"), None, Some(&format!("Hire purchase {} not paid out", input.loan)),
+        json!({ "state": to.name(), "holder": null, "assigned_on": null, "acknowledged": false, "financed_by": null }),
+    )
+}
+
+/// The loan is paid off: the holder now owns the asset. Custody stays as it is; the asset is no longer handed back.
+fn transfer(input: Transfer) -> Result<Record> {
+    let asset = require("asset", &input.asset, "asset")?;
+    if text(&asset, "owner").is_some() && text(&asset, "financed_by").is_none() {
+        return Ok(asset);
+    }
+    if text(&asset, "financed_by") != Some(input.loan.as_str()) {
+        return Err(Error::msg("this asset is not financed by that loan"));
+    }
+    let holder = text(&asset, "holder").ok_or_else(|| Error::msg("the asset is not with the employee"))?.to_string();
+    record(
+        &input.asset, "transferred", Some(&holder), None, None, Some(&format!("Hire purchase {} paid off", input.loan)),
+        json!({ "owner": holder, "financed_by": null }),
+    )
 }
 
 fn move_maintenance(input: Note, mv: Move, kind: &str) -> Result<Record> {
@@ -284,6 +371,9 @@ fn outstanding(input: Who) -> Result<Vec<Record>> {
     let held: Vec<Record> = db::find("asset").filter("holder", input.employee.as_str()).limit(500).all()?;
     let mut out = Vec::new();
     for asset in held {
+        if text(&asset, "owner") == Some(input.employee.as_str()) {
+            continue;
+        }
         let cat = require("asset_category", text(&asset, "category").unwrap_or_default(), "category")?;
         if cat.get("return_on_departure") != Some(&json!(false)) {
             out.push(asset);
@@ -436,6 +526,31 @@ handler! {
     /// What a person holds that must be handed back when they leave.
     fn outstanding_assets(input: Who) -> Vec<Record> {
         outstanding(input)
+    }
+
+    /// For hire purchase: is the asset free to be financed, and what did it cost.
+    fn asset_for_hire_purchase(input: Id) -> Value {
+        for_hire_purchase(input)
+    }
+
+    /// For hire purchase: the assets free to be bought.
+    fn assets_for_hire_purchase(_: Empty) -> Vec<Record> {
+        buyable()
+    }
+
+    /// For hire purchase: give the asset to the employee while a loan pays for it.
+    fn finance_asset(input: Finance) -> Record {
+        finance(input)
+    }
+
+    /// For hire purchase: the payout failed after the hand-over, so the asset comes back.
+    fn unfinance_asset(input: Transfer) -> Record {
+        unfinance(input)
+    }
+
+    /// For hire purchase: the loan is paid off, so the holder owns the asset.
+    fn transfer_asset_ownership(input: Transfer) -> Record {
+        transfer(input)
     }
 
     fn my_assets(_: Empty) -> Vec<Record> {
