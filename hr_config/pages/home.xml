@@ -1,44 +1,41 @@
 <page route="/hr/config" title="Home" icon="layout-dashboard" sort="1">
-  <group title="What you can configure" cols="1">
-    <alert title="HR Configuration"
-           description="Pick an area below, or use the sidebar. Each screen is owned by the matching HR app; this place only gathers the setup."/>
-  </group>
-  <group title="General" cols="2">
-    <button label="HR defaults" href="/hr/config/hr" variant="outline"/>
-    <button label="Employee numbers" href="/hr/config/numbering" variant="outline"/>
-    <button label="Work locations" href="/hr/config/locations" variant="outline"/>
-    <button label="Cost centres" href="/hr/config/cost-centres" variant="outline"/>
-  </group>
-  <group title="Leave" cols="2">
-    <button label="Leave types" href="/hr/config/leave-types" variant="outline"/>
-    <button label="Leave periods" href="/hr/config/leave/periods" variant="outline"/>
-    <button label="Leave approvers" href="/hr/config/leave/approvers" variant="outline"/>
-  </group>
-  <group title="Attendance" cols="2">
-    <button label="Shifts" href="/hr/config/attendance/shifts" variant="outline"/>
-    <button label="Rotations" href="/hr/config/attendance/rotations" variant="outline"/>
-    <button label="Punch locations" href="/hr/config/attendance/locations" variant="outline"/>
-    <button label="Overtime rules" href="/hr/config/attendance/overtime" variant="outline"/>
-  </group>
-  <group title="Payroll" cols="2">
-    <button label="Payroll settings" href="/hr/config/payroll/settings" variant="outline"/>
-    <button label="Salary components" href="/hr/config/payroll/components" variant="outline"/>
-    <button label="Payroll periods" href="/hr/config/payroll/periods" variant="outline"/>
-    <button label="Tax slabs" href="/hr/config/payroll/tax-slabs" variant="outline"/>
-    <button label="Banks" href="/hr/config/payroll/banks" variant="outline"/>
-    <button label="Bank branches" href="/hr/config/payroll/branches" variant="outline"/>
-  </group>
-  <group title="Recruitment" cols="2">
-    <button label="Applicant sources" href="/hr/config/recruitment/sources" variant="outline"/>
-    <button label="Interviewer pools" href="/hr/config/recruitment/pools" variant="outline"/>
-    <button label="Opening templates" href="/hr/config/recruitment/opening-templates" variant="outline"/>
-    <button label="Offer terms" href="/hr/config/recruitment/offer-terms" variant="outline"/>
-    <button label="Offer templates" href="/hr/config/recruitment/offer-templates" variant="outline"/>
-  </group>
-  <group title="Templates" cols="2">
-    <button label="Issue letter template" href="/hr/config/letters/templates" variant="outline"/>
-  </group>
-  <group title="Career and offboarding" cols="2">
-    <button label="Departures" href="/hr/config/departures" variant="outline"/>
-  </group>
+  <heading title="HR Configuration"
+           subtitle="Set up how HR works in your organization. Each area is owned by its HR app; this page only gathers the setup in one place."
+           logo="/api/ui/plugins/hr_config/logo"/>
+  <tiles title="General" cols="4">
+    <tile label="HR defaults" description="Probation, notice period and retirement age for new hires" href="/hr/config/hr" icon="sliders-horizontal"/>
+    <tile label="Employee numbers" description="Patterns for numbering new employees" href="/hr/config/numbering" icon="hash"/>
+    <tile label="Work locations" description="Sites and branches where people work" href="/hr/config/locations" icon="map-pin"/>
+    <tile label="Cost centres" description="Where people and departments are costed" href="/hr/config/cost-centres" icon="coins"/>
+  </tiles>
+  <tiles title="Leave" cols="4">
+    <tile label="Leave types" description="Annual, sick and other kinds of leave" href="/hr/config/leave-types" icon="calendar-days"/>
+    <tile label="Leave periods" description="The years leave is counted in" href="/hr/config/leave/periods" icon="calendar-range"/>
+    <tile label="Leave approvers" description="Who approves whose leave" href="/hr/config/leave/approvers" icon="user-check"/>
+  </tiles>
+  <tiles title="Attendance" cols="4">
+    <tile label="Shifts" description="Working hours and breaks" href="/hr/config/attendance/shifts" icon="clock"/>
+    <tile label="Rotations" description="Shift patterns that repeat" href="/hr/config/attendance/rotations" icon="repeat"/>
+    <tile label="Punch locations" description="Where people may clock in" href="/hr/config/attendance/locations" icon="map"/>
+    <tile label="Overtime rules" description="When extra hours count as overtime" href="/hr/config/attendance/overtime" icon="timer"/>
+  </tiles>
+  <tiles title="Payroll" cols="4">
+    <tile label="Payroll settings" description="How pay runs are calculated" href="/hr/config/payroll/settings" icon="settings"/>
+    <tile label="Salary components" description="Earnings and deductions on a payslip" href="/hr/config/payroll/components" icon="list"/>
+    <tile label="Payroll periods" description="The months or weeks pay is run for" href="/hr/config/payroll/periods" icon="calendar-check"/>
+    <tile label="Tax slabs" description="Income tax bands and rates" href="/hr/config/payroll/tax-slabs" icon="percent"/>
+    <tile label="Banks" description="Banks salaries are paid into" href="/hr/config/payroll/banks" icon="building"/>
+    <tile label="Bank branches" description="Branches of those banks" href="/hr/config/payroll/branches" icon="git-branch"/>
+  </tiles>
+  <tiles title="Recruitment" cols="4">
+    <tile label="Applicant sources" description="Where candidates hear about you" href="/hr/config/recruitment/sources" icon="megaphone"/>
+    <tile label="Interviewer pools" description="Groups of people who interview" href="/hr/config/recruitment/pools" icon="users"/>
+    <tile label="Opening templates" description="Starting points for job openings" href="/hr/config/recruitment/opening-templates" icon="briefcase"/>
+    <tile label="Offer terms" description="Terms that can go into an offer" href="/hr/config/recruitment/offer-terms" icon="clipboard-list"/>
+    <tile label="Offer templates" description="Ready-made offer letters" href="/hr/config/recruitment/offer-templates" icon="file-check"/>
+  </tiles>
+  <tiles title="Letters and offboarding" cols="4">
+    <tile label="Letter templates" description="Templates for letters you issue to employees" href="/hr/config/letters/templates" icon="file-text"/>
+    <tile label="Departures" description="People leaving and their notice" href="/hr/config/departures" icon="door-open"/>
+  </tiles>
 </page>
