@@ -346,7 +346,7 @@ fn mandatory_gaps() -> Result<Vec<Value>> {
     let mut people: Vec<Record> = Vec::new();
     let mut offset = 0u32;
     loop {
-        let page: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "limit": 200, "offset": offset }))?;
+        let page: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "limit": 200, "offset": offset }))?;
         let count = page.len();
         people.extend(page.into_iter().filter(|p| matches!(text(p, "status"), Some("active" | "probation") | None)));
         if count < 200 {

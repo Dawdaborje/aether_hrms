@@ -45,6 +45,11 @@ struct MyDays {
 }
 
 #[derive(Deserialize)]
+struct DayId {
+    id: String,
+}
+
+#[derive(Deserialize)]
 struct OnDay {
     employee: String,
     date: String,
@@ -223,7 +228,7 @@ fn present_employees() -> Result<Vec<Record>> {
     let mut all = Vec::new();
     let mut offset = 0u32;
     loop {
-        let page: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "limit": 200, "offset": offset }))?;
+        let page: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "limit": 200, "offset": offset }))?;
         let count = page.len();
         all.extend(page.into_iter().filter(|e| matches!(text(e, "status"), Some("active" | "probation" | "on_leave" | "suspended") | None)));
         if count < 200 {
@@ -540,6 +545,13 @@ handler! {
 
     /// One employee's recent days (default last 30): the caller's own by default, anyone's for an
     /// attendance administrator.
+    /// One day, for the person or an attendance administrator.
+    fn get_attendance_day(input: DayId) -> Record {
+        let row = db::get::<Record>("att_day", &input.id)?.ok_or_else(|| Error::msg("there is no such day"))?;
+        named_employee(text(&row, "employee").map(str::to_string))?;
+        Ok(row)
+    }
+
     fn employee_days(input: EmployeeDays) -> Vec<Record> {
         let Some(who) = named_employee(input.employee)? else { return Ok(Vec::new()) };
         let today = today_date()?;

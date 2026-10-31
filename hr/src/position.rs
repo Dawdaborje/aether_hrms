@@ -6,7 +6,7 @@ use crate::rules::status;
 
 use crate::common::{explain, id_of, pick, require, text, Record};
 
-const EDITABLE: &[&str] = &["name", "code", "job", "department", "parent", "headcount", "status", "grade", "notes"];
+const EDITABLE: &[&str] = &["name", "code", "job", "department", "parent", "headcount", "status", "grade", "notes", "base_wage", "currency"];
 
 #[derive(Deserialize)]
 struct Id {
@@ -16,6 +16,9 @@ struct Id {
 #[derive(Deserialize)]
 struct Change {
     id: String,
+    /// With a new base wage: also move the people who hold the position onto it, as new terms from today.
+    #[serde(default)]
+    apply_to_holders: bool,
     #[serde(flatten)]
     fields: Record,
 }
@@ -24,6 +27,17 @@ struct Change {
 struct Vacancies {
     #[serde(default)]
     department: Option<String>,
+}
+
+/// A position as shown to someone who may not see its pay: HR's own code reads the wage, only an HR manager is shown it.
+fn without_pay(mut position: Record) -> Record {
+    if !context::current().is_ok_and(|who| who.has_role("hr.hr_manager")) {
+        if let Some(fields) = position.as_object_mut() {
+            fields.remove("base_wage");
+            fields.remove("currency");
+        }
+    }
+    position
 }
 
 /// People who hold the position now.
@@ -69,6 +83,9 @@ fn check(data: &Record, current: Option<&Record>) -> Result<()> {
 }
 
 fn new_position(input: Record) -> Result<Record> {
+    if ["base_wage", "currency"].iter().any(|f| input.get(*f).is_some_and(|v| !v.is_null())) {
+        crate::common::require_pay_manager()?;
+    }
     for required in ["name", "job", "department"] {
         if text(&input, required).is_none() {
             return Err(Error::msg(format!("a position needs its {required}")));
@@ -105,8 +122,34 @@ fn change_position(input: Change) -> Result<Record> {
         return Err(Error::msg("there is nothing to change"));
     }
     check(&data, Some(&existing))?;
-    explain(db::update::<Record>("position", id_of(&existing)?, &data), "could not change the position")?
-        .ok_or_else(|| Error::msg("the position is gone"))
+    let pay_changed = ["base_wage", "currency"].iter().any(|f| data.get(*f).is_some_and(|v| Some(v) != existing.get(*f)));
+    if pay_changed || input.apply_to_holders {
+        crate::common::require_pay_manager()?;
+    }
+    if input.apply_to_holders {
+        // Applying is asked for on its own too (the wage may already be saved), so it does not depend on the wage changing.
+        if crate::employment::pay_mode()? == "individual" {
+            return Err(Error::msg(
+                "pay is entered for each person: set the pay mode in HR defaults to by position or hybrid to apply a position's wage to the people in it",
+            ));
+        }
+        let has_wage = data.get("base_wage").or_else(|| existing.get("base_wage")).is_some_and(|w| !w.is_null() && w.as_str() != Some(""));
+        if !has_wage {
+            return Err(Error::msg("this position has no base wage to apply: enter one first"));
+        }
+    }
+    let updated = explain(db::update::<Record>("position", id_of(&existing)?, &data), "could not change the position")?
+        .ok_or_else(|| Error::msg("the position is gone"))?;
+    let mut updated = updated;
+    if input.apply_to_holders {
+        let moved = crate::employment::apply_position_pay(&updated)?;
+        updated["saved_message"] = json!(match moved {
+            0 => "Saved. No one was moved: nobody holds this position, or everyone here has their own wage.".to_string(),
+            1 => "Saved. 1 person moved onto the position's wage from today.".to_string(),
+            n => format!("Saved. {n} people moved onto the position's wage from today."),
+        });
+    }
+    Ok(updated)
 }
 
 /// Positions with free seats, how many are held and how many are free.
@@ -123,7 +166,7 @@ fn open_positions(input: Vacancies) -> Result<Vec<Record>> {
         if headcount > held {
             position["held"] = json!(held);
             position["free"] = json!(headcount - held);
-            out.push(position);
+            out.push(without_pay(position));
         }
     }
     Ok(out)
@@ -152,11 +195,11 @@ handler! {
     }
 
     fn get_position(input: Id) -> Option<Record> {
-        db::get("position", &input.id)
+        Ok(db::get::<Record>("position", &input.id)?.map(without_pay))
     }
 
     fn list_positions(_: Empty) -> Vec<Record> {
-        db::find("position").order_by("name").limit(1000).all()
+        Ok(db::find::<Record>("position").order_by("name").limit(1000).all()?.into_iter().map(without_pay).collect())
     }
 
     /// Positions that still have a free seat.

@@ -226,5 +226,8 @@
       "type": "int",
       "help": "Market rate copied from the product when requested."
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

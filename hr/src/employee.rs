@@ -308,6 +308,50 @@ fn change(input: Change) -> Result<Record> {
             }
         }
     }
+    // Pay (wage, currency, frequency) lives in the employment terms too, and only an HR manager changes it.
+    if let Some(sent) = input.fields.as_object() {
+        let current = employment::current_terms(id_of(&existing)?)?;
+        for field in ["wage", "currency", "pay_frequency"] {
+            let Some(new) = sent.get(field) else { continue };
+            let blank = |v: &Value| v.is_null() || v.as_str().is_some_and(|t| t.trim().is_empty());
+            let old = current.as_ref().and_then(|c| c.get(field)).cloned().unwrap_or(Value::Null);
+            let same = (blank(new) && blank(&old))
+                || new == &old
+                || (field == "wage" && new.to_string().trim_matches('"').parse::<f64>().ok() == old.to_string().trim_matches('"').parse::<f64>().ok() && !blank(new));
+            if !same {
+                crate::common::require_pay_manager()?;
+                placement.insert(field.to_string(), if blank(new) { Value::Null } else { new.clone() });
+            }
+        }
+    }
+    // Switching where the wage comes from: to the position takes its wage and currency; to manual keeps the wage as is.
+    if let Some(source) = input.fields.get("wage_source").and_then(Value::as_str).filter(|s| !s.is_empty()) {
+        let current = employment::current_terms(id_of(&existing)?)?;
+        if current.as_ref().and_then(|c| text(c, "wage_source")) != Some(source) {
+            crate::common::require_pay_manager()?;
+            match source {
+                "position" => {
+                    let position = text(&existing, "position").ok_or_else(|| Error::msg("choose a position first: the wage follows it"))?;
+                    let position = require("position", position, "position")?;
+                    let base = position.get("base_wage").filter(|w| !w.is_null()).cloned().ok_or_else(|| {
+                        Error::msg("the position has no base wage to follow: set one on the position first")
+                    })?;
+                    placement.insert("wage".into(), base);
+                    if let Some(currency) = text(&position, "currency") {
+                        placement.insert("currency".into(), json!(currency));
+                    }
+                    placement.insert("wage_source".into(), json!("position"));
+                }
+                "manual" => {
+                    if employment::pay_mode()? == "position" {
+                        return Err(Error::msg("pay follows the position in this organization: change the position's wage instead"));
+                    }
+                    placement.insert("wage_source".into(), json!("manual"));
+                }
+                _ => return Err(Error::msg("the wage comes from the position or is set manually")),
+            }
+        }
+    }
     let private = crate::people::private_part(&input.fields);
     let nothing = |value: &Value| value.as_object().is_none_or(|fields| fields.is_empty());
 
@@ -442,6 +486,12 @@ fn search(input: Search) -> Result<Value> {
         find = find.offset(offset);
     }
     Ok(json!({ "rows": find.all()?, "total": total }))
+}
+
+/// The rows of `search`, without the total.
+fn find(input: Search) -> Result<Vec<Record>> {
+    let mut found = search(input)?;
+    Ok(serde_json::from_value(found["rows"].take())?)
 }
 
 fn walk_tree(input: &Chain, walk: Walk) -> Result<Vec<Record>> {
@@ -621,9 +671,23 @@ handler! {
 
     fn get_employee(input: Id) -> Option<Record> {
         let Some(mut row) = db::get::<Record>("employee", &input.id)? else { return Ok(None) };
+        // The page passes the bare key; links and filters want the full record id.
+        let id = id_of(&row)?.to_string();
+        // Pay is shown to HR managers only, from the terms in force today.
+        if context::current()?.has_role("hr.hr_manager") {
+            if let (Some(row), Some(terms)) = (row.as_object_mut(), employment::current_terms(&id)?) {
+                for field in ["wage", "currency", "pay_frequency", "wage_source"] {
+                    if let Some(value) = terms.get(field) {
+                        row.insert(field.to_string(), value.clone());
+                    }
+                }
+                // The form shows or locks the pay fields by the organization's pay mode.
+                row.insert("pay_mode".to_string(), json!(employment::pay_mode()?));
+            }
+        }
         // Private details live in their own record; the form edits them with the rest. A person
         // who may not read them (the rules decide) simply gets the row without them.
-        if let Ok(Some(private)) = db::find::<Record>("employee_private").filter("employee", input.id.as_str()).first() {
+        if let Ok(Some(private)) = db::find::<Record>("employee_private").filter("employee", id.as_str()).first() {
             if let (Some(row), Some(private)) = (row.as_object_mut(), crate::people::private_part(&private).as_object()) {
                 for (key, value) in private {
                     row.insert(key.clone(), value.clone());
@@ -635,6 +699,12 @@ handler! {
 
     fn list_employees(input: Search) -> Value {
         search(input)
+    }
+
+    /// The same search as `list_employees`, as a plain list of employees: for other plugins, which page with
+    /// `limit` and `offset` themselves and need no total.
+    fn find_employees(input: Search) -> Vec<Record> {
+        find(input)
     }
 
     /// Everyone below an employee in the reporting line.

@@ -91,5 +91,9 @@
       "relationship",
       "employee"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "log_to": "employee"
   }
 }

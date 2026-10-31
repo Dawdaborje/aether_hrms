@@ -1,6 +1,6 @@
 <component name="leave_panel">
   <group cols="1">
-    <view type="list" model="leave_request" source="employee_leave_requests">
+    <view type="list" model="leave_request" source="employee_leave_requests" open="/hr/leave/requests/{id}">
       <columns>
         <column field="reference" label="Request"/>
         <column field="start_date" label="From" fieldType="date"/>

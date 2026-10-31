@@ -148,5 +148,8 @@
       "date_to",
       "status"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }

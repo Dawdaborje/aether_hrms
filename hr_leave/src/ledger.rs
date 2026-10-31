@@ -220,7 +220,7 @@ pub fn present_employees() -> Result<Vec<Record>> {
     let mut all = Vec::new();
     let mut offset = 0u32;
     loop {
-        let page: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "limit": 200, "offset": offset }))?;
+        let page: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "limit": 200, "offset": offset }))?;
         let count = page.len();
         all.extend(page.into_iter().filter(works_here));
         if count < 200 {
@@ -439,7 +439,7 @@ fn bulk_grant(input: BulkGrant) -> Result<Value> {
         }
         found
     } else if let Some(department) = &input.department {
-        plugins::call::<Vec<Record>>("hr", "list_employees", &json!({ "department": department, "with_subdepartments": true, "limit": 500 }))?.into_iter().filter(works_here).collect()
+        plugins::call::<Vec<Record>>("hr", "find_employees", &json!({ "department": department, "with_subdepartments": true, "limit": 500 }))?.into_iter().filter(works_here).collect()
     } else {
         present_employees()?
     };

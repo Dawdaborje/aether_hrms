@@ -145,5 +145,8 @@
       "label": "%note%",
       "type": "text"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

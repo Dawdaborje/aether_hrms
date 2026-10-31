@@ -566,6 +566,18 @@ handler! {
     }
 
     /// What one employee holds: the caller's own by default, anyone's for an asset administrator.
+    /// One asset, for whoever holds it or an asset administrator.
+    fn get_asset(input: Id) -> Record {
+        let row = db::get::<Record>("asset", &input.id)?.ok_or_else(|| Error::msg("there is no such asset"))?;
+        match row.get("holder").and_then(Value::as_str).filter(|h| !h.is_empty()) {
+            Some(holder) => {
+                named_employee(Some(holder.to_string()))?;
+            }
+            None => crate::common::require_admin()?,
+        }
+        Ok(row)
+    }
+
     fn employee_assets(input: OfEmployee) -> Vec<Record> {
         match named_employee(input.employee)? {
             Some(who) => db::find("asset").filter("holder", who.as_str()).limit(500).all(),

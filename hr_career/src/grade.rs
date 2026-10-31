@@ -1,71 +1,32 @@
-//! The grade ladder: each grade has a rank and, optionally, a band the wage must stay inside.
+//! The grade ladder lives in `hr` (HR Configuration): a grade has a rank and, optionally, a band the wage must stay
+//! inside. Terms keep the grade's code. `career_grade` is the ladder this plugin used to keep; it is only read, once,
+//! to carry its grades over.
 
 use aether_sdk::prelude::*;
 
-use crate::common::{decimal_of, pick, require, require_admin, text, Record};
-
-const FIELDS: &[&str] = &["code", "name", "rank", "min_wage", "max_wage", "is_active"];
-
-#[derive(Deserialize)]
-struct Change {
-    id: String,
-    #[serde(flatten)]
-    fields: Record,
-}
-
-fn check(data: &Record) -> Result<()> {
-    if let (Some(min), Some(max)) = (decimal_of(data, "min_wage")?, decimal_of(data, "max_wage")?) {
-        if min > max {
-            return Err(Error::msg("the lowest wage of a grade is above its highest"));
-        }
-    }
-    for field in ["min_wage", "max_wage"] {
-        if decimal_of(data, field)?.is_some_and(|w| w.is_negative()) {
-            return Err(Error::msg(format!("{field} cannot be negative")));
-        }
-    }
-    Ok(())
-}
+use crate::common::{text, Record};
 
 /// The grade with this code.
 pub fn by_code(code: &str) -> Result<Option<Record>> {
-    db::find::<Record>("career_grade").filter("code", code).first()
+    plugins::call("hr", "grade_by_code", &json!({ "code": code }))
 }
 
-fn new_grade(input: Record) -> Result<Record> {
-    require_admin()?;
-    let data = pick(&input, FIELDS);
-    if text(&data, "code").is_none() || text(&data, "name").is_none() || data.get("rank").and_then(Value::as_i64).is_none() {
-        return Err(Error::msg("a grade needs a code, a name and a rank"));
+/// Carry the grades of the old `career_grade` ladder over to `hr` (idempotent: a code that exists there is kept).
+fn run_migrate_grades() -> Result<Value> {
+    let mut moved = 0;
+    for old in db::find::<Record>("career_grade").order_by("rank").limit(500).all()? {
+        let Some(code) = text(&old, "code") else { continue };
+        if by_code(code)?.is_some() {
+            continue;
+        }
+        let _: Record = plugins::call("hr", "create_grade", &old)?;
+        moved += 1;
     }
-    check(&data)?;
-    db::create("career_grade", &data).map_err(|e| e.or("could not create the grade (the code may be taken)"))
-}
-
-fn change_grade(input: Change) -> Result<Record> {
-    require_admin()?;
-    let existing = require("career_grade", &input.id, "grade")?;
-    let data = pick(&input.fields, FIELDS);
-    let mut merged = existing.clone();
-    for (key, value) in data.as_object().cloned().unwrap_or_default() {
-        merged[key] = value;
-    }
-    check(&merged)?;
-    // People already on the grade keep their wage: a narrower band only applies to future changes.
-    db::update::<Record>("career_grade", &input.id, &data)?.ok_or_else(|| Error::msg("the grade is gone"))
+    Ok(json!({ "grades": moved }))
 }
 
 handler! {
-    fn create_grade(input: Record) -> Record {
-        new_grade(input)
-    }
-
-    fn update_grade(input: Change) -> Record {
-        change_grade(input)
-    }
-
-    /// The ladder, lowest rank first.
-    fn list_grades(_: Empty) -> Vec<Record> {
-        db::find("career_grade").order_by("rank").limit(200).all()
+    fn migrate_career_grades(_: Empty) -> Value {
+        run_migrate_grades()
     }
 }

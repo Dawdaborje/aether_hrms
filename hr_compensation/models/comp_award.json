@@ -108,5 +108,8 @@
       "type": "link",
       "target": "comp_adjustment"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

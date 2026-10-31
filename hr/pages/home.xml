@@ -1,4 +1,4 @@
-<page route="/hr" title="Home" icon="layout-dashboard" sort="1">
+<page route="/hr" title="Home" icon="home" sort="1">
   <heading title="Human Resources"
            subtitle="Hire people, keep the organization up to date and see how your workforce changes."
            logo="/api/ui/plugins/hr/logo"/>

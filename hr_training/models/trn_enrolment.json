@@ -157,5 +157,8 @@
       ],
       "unique": true
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

@@ -187,7 +187,7 @@ fn open_appraisals(input: Open) -> Result<Value> {
     let cycle_template = require("perf_template", text(&cycle, "template").unwrap_or_default(), "template")?;
     let people: Vec<Record> = match &input.employees {
         Some(ids) => ids.iter().map(|id| employee(id)).collect::<Result<_>>()?,
-        None => plugins::call("hr", "list_employees", &json!({ "limit": 500 }))?,
+        None => plugins::call("hr", "find_employees", &json!({ "limit": 500 }))?,
     };
     let (mut created, mut skipped) = (0u64, 0u64);
     let mut failed: Vec<String> = Vec::new();

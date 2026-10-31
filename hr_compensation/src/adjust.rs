@@ -424,6 +424,13 @@ handler! {
     }
 
     /// One employee's adjustments: the caller's own by default, anyone's for a compensation administrator.
+    /// One adjustment, for the person or a compensation administrator.
+    fn get_adjustment(input: Id) -> Record {
+        let row = db::get::<Record>("comp_adjustment", &input.id)?.ok_or_else(|| Error::msg("there is no such adjustment"))?;
+        named_employee(row.get("employee").and_then(Value::as_str).map(str::to_string))?;
+        Ok(row)
+    }
+
     fn employee_adjustments(input: OfEmployee) -> Vec<Record> {
         match named_employee(input.employee)? {
             Some(who) => db::find("comp_adjustment").filter("employee", who.as_str()).order_by("-id").limit(200).all(),

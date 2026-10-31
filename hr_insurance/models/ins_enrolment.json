@@ -81,5 +81,8 @@
       "inverse": "enrolment",
       "order": "position"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

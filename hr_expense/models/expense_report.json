@@ -190,7 +190,8 @@
     "messages": true,
     "notes": true,
     "followers": true,
-    "track_changes": true
+    "track_changes": true,
+    "log_to": "employee"
   },
   "view": {
     "list": [

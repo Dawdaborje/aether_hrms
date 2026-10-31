@@ -16,7 +16,7 @@ use crate::rules::status;
 /// The fields of the terms themselves (not who or when).
 const TERMS: &[&str] = &[
     "department", "job", "position", "manager", "employment_type", "work_location", "cost_center", "grade", "wage", "currency",
-    "pay_frequency", "contract_start", "contract_end", "fixed_term", "trial_end", "reason",
+    "pay_frequency", "wage_source", "contract_start", "contract_end", "fixed_term", "trial_end", "reason",
 ];
 /// The terms that the employee row mirrors while they are current.
 const PLACEMENT: &[&str] = &["department", "job", "position", "manager", "employment_type", "work_location", "cost_center"];
@@ -193,6 +193,105 @@ fn terms_before(employee_id: &str, day: NaiveDate) -> Result<Option<Record>> {
         .first()
 }
 
+fn decimal_of(record: &Record, field: &str) -> Result<Option<aether_sdk::decimal::Decimal>> {
+    match record.get(field).filter(|v| !v.is_null()) {
+        Some(value) => serde_json::from_value(value.clone()).map(Some).map_err(|e| Error::msg(format!("{field}: {e}"))),
+        None => Ok(None),
+    }
+}
+
+/// Whether `data` sets a wage that differs from the one in `before`: a form posting the unchanged wage sets nothing.
+fn wage_given(data: &Record, before: Option<&Record>) -> Result<bool> {
+    let Some(new) = decimal_of(data, "wage")? else { return Ok(data.get("wage").is_some_and(Value::is_null) && before.is_some_and(|b| b.get("wage").is_some_and(|w| !w.is_null()))) };
+    Ok(before.map(|b| decimal_of(b, "wage")).transpose()?.flatten() != Some(new))
+}
+
+/// The organization's pay mode: `individual` (the default), `position` or `hybrid`.
+pub fn pay_mode() -> Result<String> {
+    Ok(text(&crate::settings::current()?, "pay_mode").unwrap_or("individual").to_string())
+}
+
+/// Make the wage in `data` follow the pay mode. By position: the wage is the position's `base_wage`, and a different one
+/// is refused. Hybrid: the position's wage unless the person has their own (`wage_source` manual), which stays while they
+/// keep the position. Individual: nothing changes. `given` says the caller set a wage that differs from `before`.
+fn apply_pay_mode(data: &mut Record, before: Option<&Record>, given: bool) -> Result<()> {
+    let mode = pay_mode()?;
+    if mode == "individual" {
+        return Ok(());
+    }
+    let position = match text(data, "position") {
+        Some(id) => Some(require("position", id, "position")?),
+        None => None,
+    };
+    let base = match &position {
+        Some(position) => decimal_of(position, "base_wage")?,
+        None => None,
+    };
+    let (Some(position), Some(base)) = (position, base) else {
+        if given {
+            data["wage_source"] = json!("manual");
+        }
+        return Ok(());
+    };
+    if given {
+        if decimal_of(data, "wage")? == Some(base) {
+            data["wage_source"] = json!("position");
+        } else if mode == "position" {
+            return Err(Error::msg(format!(
+                "pay follows the position: the wage of {} is {base}; change the position's wage instead",
+                text(&position, "name").unwrap_or("this position")
+            )));
+        } else {
+            data["wage_source"] = json!("manual");
+        }
+        return Ok(());
+    }
+    let own = mode == "hybrid"
+        && before.is_some_and(|b| text(b, "wage_source") == Some("manual") && text(b, "position") == text(data, "position"));
+    if own {
+        return Ok(());
+    }
+    data["wage"] = serde_json::to_value(base).map_err(|e| Error::msg(e.to_string()))?;
+    data["wage_source"] = json!("position");
+    if let Some(currency) = text(&position, "currency") {
+        data["currency"] = json!(currency);
+    }
+    Ok(())
+}
+
+/// Move the people holding `position` onto its base wage, as new terms from today. In hybrid mode people with a wage of
+/// their own are left alone. Returns how many were moved.
+pub fn apply_position_pay(position: &Record) -> Result<u64> {
+    let mode = pay_mode()?;
+    let Some(base) = position.get("base_wage").filter(|w| !w.is_null()) else { return Ok(0) };
+    if mode == "individual" {
+        return Ok(0);
+    }
+    let holders: Vec<Record> = db::find::<Record>("employee")
+        .matching(Filter::eq("position", id_of(position)?).and(Filter::one_of("status", status::PRESENT.to_vec())))
+        .limit(1000)
+        .all()?;
+    let mut moved = 0;
+    for employee in &holders {
+        let current = current_terms(id_of(employee)?)?;
+        if mode == "hybrid" && current.as_ref().is_some_and(|c| text(c, "wage_source") == Some("manual")) {
+            continue;
+        }
+        let mut changes = json!({ "wage": base, "wage_source": "position", "reason": "position pay" });
+        if let Some(currency) = text(position, "currency") {
+            changes["currency"] = json!(currency);
+        }
+        apply_from_today(employee, &changes)?;
+        moved += 1;
+    }
+    Ok(moved)
+}
+
+/// The terms in force today, for showing pay on the employee.
+pub fn current_terms(employee_id: &str) -> Result<Option<Record>> {
+    terms_before(employee_id, parse_date(&today()?)?)
+}
+
 /// Add a record of terms from `date_from`. `employee` is the full employee record.
 pub fn create(employee: &Record, date_from: &str, terms: &Record) -> Result<Record> {
     let employee_id = id_of(employee)?;
@@ -201,7 +300,9 @@ pub fn create(employee: &Record, date_from: &str, terms: &Record) -> Result<Reco
     }
     let from = parse_date(date_from)?;
     let mut data = pick(terms, TERMS);
-    if let Some(before) = terms_before(employee_id, from)? {
+    let before = terms_before(employee_id, from)?;
+    let given = wage_given(&data, before.as_ref())?;
+    if let Some(before) = &before {
         for field in CARRIED {
             if data.get(*field).is_none() {
                 if let Some(value) = before.get(*field) {
@@ -209,7 +310,13 @@ pub fn create(employee: &Record, date_from: &str, terms: &Record) -> Result<Reco
                 }
             }
         }
+        if data.get("wage_source").is_none() {
+            if let Some(value) = before.get("wage_source") {
+                data["wage_source"] = value.clone();
+            }
+        }
     }
+    apply_pay_mode(&mut data, before.as_ref(), given)?;
     check_terms(&data, employee, from, None)?;
     check_seat(&data, employee)?;
     data["employee"] = json!(employee_id);
@@ -262,6 +369,21 @@ fn change(input: Change) -> Result<Record> {
     if data.as_object().is_some_and(|fields| fields.is_empty()) {
         return Err(Error::msg("there is nothing to change"));
     }
+    // Pay follows the pay mode when the wage is set, or when the position changes.
+    let given = wage_given(&data, Some(&existing))?;
+    let moved = data.get("position").is_some() && text(&data, "position") != text(&existing, "position");
+    if given || moved {
+        let mut view = data.clone();
+        if view.get("position").is_none() {
+            view["position"] = existing.get("position").cloned().unwrap_or(Value::Null);
+        }
+        apply_pay_mode(&mut view, Some(&existing), given)?;
+        for field in ["wage", "currency", "wage_source"] {
+            if let Some(value) = view.get(field) {
+                data[field] = value.clone();
+            }
+        }
+    }
     let mut merged = existing.clone();
     for (key, value) in data.as_object().cloned().unwrap_or_default() {
         merged[key] = value;
@@ -289,7 +411,16 @@ fn remove(input: Id) -> Result<Record> {
 
 /// An employee's terms, newest first.
 fn history(input: ForEmployee) -> Result<Vec<Record>> {
-    db::find("employment").filter("employee", input.employee.as_str()).order_by("-date_from").limit(200).all()
+    let mut rows: Vec<Record> = db::find("employment").filter("employee", input.employee.as_str()).order_by("-date_from").limit(200).all()?;
+    // This function may read pay for its own use; only an HR manager is shown it.
+    if !context::current()?.has_role("hr.hr_manager") {
+        for row in rows.iter_mut().filter_map(Value::as_object_mut) {
+            for field in ["wage", "currency", "pay_frequency", "wage_source"] {
+                row.remove(field);
+            }
+        }
+    }
+    Ok(rows)
 }
 
 /// The employment ends on `day`: the contract in force stops then and later records are dropped.

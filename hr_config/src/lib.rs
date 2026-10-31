@@ -136,6 +136,10 @@ forward! {
     create_work_location => "hr";
     get_work_location => "hr";
     update_work_location => "hr";
+    list_all_grades => "hr";
+    create_grade => "hr";
+    get_grade => "hr";
+    update_grade => "hr";
     list_all_cost_centers => "hr";
     create_cost_center => "hr";
     get_cost_center => "hr";

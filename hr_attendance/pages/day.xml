@@ -1,0 +1,24 @@
+<page route="/hr/attendance/days/{id}" title="Attendance day" menu="false" model="att_day">
+  <view type="form" source="get_attendance_day">
+    <group title="Day" cols="2">
+      <field name="work_date" label="Date" fieldType="date" readonly="true"/>
+      <field name="shift" label="Shift" fieldType="many2one" readonly="true"/>
+      <field name="status" label="Status" readonly="true"/>
+      <field name="review" label="Needs a look" readonly="true"/>
+      <field name="first_in" label="First in" fieldType="datetime" readonly="true"/>
+      <field name="last_out" label="Last out" fieldType="datetime" readonly="true"/>
+    </group>
+    <group title="Minutes" cols="3">
+      <field name="scheduled_min" label="Scheduled" readonly="true"/>
+      <field name="worked_min" label="Worked" readonly="true"/>
+      <field name="break_min" label="Break" readonly="true"/>
+      <field name="late_min" label="Late" readonly="true"/>
+      <field name="early_exit_min" label="Left early" readonly="true"/>
+      <field name="overtime_min" label="Overtime" readonly="true"/>
+    </group>
+    <group title="Override" cols="2">
+      <field name="override_status" label="Status set by hand" readonly="true"/>
+      <field name="override_reason" label="Reason" fieldType="text" readonly="true"/>
+    </group>
+  </view>
+</page>

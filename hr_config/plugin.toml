@@ -2,7 +2,7 @@
 name = "hr_config"
 icon_path = "assets/logo.svg"
 label = "HR Configuration"
-version = "0.1.2"
+version = "0.1.3"
 description = "HRMS setup: HR defaults, leave, attendance and payroll configuration."
 long_description = """
 A single Apps tile for HRMS configuration. The home page lists setup areas
@@ -16,6 +16,8 @@ is_builtin = false
 wasm_file = "out/plugin.wasm"
 
 [app]
+nav = true
+roles = ["hr.hr_manager"]
 icon = "settings"
 route = "/hr/config"
 description = "Configure leave, attendance, payroll, locations, and other HRMS setup"

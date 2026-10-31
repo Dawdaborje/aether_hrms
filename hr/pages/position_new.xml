@@ -1,0 +1,12 @@
+<page route="/hr/positions/new" title="Add position" model="position" menu="false" roles="hr_user,hr_manager">
+  <view type="form" function="create_position" submit="Add position" success="Position added" redirect="/hr/positions">
+    <field name="name" label="Name" required="true"/>
+    <field name="code" label="Code"/>
+    <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs" required="true"/>
+    <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments" required="true"/>
+    <field name="headcount" label="Seats" fieldType="integer"/>
+    <field name="base_wage" label="Base wage" fieldType="float" help="HR managers only."/>
+    <field name="currency" label="Currency" fieldType="many2one" source="currency.list_currencies"
+           optionLabel="display_name" entity="currencies"/>
+  </view>
+</page>

@@ -19,5 +19,21 @@
         "delete"
       ]
     }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "base_wage",
+        "currency"
+      ],
+      "read_roles": [
+        "hr.hr_manager",
+        "via:self"
+      ],
+      "write_roles": [
+        "hr.hr_manager",
+        "via:self"
+      ]
+    }
   ]
 }

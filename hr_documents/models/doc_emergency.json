@@ -77,5 +77,8 @@
       "label": "%notes%",
       "type": "text"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

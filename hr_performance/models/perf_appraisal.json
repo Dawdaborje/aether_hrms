@@ -205,5 +205,8 @@
       "employee",
       "final_rating"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }

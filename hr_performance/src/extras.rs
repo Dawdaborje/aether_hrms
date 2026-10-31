@@ -174,7 +174,7 @@ fn skill_matrix(input: Matrix) -> Result<Value> {
     if let Some(department) = &input.department {
         query["department"] = json!(department);
     }
-    let people: Vec<Record> = plugins::call("hr", "list_employees", &query)?;
+    let people: Vec<Record> = plugins::call("hr", "find_employees", &query)?;
     let skills: Vec<Record> = db::find("perf_skill").filter("is_active", true).order_by("name").limit(200).all()?;
     let ids: Vec<&str> = people.iter().filter_map(|p| text(p, "id")).collect();
     let ratings: Vec<Record> = if ids.is_empty() { Vec::new() } else { db::find("perf_skill_rating").matching(Filter::one_of("employee", ids).and(Filter::is_empty("valid_to"))).limit(5000).all()? };

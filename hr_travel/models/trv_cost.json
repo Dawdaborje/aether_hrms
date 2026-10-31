@@ -74,5 +74,8 @@
       "required": true,
       "scale": 2
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

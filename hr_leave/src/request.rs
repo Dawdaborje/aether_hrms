@@ -469,7 +469,7 @@ fn waiting_for_me() -> Result<Vec<Record>> {
     let me = my_employee()?;
     let mut out: Vec<Record> = Vec::new();
     if let Some(me) = &me {
-        let reports: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "manager": id_of(me)?, "limit": 500 }))?;
+        let reports: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "manager": id_of(me)?, "limit": 500 }))?;
         let ids: Vec<&str> = reports.iter().filter_map(|e| text(e, "id")).collect();
         if !ids.is_empty() {
             out.extend(

@@ -103,5 +103,8 @@
       "type": "int",
       "help": "Last expiry threshold already reported (30, 7 or 0)."
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

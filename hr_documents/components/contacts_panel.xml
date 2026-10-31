@@ -1,7 +1,9 @@
 <component name="contacts_panel">
   <group cols="1">
-    <modal title="Add emergency contact" label="Add contact">
-      <view type="form" function="add_emergency_contact" submit="Add" success="Contact added">
+    <modal name="contact" title="Add emergency contact" edit_title="Emergency contact" label="Add contact">
+      <view type="form" function="add_emergency_contact" submit="Add" success="Contact added"
+            edit_source="get_emergency_contact" edit_function="update_emergency_contact"
+            edit_submit="Save" edit_success="Contact saved">
         <field name="name" label="Name" required="true"/>
         <field name="relation" label="Relation" required="true" fieldType="many2one"
                source="list_relations" optionLabel="name" entity="relations"
@@ -13,7 +15,7 @@
         <field name="notes" label="Notes" fieldType="text"/>
       </view>
     </modal>
-    <view type="list" model="doc_emergency" source="list_emergency_contacts">
+    <view type="list" model="doc_emergency" source="list_emergency_contacts" edit="contact">
       <columns>
         <column field="name" label="Name"/>
         <column field="relation" label="Relation" fieldType="link" modelTarget="doc_relation"/>

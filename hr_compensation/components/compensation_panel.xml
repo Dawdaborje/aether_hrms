@@ -1,6 +1,6 @@
 <component name="compensation_panel">
   <group cols="1">
-    <view type="list" model="comp_adjustment" source="employee_adjustments">
+    <view type="list" model="comp_adjustment" source="employee_adjustments" open="/hr/compensation/adjustments/{id}">
       <columns>
         <column field="code" label="Code"/>
         <column field="amount" label="Amount"/>

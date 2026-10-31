@@ -1,4 +1,4 @@
-<page route="/hr/config" title="Home" icon="layout-dashboard" sort="1">
+<page route="/hr/config" title="Home" icon="home" sort="1">
   <heading title="HR Configuration"
            subtitle="Set up how HR works in your organization. Each area is owned by its HR app; this page only gathers the setup in one place."
            logo="/api/ui/plugins/hr_config/logo"/>
@@ -6,6 +6,7 @@
     <tile label="HR defaults" description="Probation, notice period and retirement age for new hires" href="/hr/config/hr" icon="sliders-horizontal"/>
     <tile label="Employee numbers" description="Patterns for numbering new employees" href="/hr/config/numbering" icon="hash"/>
     <tile label="Work locations" description="Sites and branches where people work" href="/hr/config/locations" icon="map-pin"/>
+    <tile label="Grades" description="The ladder of grades, with an optional wage band for each" href="/hr/config/grades" icon="chart-bar"/>
     <tile label="Cost centres" description="Where people and departments are costed" href="/hr/config/cost-centres" icon="coins"/>
   </tiles>
   <tiles title="Leave" cols="4">

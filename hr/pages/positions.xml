@@ -1,0 +1,13 @@
+<page route="/hr/positions" title="Positions" model="position" menu_group="Employee" icon="briefcase" sort="25" roles="hr_user,hr_manager">
+  <view type="list" model="position" source="list_positions" open="/hr/positions/{id}"
+        create="/hr/positions/new" create_label="New">
+    <search/>
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="code" label="Code"/>
+      <column field="headcount" label="Seats"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No positions yet" description="Use New to add one."/>
+  </view>
+</page>

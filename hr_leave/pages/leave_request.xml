@@ -1,0 +1,18 @@
+<page route="/hr/leave/requests/{id}" title="Leave request" menu="false" model="leave_request">
+  <view type="form" source="get_leave_request">
+    <group title="Request" cols="2">
+      <field name="reference" label="Reference" readonly="true"/>
+      <field name="leave_type" label="Leave type" fieldType="many2one" readonly="true"/>
+      <field name="start_date" label="From" fieldType="date" readonly="true"/>
+      <field name="end_date" label="To" fieldType="date" readonly="true"/>
+      <field name="half_day" label="Half day" readonly="true"/>
+      <field name="days" label="Days" readonly="true"/>
+      <field name="reason" label="Reason" fieldType="text" colspan="2" readonly="true"/>
+    </group>
+    <group title="Decision" cols="2">
+      <field name="state" label="State" readonly="true"/>
+      <field name="decided_on" label="Decided on" fieldType="date" readonly="true"/>
+      <field name="decision_note" label="Note" fieldType="text" colspan="2" readonly="true"/>
+    </group>
+  </view>
+</page>

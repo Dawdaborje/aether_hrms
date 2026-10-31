@@ -1,6 +1,6 @@
 <component name="insurance_panel">
   <group cols="1">
-    <view type="list" source="employee_insurance_summary">
+    <view type="list" source="employee_insurance_summary" open="/hr/insurance/enrolments/{enrolment_key}">
       <columns>
         <column field="policy" label="Policy"/>
         <column field="plan" label="Plan"/>

@@ -63,5 +63,8 @@
       "label": "%born%",
       "type": "date"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

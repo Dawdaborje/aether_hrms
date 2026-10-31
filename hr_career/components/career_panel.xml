@@ -1,6 +1,6 @@
 <component name="career_panel">
   <group cols="1">
-    <view type="list" model="career_change" source="employee_career_changes">
+    <view type="list" model="career_change" source="employee_career_changes" open="/hr/career/changes/{id}">
       <columns>
         <column field="reference" label="Reference"/>
         <column field="kind" label="Kind" fieldType="badge"/>

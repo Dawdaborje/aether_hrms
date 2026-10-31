@@ -15,6 +15,9 @@ struct Change {
     retirement_age: Option<i64>,
     #[serde(default)]
     probation_alert_days: Option<i64>,
+    /// Where base pay comes from: `individual`, `position` or `hybrid`.
+    #[serde(default)]
+    pay_mode: Option<String>,
 }
 
 pub fn current() -> Result<Record> {
@@ -52,6 +55,13 @@ fn save(input: Change) -> Result<Record> {
             }
             data.insert(name.into(), json!(value));
         }
+    }
+    if let Some(mode) = input.pay_mode.as_deref() {
+        if !["individual", "position", "hybrid"].contains(&mode) {
+            return Err(Error::msg("the pay mode is individual, position or hybrid"));
+        }
+        crate::common::require_pay_manager()?;
+        data.insert("pay_mode".into(), json!(mode));
     }
     match db::find::<Record>("hr_setting").first()? {
         Some(existing) => db::update("hr_setting", id_of(&existing)?, &Value::Object(data))?.ok_or_else(|| Error::msg("the setting is gone")),

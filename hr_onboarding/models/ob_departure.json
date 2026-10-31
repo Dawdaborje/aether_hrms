@@ -130,5 +130,8 @@
       "last_day",
       "status"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }

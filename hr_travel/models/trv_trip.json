@@ -315,5 +315,8 @@
       "label": "%cancel_reason%",
       "type": "text"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

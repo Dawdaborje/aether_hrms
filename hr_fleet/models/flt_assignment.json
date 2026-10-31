@@ -58,5 +58,8 @@
       "index": "plain",
       "default": "active"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

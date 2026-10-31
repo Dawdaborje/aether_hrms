@@ -9,6 +9,10 @@
       <column field="image" label="" fieldType="image"/>
       <column field="employee_no" label="No." sortable="true"/>
       <column field="display_name" label="Name" sortable="true"/>
+      <column field="department" label="Department"/>
+      <column field="job" label="Job"/>
+      <column field="manager" label="Reports to"/>
+      <column field="work_email" label="Work email" sortable="true"/>
       <column field="status" label="Status" fieldType="badge"/>
       <column field="employment_type" label="Type" fieldType="badge"/>
       <column field="hire_date" label="Hired" fieldType="date" sortable="true"/>

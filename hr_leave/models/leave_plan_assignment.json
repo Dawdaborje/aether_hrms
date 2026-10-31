@@ -37,5 +37,8 @@
       "label": "%date_to%",
       "type": "date"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

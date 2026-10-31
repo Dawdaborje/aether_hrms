@@ -153,7 +153,7 @@ fn waiting() -> Result<Vec<Record>> {
         return Ok(rows);
     }
     let Some(me) = my_id()? else { return Ok(Vec::new()) };
-    let reports: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "manager": me, "limit": 500 }))?;
+    let reports: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "manager": me, "limit": 500 }))?;
     let ids: Vec<&str> = reports.iter().filter_map(|e| text(e, "id")).collect();
     Ok(rows.into_iter().filter(|r| text(r, "employee").is_some_and(|e| ids.contains(&e))).collect())
 }

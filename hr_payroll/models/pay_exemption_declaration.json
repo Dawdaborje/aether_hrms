@@ -118,5 +118,8 @@
       "declared",
       "status"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }

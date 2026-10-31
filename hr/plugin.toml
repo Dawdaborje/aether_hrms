@@ -2,7 +2,7 @@
 name = "hr"
 icon_path = "assets/logo.svg"
 label = "Human Resources"
-version = "0.2.0"
+version = "0.4.0"
 description = "People, departments, positions and dated employment terms."
 long_description = """
 The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
@@ -24,6 +24,7 @@ access_models = [
   { name = "employee_private", permissions = ["read", "write"] },
   { name = "work_location", permissions = ["read", "write"] },
   { name = "cost_center", permissions = ["read", "write"] },
+  { name = "grade", permissions = ["read", "write"] },
   { name = "hire_hold", permissions = ["read", "write"] },
   { name = "hr_setting", permissions = ["read", "write"] },
   { name = "employee_number_rule", permissions = ["read", "write"] },
@@ -83,6 +84,13 @@ args = [{ name = "count", type = "int", default = 10 }]
 name = "migrate_catalog_links"
 function = "migrate_catalog_links"
 help = "Move free-text work location and cost centre values onto the catalog link fields"
+
+[[command]]
+name = "migrate_grades"
+function = "migrate_grades"
+help = "Make a grade for each grade written as free text on positions and employment (idempotent)"
+on_install = true
+on_upgrade = true
 
 [[command]]
 name = "seed_employee_number_rules"

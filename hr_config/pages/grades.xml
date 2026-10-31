@@ -1,0 +1,11 @@
+<page route="/hr/config/grades" title="Grades" menu_group="General" icon="chart-bar" sort="35" roles="hr.hr_user,hr.hr_manager">
+  <view type="list" source="list_all_grades" open="/hr/config/grades/{id}" create="/hr/config/grades/new" create_label="New">
+    <columns>
+      <column field="code" label="Grade"/>
+      <column field="name" label="Name"/>
+      <column field="rank" label="Rank"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No grades" description="Add the grades people and positions can be placed on."/>
+  </view>
+</page>

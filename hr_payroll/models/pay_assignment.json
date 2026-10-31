@@ -53,5 +53,8 @@
       "valid_from",
       "valid_to"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }

@@ -233,6 +233,26 @@
       "index": "plain",
       "target": "cost_center",
       "track": true
+    },
+    {
+      "id": "fld_3uzsegk6zwls4hnrk7fo",
+      "name": "wage_source",
+      "label": "%wage_source%",
+      "type": "select",
+      "default": "manual",
+      "help": "Whether the wage follows the position or was entered for this person.",
+      "options": [
+        {
+          "id": "opt_l6tvfnj4rjkpnrcz2km6",
+          "value": "position",
+          "label": "%from_position%"
+        },
+        {
+          "id": "opt_3fucsmid73yyh6jranz7",
+          "value": "manual",
+          "label": "%manual%"
+        }
+      ]
     }
   ],
   "indexes": [
@@ -250,7 +270,8 @@
     "messages": true,
     "notes": true,
     "followers": true,
-    "track_changes": true
+    "track_changes": true,
+    "log_to": "employee"
   },
   "view": {
     "list": [

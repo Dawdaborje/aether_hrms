@@ -46,7 +46,8 @@
       ],
       "read_roles": [
         "hr_manager",
-        "via:hr_career"
+        "via:hr_career",
+        "via:self"
       ]
     }
   ]

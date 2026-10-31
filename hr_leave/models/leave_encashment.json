@@ -103,5 +103,8 @@
       "type": "string",
       "max_length": 120
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

@@ -1,6 +1,6 @@
 <component name="attendance_panel">
   <group cols="1">
-    <view type="list" model="att_day" source="employee_days">
+    <view type="list" model="att_day" source="employee_days" open="/hr/attendance/days/{id}">
       <columns>
         <column field="work_date" label="Date" fieldType="date"/>
         <column field="status" label="Status" fieldType="badge"/>

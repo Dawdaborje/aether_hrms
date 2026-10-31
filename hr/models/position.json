@@ -92,6 +92,22 @@
       "name": "notes",
       "label": "%notes%",
       "type": "text"
+    },
+    {
+      "id": "fld_yavfpp5y5kdbrfumgtp7",
+      "name": "base_wage",
+      "label": "%base_wage%",
+      "type": "decimal",
+      "scale": 2,
+      "help": "The base wage of everyone in this position when the pay mode is by position or hybrid."
+    },
+    {
+      "id": "fld_7nhwtpzsf4uwudayfl4r",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "link",
+      "target": "currency.currency",
+      "target_id": "mdl_khholv2eis"
     }
   ],
   "view": {

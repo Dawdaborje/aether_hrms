@@ -329,9 +329,9 @@ struct ForEmployee {
 /// One row per covered member of the employee's active enrolments: limit, used and left for the policy year.
 fn summary(input: ForEmployee) -> Result<Vec<Value>> {
     let who = match input.employee {
-        // The tab passes the route's `{id}`, which may be the bare key.
+        // The tab passes the route's `{id}`, which may be the bare key; `hr` knows the full record id.
         Some(id) if id.contains(':') => id,
-        Some(id) => format!("employee:{id}"),
+        Some(id) => id_of(&employee(&id)?)?.to_string(),
         None => my_employee_id()?.ok_or_else(|| Error::msg("you are not an employee"))?,
     };
     require_self_or_staff(&who)?;
@@ -345,7 +345,7 @@ fn summary(input: ForEmployee) -> Result<Vec<Value>> {
         for m in members {
             let u = utilisation(UtilisationIn { enrolment: enrolment.clone(), member: Some(id_of(&m)?.to_string()) })?;
             out.push(json!({
-                "enrolment": enrolment, "policy": policy["number"], "plan": plan["name"], "member": m["name"], "relationship": m["relationship"],
+                "enrolment": enrolment, "enrolment_key": enrolment.rsplit(':').next().unwrap_or(&enrolment), "policy": policy["number"], "plan": plan["name"], "member": m["name"], "relationship": m["relationship"],
                 "limit": u["limit"], "used": u["used"], "remaining": u["remaining"], "utilisation_percent": u["utilisation_percent"], "currency": u["currency"],
             }));
         }

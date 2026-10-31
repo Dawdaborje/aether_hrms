@@ -96,5 +96,8 @@
       "label": "%decision_note%",
       "type": "text"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

@@ -6,6 +6,7 @@
 //! * Nightly, identity documents that hit 30, 7 or 0 days to expiry are reported once each.
 
 use aether_sdk::dates::{format_date, parse_date};
+use aether_sdk::db::Filter;
 use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
@@ -128,6 +129,47 @@ struct ChangeBank {
     #[serde(default)]
     branch: Option<String>,
     #[serde(default)]
+    account_no: Option<String>,
+    #[serde(default)]
+    iban: Option<String>,
+    #[serde(default)]
+    swift: Option<String>,
+    #[serde(default)]
+    currency: Option<String>,
+    #[serde(default)]
+    notes: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct ChangeIdentity {
+    id: String,
+    kind: String,
+    number: String,
+    #[serde(default)]
+    country: Option<String>,
+    #[serde(default)]
+    issued_on: Option<String>,
+    #[serde(default)]
+    expires_on: Option<String>,
+    #[serde(default)]
+    is_primary: bool,
+    #[serde(default)]
+    notes: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct ChangeContact {
+    id: String,
+    name: String,
+    relation: String,
+    phone: String,
+    #[serde(default)]
+    phone_country: Option<String>,
+    #[serde(default)]
+    email: Option<String>,
+    #[serde(default)]
+    is_primary: bool,
+    #[serde(default)]
     notes: Option<String>,
 }
 
@@ -161,8 +203,9 @@ fn require_owner_or_admin(employee_id: &str) -> Result<()> {
     }
 }
 
-fn clear_primary_identity(employee: &str, except: Option<&str>) -> Result<()> {
-    let rows: Vec<Record> = db::find("doc_identity").filter("employee", employee).limit(100).all()?;
+/// Make `kind` the only primary document of its kind for the person (a passport and a visa can each be primary).
+fn clear_primary_identity(employee: &str, kind: &str, except: Option<&str>) -> Result<()> {
+    let rows: Vec<Record> = db::find("doc_identity").filter("employee", employee).filter("kind", kind).limit(100).all()?;
     for row in rows {
         if except == text(&row, "id") {
             continue;
@@ -219,29 +262,44 @@ fn active_shares(employee: &str, except: Option<&str>, override_id: Option<&str>
     Ok(shares)
 }
 
+/// A country id from a form, checked; empty means none.
+fn known_country(raw: Option<&str>) -> Result<Option<String>> {
+    match raw.map(str::trim).filter(|c| !c.is_empty()) {
+        Some(id) => {
+            let _: Record = plugins::call("country", "get_country", &json!({ "id": id }))
+                .map_err(|_| Error::msg("there is no such country"))?;
+            Ok(Some(id.to_string()))
+        }
+        None => Ok(None),
+    }
+}
+
+/// One row of the person's own lists, for the person or a documents administrator.
+fn own_row(model: &str, id: &str, what: &str) -> Result<Record> {
+    let row = require(model, id, what)?;
+    require_owner_or_admin(text(&row, "employee").unwrap_or_default())?;
+    Ok(row)
+}
+
 fn add_identity(input: IdentityIn) -> Result<Record> {
     let who = target_employee(input.employee)?;
     require_owner_or_admin(&who)?;
     let kind = DocKind::parse(&input.kind).ok_or_else(|| Error::msg("kind is passport, national_id, visa, work_permit, driving_licence or other"))?;
     let expires = input.expires_on.as_deref().map(parse_date).transpose()?;
     document_ok(kind, &input.number, expires)?;
-    let country = match input.country.as_deref().map(str::trim).filter(|c| !c.is_empty()) {
-        Some(id) => {
-            let _: Record = plugins::call("country", "get_country", &json!({ "id": id }))
-                .map_err(|_| Error::msg("there is no such country"))?;
-            Some(id.to_string())
-        }
-        None => None,
-    };
-    if input.is_primary {
-        clear_primary_identity(&who, None)?;
+    let country = known_country(input.country.as_deref())?;
+    // The first document of a kind is the primary one unless another is chosen later.
+    let first_of_kind = db::count("doc_identity", Filter::eq("employee", who.as_str()).and(Filter::eq("kind", input.kind.as_str())))? == 0;
+    let is_primary = input.is_primary || first_of_kind;
+    if is_primary {
+        clear_primary_identity(&who, &input.kind, None)?;
     }
     db::create(
         "doc_identity",
         &json!({
             "employee": who, "kind": input.kind, "number": input.number.trim(), "country": country,
             "issued_on": input.issued_on.map(|d| parse_date(&d).map(format_date)).transpose()?,
-            "expires_on": expires.map(format_date), "is_primary": input.is_primary, "notes": input.notes,
+            "expires_on": expires.map(format_date), "is_primary": is_primary, "notes": input.notes,
         }),
     )
 }
@@ -250,7 +308,43 @@ fn remove_identity(input: Id) -> Result<Value> {
     let row = require("doc_identity", &input.id, "document")?;
     require_owner_or_admin(text(&row, "employee").unwrap_or_default())?;
     db::delete::<Record>("doc_identity", &input.id)?;
-    Ok(json!({ "removed": input.id }))
+    // Removing the primary document makes the next one of its kind (the one that expires last) the primary.
+    let mut promoted = Value::Null;
+    if row.get("is_primary") == Some(&json!(true)) {
+        let employee = text(&row, "employee").unwrap_or_default();
+        let kind = text(&row, "kind").unwrap_or_default();
+        let mut rest: Vec<Record> = db::find("doc_identity").filter("employee", employee).filter("kind", kind).limit(100).all()?;
+        rest.sort_by(|a, b| text(b, "expires_on").unwrap_or("9999").cmp(text(a, "expires_on").unwrap_or("9999")));
+        if let Some(next) = rest.first() {
+            db::update::<Record>("doc_identity", id_of(next)?, &json!({ "is_primary": true }))?;
+            promoted = json!(id_of(next)?);
+        }
+    }
+    Ok(json!({ "removed": input.id, "promoted": promoted }))
+}
+
+fn change_identity(input: ChangeIdentity) -> Result<Record> {
+    let row = own_row("doc_identity", &input.id, "document")?;
+    let id = id_of(&row)?.to_string();
+    let who = text(&row, "employee").unwrap_or_default().to_string();
+    let kind = DocKind::parse(&input.kind).ok_or_else(|| Error::msg("kind is passport, national_id, visa, work_permit, driving_licence or other"))?;
+    let expires = input.expires_on.as_deref().filter(|d| !d.trim().is_empty()).map(parse_date).transpose()?;
+    document_ok(kind, &input.number, expires)?;
+    let country = known_country(input.country.as_deref())?;
+    if input.is_primary {
+        clear_primary_identity(&who, &input.kind, Some(&id))?;
+    }
+    let expires_on = expires.map(format_date);
+    let mut data = json!({
+        "kind": input.kind, "number": input.number.trim(), "country": country,
+        "issued_on": input.issued_on.filter(|d| !d.trim().is_empty()).map(|d| parse_date(&d).map(format_date)).transpose()?,
+        "expires_on": expires_on, "is_primary": input.is_primary, "notes": input.notes,
+    });
+    // A new expiry starts the 30/7/0-day warnings over.
+    if text(&row, "expires_on") != expires_on.as_deref() {
+        data["last_warn_days"] = Value::Null;
+    }
+    db::update("doc_identity", &id, &data)?.ok_or_else(|| Error::msg("the document is gone"))
 }
 
 fn relation_id(raw: &str) -> Result<String> {
@@ -328,14 +422,7 @@ fn add_contact(input: ContactIn) -> Result<Record> {
         let primaries = existing.iter().filter(|r| r.get("is_primary") == Some(&json!(true))).count();
         contacts_ok(primaries)?;
     }
-    let phone_country = match input.phone_country.as_deref().map(str::trim).filter(|c| !c.is_empty()) {
-        Some(id) => {
-            let _: Record = plugins::call("country", "get_country", &json!({ "id": id }))
-                .map_err(|_| Error::msg("there is no such country"))?;
-            Some(id.to_string())
-        }
-        None => None,
-    };
+    let phone_country = known_country(input.phone_country.as_deref())?;
     db::create(
         "doc_emergency",
         &json!({
@@ -351,6 +438,30 @@ fn remove_contact(input: Id) -> Result<Value> {
     require_owner_or_admin(text(&row, "employee").unwrap_or_default())?;
     db::delete::<Record>("doc_emergency", &input.id)?;
     Ok(json!({ "removed": input.id }))
+}
+
+fn change_contact(input: ChangeContact) -> Result<Record> {
+    let row = own_row("doc_emergency", &input.id, "contact")?;
+    let id = id_of(&row)?.to_string();
+    let who = text(&row, "employee").unwrap_or_default().to_string();
+    if input.name.trim().is_empty() || input.phone.trim().is_empty() {
+        return Err(Error::msg("name, relation and phone are required"));
+    }
+    let relation = relation_id(&input.relation)?;
+    if input.is_primary {
+        clear_primary_contact(&who, Some(&id))?;
+    }
+    let phone_country = known_country(input.phone_country.as_deref())?;
+    db::update(
+        "doc_emergency",
+        &id,
+        &json!({
+            "name": input.name.trim(), "relation": relation, "phone": input.phone.trim(),
+            "phone_country": phone_country, "email": input.email, "is_primary": input.is_primary,
+            "notes": input.notes,
+        }),
+    )?
+    .ok_or_else(|| Error::msg("the contact is gone"))
 }
 
 fn add_bank(input: BankIn) -> Result<Record> {
@@ -417,6 +528,21 @@ fn change_bank(input: ChangeBank) -> Result<Record> {
         let (bank, branch) = crate::banks::resolve_bank_and_branch(bank, branch)?;
         data.insert("bank".into(), json!(bank));
         data.insert("branch".into(), json!(branch));
+    }
+    if let Some(v) = input.account_no.as_deref().map(str::trim) {
+        if v.is_empty() {
+            return Err(Error::msg("account number is required"));
+        }
+        data.insert("account_no".into(), json!(v));
+    }
+    if let Some(v) = input.iban {
+        data.insert("iban".into(), json!(v));
+    }
+    if let Some(v) = input.swift {
+        data.insert("swift".into(), json!(v));
+    }
+    if let Some(v) = input.currency {
+        data.insert("currency".into(), json!(v.to_uppercase()));
     }
     if let Some(v) = input.notes {
         data.insert("notes".into(), json!(v));
@@ -524,6 +650,15 @@ handler! {
         add_identity(input)
     }
 
+    /// One identity document, for its owner or a documents administrator.
+    fn get_identity_document(input: Id) -> Record {
+        own_row("doc_identity", &input.id, "document")
+    }
+
+    fn update_identity_document(input: ChangeIdentity) -> Record {
+        change_identity(input)
+    }
+
     fn remove_identity_document(input: Id) -> Value {
         remove_identity(input)
     }
@@ -538,6 +673,14 @@ handler! {
 
     fn add_emergency_contact(input: ContactIn) -> Record {
         add_contact(input)
+    }
+
+    fn get_emergency_contact(input: Id) -> Record {
+        own_row("doc_emergency", &input.id, "contact")
+    }
+
+    fn update_emergency_contact(input: ChangeContact) -> Record {
+        change_contact(input)
     }
 
     fn remove_emergency_contact(input: Id) -> Value {
@@ -568,6 +711,10 @@ handler! {
 
     fn add_bank_account(input: BankIn) -> Record {
         add_bank(input)
+    }
+
+    fn get_bank_account(input: Id) -> Record {
+        own_row("doc_bank", &input.id, "bank account")
     }
 
     fn update_bank_account(input: ChangeBank) -> Record {

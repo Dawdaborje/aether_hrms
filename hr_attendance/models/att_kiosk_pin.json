@@ -39,5 +39,8 @@
       "default": false,
       "help": "Locked after too many wrong PINs; an administrator unlocks it."
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

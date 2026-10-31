@@ -61,5 +61,8 @@
       "label": "%accepted_by%",
       "type": "string"
     }
-  ]
+  ],
+  "chatter": {
+    "log_to": "employee"
+  }
 }

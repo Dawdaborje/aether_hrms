@@ -88,5 +88,8 @@
       "kind",
       "on_date"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }

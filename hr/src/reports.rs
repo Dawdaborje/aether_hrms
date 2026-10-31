@@ -249,9 +249,40 @@ fn org_chart_rows(input: ChartRoot) -> Result<Vec<Value>> {
     Ok(out)
 }
 
+/// The people still working here as nodes for the `<orgchart>` widget: a name, the job's title and who they
+/// report to; the widget builds the tree itself.
+fn org_chart_nodes() -> Result<Vec<Value>> {
+    let key = |v: &str| v.rsplit(':').next().unwrap_or(v).to_string();
+    let jobs: std::collections::BTreeMap<String, String> = db::find::<Record>("job")
+        .limit(2000)
+        .all()?
+        .iter()
+        .filter_map(|j| Some((key(text(j, "id")?), text(j, "name")?.to_string())))
+        .collect();
+    let people: Vec<Record> = db::find::<Record>("employee")
+        .matching(Filter::one_of("status", status::PRESENT.to_vec()))
+        .order_by("display_name")
+        .limit(2000)
+        .all()?;
+    Ok(people
+        .iter()
+        .map(|p| {
+            let title = text(p, "job").and_then(|j| jobs.get(&key(j))).cloned().unwrap_or_default();
+            json!({
+                "id": p.get("id"), "name": text(p, "display_name").unwrap_or_default(), "title": title,
+                "manager": p.get("manager"), "photo": p.get("image"),
+            })
+        })
+        .collect())
+}
+
 handler! {
     fn org_chart(input: Option<ChartRoot>) -> Vec<Value> {
         org_chart_rows(input.unwrap_or_default())
+    }
+
+    fn org_chart_nodes_list(_input: Option<Value>) -> Vec<Value> {
+        org_chart_nodes()
     }
 
     fn turnover_dashboard(input: Option<TurnoverExport>) -> Value {

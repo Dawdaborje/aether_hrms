@@ -80,7 +80,7 @@ fn kiosk(input: KioskPunch) -> Result<Value> {
     if !context.has_role(KIOSK_ROLE) && !context.has_role(crate::common::ADMIN_ROLE) {
         return Err(Error::msg(format!("only a kiosk account (role `{KIOSK_ROLE}`) punches people in this way")));
     }
-    let found: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "text": input.employee_no, "limit": 20 }))?;
+    let found: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "text": input.employee_no, "limit": 20 }))?;
     // The same message for an unknown number and a wrong PIN: the device says nothing about who exists.
     const WRONG: &str = "employee number or PIN is wrong";
     let Some(person) = found.into_iter().find(|p| text(p, "employee_no") == Some(input.employee_no.as_str())) else { return refused(WRONG) };

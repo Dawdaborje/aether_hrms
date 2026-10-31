@@ -123,7 +123,7 @@ fn ask(input: Ask) -> Result<Record> {
     let old_grade = text(&current, "grade").and_then(|c| by_code(c).ok().flatten());
     let new_grade = match text(&changes, "grade") {
         Some(code) => {
-            let row = by_code(code)?.ok_or_else(|| Error::msg(format!("there is no grade `{code}`: make it in the ladder first")))?;
+            let row = by_code(code)?.ok_or_else(|| Error::msg(format!("there is no grade `{code}`: add it in HR Configuration first")))?;
             if row.get("is_active") == Some(&json!(false)) {
                 return Err(Error::msg("that grade is no longer in use"));
             }

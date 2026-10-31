@@ -13,3 +13,12 @@ pub fn explain<T>(result: Result<T>, what: &str) -> Result<T> {
         other => Error::msg(format!("{what}: {other}")),
     })
 }
+
+/// Pay is for HR managers: the wage, its currency and frequency, and how pay is decided.
+pub fn require_pay_manager() -> Result<()> {
+    if context::current()?.has_role("hr.hr_manager") {
+        Ok(())
+    } else {
+        Err(Error::msg("only an HR manager can change pay"))
+    }
+}

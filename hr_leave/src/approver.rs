@@ -59,7 +59,7 @@ pub fn people_i_approve_for() -> Result<Vec<String>> {
     let mut out = Vec::new();
     for row in rows {
         let Some(department) = text(&row, "department") else { continue };
-        let people: Vec<Record> = plugins::call("hr", "list_employees", &json!({ "department": department, "with_subdepartments": true, "limit": 500 }))?;
+        let people: Vec<Record> = plugins::call("hr", "find_employees", &json!({ "department": department, "with_subdepartments": true, "limit": 500 }))?;
         for person in people {
             if text(&person, "manager").is_none() && department_approvers(&person)?.iter().any(|a| Some(a.as_str()) == text(&me, "id")) {
                 if let Some(id) = text(&person, "id") {

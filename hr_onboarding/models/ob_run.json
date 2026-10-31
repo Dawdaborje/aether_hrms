@@ -126,5 +126,8 @@
       "anchor_date",
       "status"
     ]
+  },
+  "chatter": {
+    "log_to": "employee"
   }
 }
