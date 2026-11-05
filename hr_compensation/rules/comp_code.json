@@ -1,0 +1,33 @@
+{
+  "model": "comp_code",
+  "access": [
+    {
+      "name": "read",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "comp_admin",
+        "via:*"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "code",
+        "kind"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "model": "wf_requisition",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "requested_by_employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "workforce_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

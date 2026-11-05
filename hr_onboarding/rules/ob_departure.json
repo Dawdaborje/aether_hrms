@@ -1,0 +1,17 @@
+{
+  "model": "ob_departure",
+  "access": [
+    {
+      "name": "officers",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "roles": [
+        "ob_officer",
+        "ob_manager"
+      ]
+    }
+  ]
+}

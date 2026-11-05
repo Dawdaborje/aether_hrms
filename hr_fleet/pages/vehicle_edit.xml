@@ -1,0 +1,13 @@
+<page route="/hr/fleet/{id}" title="Vehicle" menu="false" roles="hr_fleet.fleet_admin">
+  <view type="form" source="get_vehicle" function="update_vehicle" submit="Save" success="Saved" redirect="/hr/fleet">
+    <group title="Vehicle" cols="2">
+      <field name="plate" label="Plate"/>
+      <field name="make" label="Make"/>
+      <field name="model" label="Model"/>
+      <field name="year" label="Year" fieldType="integer"/>
+      <field name="kind" label="Kind" fieldType="selection" options="car, van, truck, motorbike, other"/>
+      <field name="status" label="Status" fieldType="selection" options="active, maintenance, retired"/>
+      <field name="notes" label="Notes" fieldType="textarea"/>
+    </group>
+  </view>
+</page>

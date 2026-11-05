@@ -1,0 +1,9 @@
+<page route="/hr/attendance/work-mode/new" title="Set where I work" menu="false" model="att_work_mode">
+  <view type="form" function="set_work_mode" submit="Save" success="Saved" redirect="/hr/attendance/work-mode">
+    <group title="Day" cols="2">
+      <field name="date" label="Day" fieldType="date" required="true"/>
+      <field name="mode" label="Working from" fieldType="selection" options="office, home, remote, field, travel" required="true"/>
+      <field name="note" label="Note"/>
+    </group>
+  </view>
+</page>

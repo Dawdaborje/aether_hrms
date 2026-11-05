@@ -1,0 +1,122 @@
+[plugin]
+name = "hr_recruitment"
+icon_path = "assets/logo.svg"
+label = "Recruitment"
+version = "0.1.3"
+description = "Openings, applications, interviews, feedback and offers, ending in a hire."
+long_description = """
+Openings are for seats of a position and open only when the position has free seats that no other open
+opening has already promised; the check is made again when an offer goes out. A candidate is one person in
+the directory, so an application is just that person and an opening. Interviews have a panel with no
+overlapping bookings and rate a round's criteria; feedback is blind until the interview has its outcome,
+which is worked out from the feedback in, not typed. Offers need a second person's approval and stay inside
+the opening's salary band unless someone says why. The hire itself is done by HR through the HR plugin, so
+its holds and checks apply. Written in Rust.
+See docs/design.md in this plugin (hr_recruitment/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "party", "currency"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "ocr::parse"]
+# The career site: anonymous visitors may list open jobs and apply, nothing else.
+public_functions = ["career_jobs", "career_apply"]
+public_capabilities = ["db::query", "db::mutate", "plugins::call"]
+public_access_models = [
+  { name = "rec_opening", permissions = ["read"] },
+  { name = "rec_stage", permissions = ["read"] },
+  { name = "rec_application", permissions = ["read", "write"] },
+  { name = "rec_source", permissions = ["read"] },
+  { name = "rec_pool", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+access_models = [
+  { name = "rec_stage", permissions = ["read", "write"] },
+  { name = "rec_reject_reason", permissions = ["read", "write"] },
+  { name = "rec_opening", permissions = ["read", "write"] },
+  { name = "rec_application", permissions = ["read", "write"] },
+  { name = "rec_round", permissions = ["read", "write"] },
+  { name = "rec_interview", permissions = ["read", "write"] },
+  { name = "rec_feedback", permissions = ["read", "write"] },
+  { name = "rec_offer", permissions = ["read", "write"] },
+  { name = "rec_source", permissions = ["read", "write"] },
+  { name = "rec_opening_template", permissions = ["read", "write"] },
+  { name = "rec_offer_term", permissions = ["read", "write"] },
+  { name = "rec_offer_template", permissions = ["read", "write"] },
+  { name = "rec_pool", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "recruiter"
+label = "Recruiter"
+description = "Sees every application; moves, rejects and schedules; drafts offers"
+
+[[roles]]
+name = "recruit_manager"
+label = "Recruitment manager"
+description = "Everything a recruiter does, sets up stages and rounds, opens openings, approves offers, sends applications back"
+
+[[roles]]
+name = "recruit_corrector"
+label = "Recruitment record corrector"
+description = "May delete feedback. Nobody should hold this in normal use."
+
+[[events]]
+name = "opening_opened"
+
+[[events]]
+name = "application_stage_changed"
+
+[[events]]
+name = "interview_reminder"
+
+[[events]]
+name = "interview_outcome_ready"
+
+[[events]]
+name = "offer_sent"
+
+[[events]]
+name = "offer_accepted"
+
+[[events]]
+name = "candidate_hired"
+
+# Reveal feedback and decide interviews that have enough of it; remind panels; close expired openings.
+[[schedule]]
+name = "recruitment-tick"
+title = "Update interviews and openings"
+description = "Marks past interviews as held, scores finished ones, reminds interviewers a day ahead and closes stale openings and offers."
+function = "recruitment_tick"
+every = "10m"
+
+# No [app]: pages fold into the HR workspace host sidebar (a module under HR).
+
+[[command]]
+name = "seed"
+function = "install_seed"
+help = "Create the usual recruitment stages when there are none (idempotent)"
+on_install = true
+on_upgrade = true
+
+[[command]]
+name = "demo_rec_reject_reason"
+function = "generate_demo_rec_reject_reason"
+help = "Generate demo rejection reasons"
+demo_model = "rec_reject_reason"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_rec_stage"
+function = "generate_demo_rec_stage"
+help = "Ensure the usual recruitment stages exist (idempotent)"
+demo_model = "rec_stage"
+args = [{ name = "count", type = "int", default = 6 }]
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

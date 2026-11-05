@@ -1,0 +1,10 @@
+<page route="/hr/attendance/requests/new" title="Attendance request" menu="false">
+  <view type="form" function="request_attendance" submit="Ask" success="Asked" redirect="/hr/attendance/requests">
+    <group title="Request" cols="2">
+      <field name="kind" label="Kind" fieldType="selection" options="work_from_home, on_duty, half_day" required="true"/>
+      <field name="date_from" label="From" fieldType="date" required="true"/>
+      <field name="date_to" label="To" fieldType="date" required="true"/>
+      <field name="reason" label="Reason" required="true"/>
+    </group>
+  </view>
+</page>

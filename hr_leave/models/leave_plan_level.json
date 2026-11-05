@@ -1,0 +1,113 @@
+{
+  "model_id": "mdl_3f7eoswy4i",
+  "name": "leave_plan_level",
+  "label": "%leave_plan_level%",
+  "plural_label": "%leave_plan_levels%",
+  "icon": "layers",
+  "title_field": "after_months",
+  "fields": [
+    {
+      "id": "fld_pcshqsgowd",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "leave_plan"
+    },
+    {
+      "id": "fld_ktdlfem6uk",
+      "name": "after_months",
+      "label": "%after_months%",
+      "type": "int",
+      "required": true,
+      "default": 0
+    },
+    {
+      "id": "fld_qsmf74mvfv",
+      "name": "frequency",
+      "label": "%frequency%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_rl2yo2j74p",
+          "value": "monthly",
+          "label": "%monthly%"
+        },
+        {
+          "id": "opt_rr73cr5vny",
+          "value": "quarterly",
+          "label": "%quarterly%"
+        },
+        {
+          "id": "opt_h4of574xyu",
+          "value": "half_yearly",
+          "label": "%half_yearly%"
+        },
+        {
+          "id": "opt_7cfyznzh6o",
+          "value": "yearly",
+          "label": "%yearly%"
+        }
+      ]
+    },
+    {
+      "id": "fld_am2gksfklp",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_4htvi44frm",
+      "name": "allocate_on",
+      "label": "%allocate_on%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_of3cszul4c",
+          "value": "first",
+          "label": "%first%"
+        },
+        {
+          "id": "opt_z66vrynabb",
+          "value": "last",
+          "label": "%last%"
+        }
+      ]
+    },
+    {
+      "id": "fld_itnnjtnwoo",
+      "name": "yearly_cap",
+      "label": "%yearly_cap%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_pwr7jaihjl",
+      "name": "total_cap",
+      "label": "%total_cap%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_7sqv5knsdk",
+      "name": "valid_days",
+      "label": "%valid_days%",
+      "type": "int",
+      "help": "Days a grant stays usable; empty: to the end of the year."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_3zntriwyb7",
+      "fields": [
+        "plan",
+        "after_months"
+      ],
+      "unique": true
+    }
+  ]
+}

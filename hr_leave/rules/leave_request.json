@@ -1,0 +1,60 @@
+{
+  "model": "leave_request",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "leave_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "open_requests_only",
+      "operations": [
+        "write"
+      ],
+      "exempt_roles": [
+        "leave_admin"
+      ],
+      "when": {
+        "state": {
+          "in": [
+            "submitted",
+            "first_approved",
+            "approved"
+          ]
+        }
+      }
+    }
+  ]
+}

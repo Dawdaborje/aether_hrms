@@ -1,0 +1,121 @@
+{
+  "model_id": "mdl_bmhcmxrika",
+  "name": "ins_premium",
+  "label": "%ins_premium%",
+  "plural_label": "%ins_premiums%",
+  "icon": "calendar-clock",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_mwg62mydxh",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "unique"
+    },
+    {
+      "id": "fld_owk3pmyq64",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_enrolment"
+    },
+    {
+      "id": "fld_akj5fkevk7",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_gpplcvuhus",
+      "name": "period_start",
+      "label": "%period_start%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_zdcvc45653",
+      "name": "period_end",
+      "label": "%period_end%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_ej3lxingdi",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_yuidvo7gk5",
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_jcgiy5z5jy",
+      "name": "employee_share",
+      "label": "%employee_share%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_zsnrxf7mbs",
+      "name": "employer_share",
+      "label": "%employer_share%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_hxih5xpoia",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "scheduled",
+      "options": [
+        {
+          "id": "opt_25lqsnfele",
+          "value": "scheduled",
+          "label": "%scheduled%"
+        },
+        {
+          "id": "opt_cuypcxkhxr",
+          "value": "deducted",
+          "label": "%deducted%"
+        },
+        {
+          "id": "opt_x4sihsj77d",
+          "value": "remitted",
+          "label": "%remitted%"
+        },
+        {
+          "id": "opt_ce6ubfgyip",
+          "value": "waived",
+          "label": "%waived%"
+        }
+      ]
+    },
+    {
+      "id": "fld_dfkuegcm4h",
+      "name": "adjustment",
+      "label": "%adjustment%",
+      "type": "string",
+      "max_length": 80
+    }
+  ]
+}

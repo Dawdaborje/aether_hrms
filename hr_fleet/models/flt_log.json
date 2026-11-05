@@ -1,0 +1,89 @@
+{
+  "model_id": "mdl_s188dypq6h",
+  "name": "flt_log",
+  "label": "%flt_log%",
+  "plural_label": "%flt_logs%",
+  "icon": "fuel",
+  "title_field": "log_date",
+  "fields": [
+    {
+      "id": "fld_pdcpeyi138",
+      "name": "vehicle",
+      "label": "%vehicle%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_jgwvnp0l4a",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_spqmiflzdt",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_1oce73nnn0",
+          "value": "fuel",
+          "label": "%fuel%"
+        },
+        {
+          "id": "opt_koq741uxxx",
+          "value": "trip",
+          "label": "%trip%"
+        },
+        {
+          "id": "opt_lc35pyo4vf",
+          "value": "toll",
+          "label": "%toll%"
+        },
+        {
+          "id": "opt_ws58c88mdk",
+          "value": "other",
+          "label": "%other%"
+        }
+      ],
+      "default": "fuel"
+    },
+    {
+      "id": "fld_x3su90itet",
+      "name": "log_date",
+      "label": "%log_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_y6ly9sh443",
+      "name": "odometer",
+      "label": "%odometer%",
+      "type": "int"
+    },
+    {
+      "id": "fld_ktud77slzp",
+      "name": "litres",
+      "label": "%litres%",
+      "type": "decimal"
+    },
+    {
+      "id": "fld_ei7cjbl9y2",
+      "name": "cost",
+      "label": "%cost%",
+      "type": "decimal"
+    },
+    {
+      "id": "fld_fcjeiq59uz",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ]
+}

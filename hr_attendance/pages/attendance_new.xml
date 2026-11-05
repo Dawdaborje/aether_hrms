@@ -1,0 +1,5 @@
+<page route="/hr/attendance/new" title="Punch" model="att_day">
+  <view type="form" function="punch" submit="Punch" success="Recorded" redirect="/hr/attendance">
+    <field name="direction" label="Direction" fieldType="selection" options="auto, in, out"/>
+  </view>
+</page>

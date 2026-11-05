@@ -1,0 +1,48 @@
+{
+  "model_id": "mdl_55837abe6b",
+  "name": "doc_bank_org",
+  "label": "%doc_bank_org%",
+  "plural_label": "%doc_bank_orgs%",
+  "icon": "landmark",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_c08bb1a309",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_76a77cfc06",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain"
+    },
+    {
+      "id": "fld_a84b6064e4",
+      "name": "swift",
+      "label": "%swift%",
+      "type": "string",
+      "max_length": 20
+    },
+    {
+      "id": "fld_05ce6bbc49",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "code",
+      "is_active"
+    ]
+  }
+}

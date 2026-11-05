@@ -1,0 +1,40 @@
+{
+  "model": "expense_advance",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "finance",
+      "roles": [
+        "expense_finance",
+        "expense_admin"
+      ],
+      "operations": [
+        "read",
+        "write",
+        "create"
+      ]
+    }
+  ]
+}

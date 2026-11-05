@@ -1,0 +1,18 @@
+{
+  "model_id": "mdl_8abckqcphs",
+  "name": "comp_lock",
+  "label": "%comp_lock%",
+  "plural_label": "%comp_locks%",
+  "icon": "lock",
+  "title_field": "locked_through",
+  "fields": [
+    {
+      "id": "fld_ludnw9zix1",
+      "name": "locked_through",
+      "label": "%locked_through%",
+      "type": "date",
+      "required": true,
+      "help": "Adjustments dated on or before this day are closed: payroll has approved those periods."
+    }
+  ]
+}

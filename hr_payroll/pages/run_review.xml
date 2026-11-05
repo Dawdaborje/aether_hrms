@@ -1,0 +1,12 @@
+<page route="/hr/payroll/review/{id}" title="Review before approving" menu="false" icon="list-checks">
+  <view type="list" source="review_pay_run_rows">
+    <columns>
+      <column field="employee_name" label="Employee"/>
+      <column field="net" label="Net"/>
+      <column field="previous_net" label="Last time"/>
+      <column field="change_percent" label="Change %"/>
+      <column field="flags" label="Why it is listed"/>
+    </columns>
+    <empty title="Nothing stands out" description="No change above the threshold, no new or missing people, no missing bank accounts."/>
+  </view>
+</page>

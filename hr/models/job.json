@@ -1,0 +1,54 @@
+{
+  "model_id": "mdl_r244x6gqni",
+  "name": "job",
+  "label": "%job%",
+  "plural_label": "%jobs%",
+  "icon": "briefcase",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_ojukkhn4wc",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "plain"
+    },
+    {
+      "id": "fld_dmnhstyi27",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "max_length": 20,
+      "index": "unique"
+    },
+    {
+      "id": "fld_xptm32em6v",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "department"
+    },
+    {
+      "id": "fld_j7qxl5brvf",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    },
+    {
+      "id": "fld_gcigezrqw4",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "code",
+      "department"
+    ]
+  }
+}

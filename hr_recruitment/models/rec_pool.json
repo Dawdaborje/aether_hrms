@@ -1,0 +1,41 @@
+{
+  "model_id": "mdl_zp0bj5h09b",
+  "name": "rec_pool",
+  "label": "%rec_pool%",
+  "plural_label": "%rec_pools%",
+  "icon": "users",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_ajb29dtli7",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "max_length": 160
+    },
+    {
+      "id": "fld_u9hf7s7olq",
+      "name": "members",
+      "label": "%members%",
+      "type": "many2many",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "help": "Interviewers in the pool."
+    },
+    {
+      "id": "fld_kdpl52xif5",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "is_active"
+    ]
+  }
+}

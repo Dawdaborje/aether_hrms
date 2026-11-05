@@ -1,0 +1,11 @@
+<page route="/hr/timesheets/new" title="Log hours" menu="false" model="ts_entry">
+  <view type="form" function="log_hours" submit="Save" success="Logged" redirect="/hr/timesheets">
+    <group title="Hours" cols="2">
+      <field name="project" label="Project" fieldType="many2one" source="list_ts_projects" optionLabel="name" entity="projects" required="true"/>
+      <field name="date" label="Day" fieldType="date" required="true"/>
+      <field name="hours" label="Hours" required="true"/>
+      <field name="task" label="Task"/>
+      <field name="note" label="Note"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,46 @@
+{
+  "model": "pay_exemption_declaration",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "staff",
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "payroll_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<page route="/hr/assets/{id}" title="Asset" menu="false" model="asset">
+  <view type="form" source="get_asset">
+    <group title="Asset" cols="2">
+      <field name="tag" label="Tag" readonly="true"/>
+      <field name="name" label="Name" readonly="true"/>
+      <field name="category" label="Category" fieldType="many2one" readonly="true"/>
+      <field name="serial" label="Serial" readonly="true"/>
+    </group>
+    <group title="Custody" cols="2">
+      <field name="state" label="State" readonly="true"/>
+      <field name="assigned_on" label="Assigned on" fieldType="date" readonly="true"/>
+      <field name="acknowledged" label="Acknowledged" fieldType="boolean" readonly="true"/>
+      <field name="purchase_date" label="Purchased" fieldType="date" readonly="true"/>
+    </group>
+  </view>
+</page>

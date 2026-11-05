@@ -1,0 +1,66 @@
+{
+  "model": "perf_appraisal",
+  "access": [
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ],
+      "roles": [
+        "perf_admin"
+      ]
+    },
+    {
+      "name": "managers",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "own_self_review",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee",
+        "phase": "self_review"
+      }
+    },
+    {
+      "name": "own_published",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee",
+        "phase": {
+          "in": [
+            "published",
+            "closed"
+          ]
+        }
+      }
+    },
+    {
+      "name": "reviewers",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "id": {
+          "in": "$my_review_appraisals"
+        },
+        "phase": "manager_review"
+      }
+    }
+  ]
+}

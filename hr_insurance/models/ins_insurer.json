@@ -1,0 +1,48 @@
+{
+  "model_id": "mdl_duwiepa5rt",
+  "name": "ins_insurer",
+  "label": "%ins_insurer%",
+  "plural_label": "%ins_insurers%",
+  "icon": "shield",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_63h4jxkvdm",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_mrweqc7vb5",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_oxsxbnkxqh",
+      "name": "contact_email",
+      "label": "%contact_email%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_gvozmmfgju",
+      "name": "contact_phone",
+      "label": "%contact_phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_fliyjfkx26",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

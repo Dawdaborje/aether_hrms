@@ -1,0 +1,47 @@
+{
+  "model": "comp_award",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "ask",
+      "operations": [
+        "create"
+      ],
+      "roles": [
+        "comp_admin",
+        "hr.hr_manager"
+      ]
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "status",
+        "decided_by",
+        "adjustment",
+        "requested_by"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

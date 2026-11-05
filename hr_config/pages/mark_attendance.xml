@@ -1,0 +1,10 @@
+<page route="/hr/config/attendance/mark" title="Mark attendance for a department" menu_group="Attendance" icon="check-square" sort="45" roles="hr_attendance.att_admin">
+  <view type="form" function="mark_attendance_bulk" submit="Mark" success="Done: see the result for days that could not be marked">
+    <group title="Day" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments" required="true"/>
+      <field name="date" label="Date" fieldType="date" required="true"/>
+      <field name="status" label="Status" fieldType="selection" options="present, absent, half_day, leave, holiday, weekly_off" required="true"/>
+      <field name="reason" label="Why" required="true"/>
+    </group>
+  </view>
+</page>

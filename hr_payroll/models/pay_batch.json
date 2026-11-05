@@ -1,0 +1,100 @@
+{
+  "model_id": "mdl_7szdsi1iow",
+  "name": "pay_batch",
+  "label": "%pay_batch%",
+  "plural_label": "%pay_batchs%",
+  "icon": "boxes",
+  "title_field": "idx",
+  "fields": [
+    {
+      "id": "fld_xgy74mifst",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "pay_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_rx31m8lvva",
+      "name": "attempt",
+      "label": "%attempt%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_6bfro9ljub",
+      "name": "idx",
+      "label": "%idx%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_zdvofydc9v",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_qm1jqczvqt",
+          "value": "done",
+          "label": "%done%"
+        },
+        {
+          "id": "opt_iac8wb37uu",
+          "value": "failed",
+          "label": "%failed%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_hssgwjado1",
+      "name": "employees",
+      "label": "%employees%",
+      "type": "int"
+    },
+    {
+      "id": "fld_lb0z0w7t0m",
+      "name": "calculated",
+      "label": "%calculated%",
+      "type": "int"
+    },
+    {
+      "id": "fld_nv135798e9",
+      "name": "skipped",
+      "label": "%skipped%",
+      "type": "int"
+    },
+    {
+      "id": "fld_a57r9lpsit",
+      "name": "failed",
+      "label": "%failed%",
+      "type": "int"
+    },
+    {
+      "id": "fld_8datahqb2q",
+      "name": "totals",
+      "label": "%totals%",
+      "type": "json"
+    },
+    {
+      "id": "fld_a5869bsie4",
+      "name": "message",
+      "label": "%message%",
+      "type": "string",
+      "max_length": 300
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_cxp0kqmgz6",
+      "fields": [
+        "run",
+        "attempt",
+        "idx"
+      ],
+      "unique": true
+    }
+  ]
+}

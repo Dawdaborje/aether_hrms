@@ -1,0 +1,111 @@
+{
+  "model_id": "mdl_uc4qjoayjh",
+  "name": "ins_policy",
+  "label": "%ins_policy%",
+  "plural_label": "%ins_policys%",
+  "icon": "file-text",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_brchzjuyss",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_tspymkxkx4",
+      "name": "insurer",
+      "label": "%insurer%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_insurer"
+    },
+    {
+      "id": "fld_m6aoo2e4oo",
+      "name": "plan",
+      "label": "%plan%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_plan"
+    },
+    {
+      "id": "fld_677e5grx6u",
+      "name": "company",
+      "label": "%company%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_7jcaqii5bc",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_jdgfhtbpvo",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_xd6uqw24sf",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "options": [
+        {
+          "id": "opt_43bmtibaok",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_aygfbtps6m",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_otdbvzposl",
+          "value": "expired",
+          "label": "%expired%"
+        },
+        {
+          "id": "opt_wxafsxzksr",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_jkdsasae3x",
+      "name": "renewal_of",
+      "label": "%renewal_of%",
+      "type": "link",
+      "index": "plain",
+      "target": "ins_policy"
+    },
+    {
+      "id": "fld_ihoo74umki",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ljhbogp34v",
+      "fields": [
+        "insurer",
+        "number"
+      ],
+      "unique": true
+    }
+  ]
+}

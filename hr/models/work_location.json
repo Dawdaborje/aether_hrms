@@ -1,0 +1,79 @@
+{
+  "model_id": "mdl_n6jg37f7wb",
+  "name": "work_location",
+  "label": "%work_location%",
+  "plural_label": "%work_locations%",
+  "icon": "map-pin",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_dszb6raoaa",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "plain"
+    },
+    {
+      "id": "fld_2adiabbtoe",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp"
+    },
+    {
+      "id": "fld_dg4q6pl7yx",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "default": "office",
+      "options": [
+        {
+          "id": "opt_2yz2qe3ib4",
+          "value": "office",
+          "label": "%office%"
+        },
+        {
+          "id": "opt_is4yej3j6y",
+          "value": "home",
+          "label": "%home%"
+        },
+        {
+          "id": "opt_az75clj26t",
+          "value": "other",
+          "label": "%other%"
+        }
+      ]
+    },
+    {
+      "id": "fld_5sta3crxvq",
+      "name": "address",
+      "label": "%address%",
+      "type": "text"
+    },
+    {
+      "id": "fld_gl3qxbh67l",
+      "name": "timezone",
+      "label": "%timezone%",
+      "type": "string",
+      "max_length": 64,
+      "help": "An IANA name such as Africa/Banjul."
+    },
+    {
+      "id": "fld_dh35hzdhvp",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "kind",
+      "company"
+    ]
+  }
+}

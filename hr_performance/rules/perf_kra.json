@@ -1,0 +1,32 @@
+{
+  "model": "perf_kra",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "perf_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<page route="/hr/timesheets" title="My timesheet" model="ts_entry" icon="clock">
+  <view type="list" model="ts_entry" source="my_timesheet" create="/hr/timesheets/new" create_label="Log hours">
+    <columns>
+      <column field="work_date" label="Day" fieldType="date"/>
+      <column field="project" label="Project"/>
+      <column field="hours" label="Hours"/>
+      <column field="task" label="Task"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="submit" label="Submit" function="submit_hours"/>
+      <action name="delete" label="Delete" function="delete_hours" confirm="Delete this entry?" danger="true"/>
+    </actions>
+    <empty title="No hours yet" description="Log the time you spend on projects."/>
+  </view>
+</page>

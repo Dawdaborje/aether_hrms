@@ -1,0 +1,19 @@
+<page route="/hr/my-payslips" title="My payslips" model="payslip" icon="receipt">
+  <header title="My payslips">
+    <button label="Download Excel" function="export_my_payslips" format="xlsx"/>
+    <button label="Download PDF" function="export_my_payslips" format="pdf"/>
+  </header>
+  <view type="list" model="payslip" source="my_payslips" open="/hr/my-payslips/{id}">
+    <columns>
+      <column field="employee_name" label="Employee"/>
+      <column field="gross" label="Gross"/>
+      <column field="deductions" label="Deductions"/>
+      <column field="net" label="Net pay"/>
+      <column field="currency" label="Currency"/>
+    </columns>
+    <actions>
+      <action name="pdf" label="Download" function="export_payslip"/>
+    </actions>
+    <empty title="No payslips" description="Your payslips appear here once a pay run is approved."/>
+  </view>
+</page>

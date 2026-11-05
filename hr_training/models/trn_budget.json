@@ -1,0 +1,50 @@
+{
+  "model_id": "mdl_w3n65a3bdq",
+  "name": "trn_budget",
+  "label": "%trn_budget%",
+  "plural_label": "%trn_budgets%",
+  "icon": "wallet",
+  "title_field": "department",
+  "fields": [
+    {
+      "id": "fld_nbwhysdnnt",
+      "name": "department",
+      "label": "%department%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_2nqgcjl2qe",
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_hkocxf3asg",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_ke7ne6a3na",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 10
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_44zfheskbi",
+      "fields": [
+        "department",
+        "year"
+      ],
+      "unique": true
+    }
+  ]
+}

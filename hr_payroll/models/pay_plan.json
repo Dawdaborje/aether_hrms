@@ -1,0 +1,64 @@
+{
+  "model_id": "mdl_ezrs53031p",
+  "name": "pay_plan",
+  "label": "%pay_plan%",
+  "plural_label": "%pay_plans%",
+  "icon": "map",
+  "title_field": "page",
+  "fields": [
+    {
+      "id": "fld_ncu6q8t5oe",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "pay_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_epgbbhrxx0",
+      "name": "attempt",
+      "label": "%attempt%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_kl22x2hxs1",
+      "name": "page",
+      "label": "%page%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_1mg7nevmxr",
+      "name": "batches",
+      "label": "%batches%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_0qbbazqvmc",
+      "name": "employees",
+      "label": "%employees%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_2j5pip0myk",
+      "name": "jobs",
+      "label": "%jobs%",
+      "type": "json"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_98ksdljj74",
+      "fields": [
+        "run",
+        "attempt",
+        "page"
+      ],
+      "unique": true
+    }
+  ]
+}

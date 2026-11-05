@@ -1,0 +1,11 @@
+<page route="/hr/config/locations" title="Work locations" menu_group="General" menu_group_icon="settings" icon="map-pin" sort="20" roles="hr.hr_user,hr.hr_manager">
+  <view type="list" source="list_all_work_locations" open="/hr/config/locations/{id}" create="/hr/config/locations/new" create_label="New">
+    <columns>
+      <column field="name" label="Location"/>
+      <column field="kind" label="Kind"/>
+      <column field="timezone" label="Timezone"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No work locations" description="Add the sites employees can pick as their work location."/>
+  </view>
+</page>

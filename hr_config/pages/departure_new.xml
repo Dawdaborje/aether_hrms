@@ -1,0 +1,11 @@
+<page route="/hr/config/departures/new" title="Record a departure" menu="false" roles="hr_onboarding.ob_officer,hr_onboarding.ob_manager">
+  <view type="form" function="begin_departure" submit="Record" success="Departure recorded" redirect="/hr/config/departures">
+    <group title="Departure" cols="2">
+      <field name="employee" label="Employee" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees" required="true"/>
+      <field name="reason" label="Reason" fieldType="many2one" source="list_departure_reasons" optionLabel="name" entity="reasons" required="true"/>
+      <field name="last_day" label="Last day" fieldType="date" required="true"/>
+      <field name="notice_date" label="Notice given on" fieldType="date"/>
+      <field name="description" label="Notes" fieldType="textarea"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,21 @@
+<page route="/hr/compensation/adjustments/{id}" title="Adjustment" menu="false" model="comp_adjustment">
+  <view type="form" source="get_adjustment">
+    <group title="Adjustment" cols="2">
+      <field name="code" label="Code" readonly="true"/>
+      <field name="kind" label="Kind" readonly="true"/>
+      <field name="amount" label="Amount" readonly="true"/>
+      <field name="mode" label="Mode" readonly="true"/>
+      <field name="status" label="Status" readonly="true"/>
+      <field name="prorate" label="Prorated" fieldType="boolean" readonly="true"/>
+    </group>
+    <group title="Dates" cols="3">
+      <field name="pay_date" label="Pay date" fieldType="date" readonly="true"/>
+      <field name="date_from" label="From" fieldType="date" readonly="true"/>
+      <field name="date_to" label="To" fieldType="date" readonly="true"/>
+    </group>
+    <group title="Notes" cols="1">
+      <field name="reason" label="Reason" fieldType="text" readonly="true"/>
+      <field name="source_plugin" label="Added by plugin" readonly="true"/>
+    </group>
+  </view>
+</page>

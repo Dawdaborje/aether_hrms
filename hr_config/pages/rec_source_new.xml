@@ -1,0 +1,7 @@
+<page route="/hr/config/recruitment/sources/new" title="New source" menu="false" roles="hr_recruitment.recruit_manager">
+  <view type="form" function="create_rec_source" submit="Create" success="Created" redirect="/hr/config/recruitment/sources">
+    <group title="Source" cols="1">
+      <field name="name" label="Name" required="true"/>
+    </group>
+  </view>
+</page>

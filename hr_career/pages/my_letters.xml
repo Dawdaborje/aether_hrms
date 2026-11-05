@@ -1,0 +1,14 @@
+<page route="/hr/my-letters" title="My letters" model="career_letter" icon="file-text">
+  <view type="list" model="career_letter" source="my_letters">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="kind" label="Kind"/>
+      <column field="issued_on" label="Issued" fieldType="date"/>
+      <column field="accepted_on" label="Accepted" fieldType="date"/>
+    </columns>
+    <actions>
+      <action name="accept" label="Accept" function="accept_employee_letter"/>
+    </actions>
+    <empty title="No letters" description="Letters issued to you appear here."/>
+  </view>
+</page>

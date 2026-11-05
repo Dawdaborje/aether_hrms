@@ -1,0 +1,20 @@
+<page route="/hr/config/attendance/shifts/{id}" title="Shift" menu="false" roles="hr_attendance.att_admin">
+  <view type="form" source="get_shift" function="update_shift" submit="Save" success="Saved" redirect="/hr/config/attendance/shifts">
+    <group title="Shift" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="start_time" label="Start (HH:MM)"/>
+      <field name="end_time" label="End (HH:MM)"/>
+      <field name="break_min" label="Break (min)" fieldType="integer"/>
+      <field name="utc_offset_min" label="UTC offset (min)" fieldType="integer"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+    <group title="Tolerances" cols="2">
+      <field name="grace_late_min" label="Late grace (min)" fieldType="integer"/>
+      <field name="grace_early_min" label="Early-exit grace (min)" fieldType="integer"/>
+      <field name="half_day_below_min" label="Half day below (min worked)" fieldType="integer"/>
+      <field name="absent_below_min" label="Absent below (min worked)" fieldType="integer"/>
+      <field name="early_window_min" label="Punch window before start (min)" fieldType="integer"/>
+      <field name="late_window_min" label="Punch window after end (min)" fieldType="integer"/>
+    </group>
+  </view>
+</page>

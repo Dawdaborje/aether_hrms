@@ -1,0 +1,46 @@
+{
+  "model_id": "mdl_dlof7pgurl",
+  "name": "rec_offer_template",
+  "label": "%rec_offer_template%",
+  "plural_label": "%rec_offer_templates%",
+  "icon": "file-text",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_xscny5s83e",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "max_length": 160
+    },
+    {
+      "id": "fld_jp6u4o66y5",
+      "name": "intro",
+      "label": "%intro%",
+      "type": "text",
+      "help": "Same placeholders as a term."
+    },
+    {
+      "id": "fld_c4ftavuttf",
+      "name": "terms",
+      "label": "%terms%",
+      "type": "json",
+      "help": "Ids of rec_offer_term rows, in the order they print."
+    },
+    {
+      "id": "fld_z3yjrtpt2e",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "is_active"
+    ]
+  }
+}

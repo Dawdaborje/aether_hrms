@@ -1,0 +1,8 @@
+<page route="/hr/config/leave/approvers/new" title="Add leave approver" menu="false" roles="hr_leave.leave_admin">
+  <view type="form" function="set_leave_approver" submit="Add" success="Added" redirect="/hr/config/leave/approvers">
+    <group title="Approver" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments" required="true"/>
+      <field name="approver" label="Approver" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees" required="true"/>
+    </group>
+  </view>
+</page>

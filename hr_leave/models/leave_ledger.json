@@ -1,0 +1,164 @@
+{
+  "model_id": "mdl_agv3tsbynb",
+  "name": "leave_ledger",
+  "label": "%leave_ledger%",
+  "plural_label": "%leave_ledgers%",
+  "icon": "book-open",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_twdvri6hmk",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_nsbidwcys7",
+      "name": "leave_type",
+      "label": "%leave_type%",
+      "type": "link",
+      "target": "leave_type",
+      "required": true
+    },
+    {
+      "id": "fld_dera75mz52",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_ljlxc3avl4",
+          "value": "allocation",
+          "label": "%allocation%"
+        },
+        {
+          "id": "opt_npn7efni27",
+          "value": "accrual",
+          "label": "%accrual%"
+        },
+        {
+          "id": "opt_vra4afugic",
+          "value": "carry_forward",
+          "label": "%carry_forward%"
+        },
+        {
+          "id": "opt_lzxciod63f",
+          "value": "usage",
+          "label": "%usage%"
+        },
+        {
+          "id": "opt_qitc433hr3",
+          "value": "reservation",
+          "label": "%reservation%"
+        },
+        {
+          "id": "opt_fj5dh2axeo",
+          "value": "expiry",
+          "label": "%expiry%"
+        },
+        {
+          "id": "opt_i4o25or3pc",
+          "value": "encashment",
+          "label": "%encashment%"
+        },
+        {
+          "id": "opt_5s2ahl4aa2",
+          "value": "adjustment",
+          "label": "%adjustment%"
+        },
+        {
+          "id": "opt_pyki6qn4nl",
+          "value": "reversal",
+          "label": "%reversal%"
+        }
+      ]
+    },
+    {
+      "id": "fld_jgdthnvkvi",
+      "name": "days",
+      "label": "%days%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "help": "Signed: grants are positive, leave taken is negative."
+    },
+    {
+      "id": "fld_nauq5bqwtb",
+      "name": "date",
+      "label": "%date%",
+      "type": "date",
+      "required": true,
+      "help": "A grant counts from this day; a deduction is charged on it."
+    },
+    {
+      "id": "fld_t63mliqngm",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date",
+      "help": "The last day a grant can be used."
+    },
+    {
+      "id": "fld_j5x2egwn4r",
+      "name": "key",
+      "label": "%key%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "help": "Unique per person and type; the same system entry is never written twice."
+    },
+    {
+      "id": "fld_6lkzmxnhdb",
+      "name": "reverses",
+      "label": "%reverses%",
+      "type": "link",
+      "target": "leave_ledger",
+      "help": "The entry this one cancels."
+    },
+    {
+      "id": "fld_2ntrru5qhz",
+      "name": "source",
+      "label": "%source%",
+      "type": "string",
+      "max_length": 120,
+      "help": "What caused it: a request, a yearly run, a manual grant."
+    },
+    {
+      "id": "fld_ysjjgsma7v",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ti6j3nd3ei",
+      "fields": [
+        "employee",
+        "leave_type",
+        "key"
+      ],
+      "unique": true
+    },
+    {
+      "id": "idx_q3t2svjba3",
+      "fields": [
+        "employee",
+        "leave_type"
+      ]
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "leave_type",
+      "kind",
+      "days",
+      "date"
+    ]
+  }
+}

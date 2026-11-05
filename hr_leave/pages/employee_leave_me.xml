@@ -1,0 +1,3 @@
+<page extends="/hr/me" title="Leave" params="employee={id}" sort="40">
+  <use component="leave_panel"/>
+</page>

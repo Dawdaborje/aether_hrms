@@ -1,0 +1,59 @@
+{
+  "model_id": "mdl_syabw4o5ju",
+  "name": "perf_skill_requirement",
+  "label": "%perf_skill_requirement%",
+  "plural_label": "%perf_skill_requirements%",
+  "icon": "target",
+  "title_field": "skill",
+  "fields": [
+    {
+      "id": "fld_nosxl1le7p",
+      "name": "job",
+      "label": "%job%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "plain",
+      "help": "An hr job id."
+    },
+    {
+      "id": "fld_vpymkvkjyj",
+      "name": "skill",
+      "label": "%skill%",
+      "type": "link",
+      "target": "perf_skill",
+      "required": true
+    },
+    {
+      "id": "fld_01b6p4bwmk",
+      "name": "target_level",
+      "label": "%target_level%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_d5hoh0rfrv",
+      "name": "weight",
+      "label": "%weight%",
+      "type": "int",
+      "default": 1
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_kufqro25zi",
+      "fields": [
+        "job",
+        "skill"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "job",
+      "skill",
+      "target_level"
+    ]
+  }
+}

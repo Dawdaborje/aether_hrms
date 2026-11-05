@@ -1,0 +1,69 @@
+{
+  "model_id": "mdl_2qchrfyhec",
+  "name": "ob_template",
+  "label": "%ob_template%",
+  "plural_label": "%ob_templates%",
+  "icon": "list-checks",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_e8yd6r7urw",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_qhnqxztbdn",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_jqedrozud3",
+          "value": "onboard",
+          "label": "%onboard%"
+        },
+        {
+          "id": "opt_j7eesaxosg",
+          "value": "offboard",
+          "label": "%offboard%"
+        }
+      ],
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_k4y42yydpw",
+      "name": "department",
+      "label": "%department%",
+      "type": "string",
+      "max_length": 80,
+      "help": "Only for people in this department (an hr department id); empty means everyone."
+    },
+    {
+      "id": "fld_cl7ug6b3oe",
+      "name": "job",
+      "label": "%job%",
+      "type": "string",
+      "max_length": 80,
+      "help": "Only for this job (an hr job id); empty means any."
+    },
+    {
+      "id": "fld_urilg5x7j7",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "kind",
+      "is_active"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+<page route="/hr/loans/approvals" title="Loan approvals" model="loan" icon="check-check" roles="hr_loan.loan_admin">
+  <view type="list" model="loan" source="loans_waiting_for_me">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="principal" label="Principal"/>
+      <column field="months" label="Months"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_loan"/>
+      <action name="reject" label="Reject" function="reject_loan" confirm="Reject this loan?" danger="true"/>
+    </actions>
+    <empty title="Nothing waiting" description="Loan requests you can decide appear here."/>
+  </view>
+</page>

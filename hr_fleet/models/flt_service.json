@@ -1,0 +1,97 @@
+{
+  "model_id": "mdl_t7ary9x0vn",
+  "name": "flt_service",
+  "label": "%flt_service%",
+  "plural_label": "%flt_services%",
+  "icon": "wrench",
+  "title_field": "service_date",
+  "fields": [
+    {
+      "id": "fld_rohokqindn",
+      "name": "vehicle",
+      "label": "%vehicle%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_v34ywnztqe",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_zr4ats87ko",
+          "value": "maintenance",
+          "label": "%maintenance%"
+        },
+        {
+          "id": "opt_qdvbi0nqy3",
+          "value": "repair",
+          "label": "%repair%"
+        },
+        {
+          "id": "opt_788c26ao3u",
+          "value": "inspection",
+          "label": "%inspection%"
+        },
+        {
+          "id": "opt_uvnzubd679",
+          "value": "tyres",
+          "label": "%tyres%"
+        },
+        {
+          "id": "opt_ig2i87jz6r",
+          "value": "insurance",
+          "label": "%insurance%"
+        },
+        {
+          "id": "opt_w5q0wbppxk",
+          "value": "other",
+          "label": "%other%"
+        }
+      ],
+      "default": "maintenance"
+    },
+    {
+      "id": "fld_alh237ri2j",
+      "name": "service_date",
+      "label": "%service_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_a709hm20j3",
+      "name": "odometer",
+      "label": "%odometer%",
+      "type": "int"
+    },
+    {
+      "id": "fld_7ivusg253s",
+      "name": "cost",
+      "label": "%cost%",
+      "type": "decimal"
+    },
+    {
+      "id": "fld_mxizi6p5b9",
+      "name": "vendor",
+      "label": "%vendor%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_ybup76dxqw",
+      "name": "next_due",
+      "label": "%next_due%",
+      "type": "date"
+    },
+    {
+      "id": "fld_501orsluax",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 300
+    }
+  ]
+}

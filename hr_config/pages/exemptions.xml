@@ -1,0 +1,13 @@
+<page route="/hr/config/payroll/exemptions" title="Tax exemptions" menu_group="Payroll" icon="shield" sort="40" roles="hr_payroll.payroll_admin,hr_payroll.payroll_clerk,hr_payroll.payroll_approver,hr_payroll.payroll_finance">
+  <view type="list" source="list_exemption_declarations">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="category" label="Category"/>
+      <column field="year" label="Year"/>
+      <column field="declared" label="Declared"/>
+      <column field="verified" label="Verified"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No declarations" description="Employees declare exemptions; payroll verifies the proof."/>
+  </view>
+</page>

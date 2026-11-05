@@ -1,0 +1,35 @@
+{
+  "model": "comp_lock",
+  "access": [
+    {
+      "name": "read",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "comp_admin"
+      ]
+    },
+    {
+      "name": "write",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "comp_admin",
+        "via:hr_payroll"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "locked_through"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

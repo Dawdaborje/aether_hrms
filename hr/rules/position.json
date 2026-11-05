@@ -1,0 +1,39 @@
+{
+  "model": "position",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "hr_writes",
+      "roles": [
+        "hr_user",
+        "hr_manager"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "base_wage",
+        "currency"
+      ],
+      "read_roles": [
+        "hr.hr_manager",
+        "via:self"
+      ],
+      "write_roles": [
+        "hr.hr_manager",
+        "via:self"
+      ]
+    }
+  ]
+}

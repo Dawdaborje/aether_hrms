@@ -1,0 +1,26 @@
+{
+  "model_id": "mdl_xx7wdlqmth",
+  "name": "rec_reject_reason",
+  "label": "%rec_reject_reason%",
+  "plural_label": "%rec_reject_reasons%",
+  "icon": "x-circle",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_i73aotnzuj",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_xwilnyq6tf",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

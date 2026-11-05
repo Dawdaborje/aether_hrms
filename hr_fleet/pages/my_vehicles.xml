@@ -1,0 +1,13 @@
+<page route="/hr/fleet/mine" title="My vehicles" model="flt_assignment" icon="key">
+  <view type="list" model="flt_assignment" source="my_vehicles" create="/hr/fleet/log" create_label="Log use">
+    <columns>
+      <column field="vehicle" label="Vehicle"/>
+      <column field="from_date" label="Since" fieldType="date"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="return" label="Hand back" function="return_vehicle" confirm="Hand this vehicle back?"/>
+    </actions>
+    <empty title="No vehicle" description="A vehicle assigned to you appears here."/>
+  </view>
+</page>

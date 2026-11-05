@@ -1,0 +1,41 @@
+{
+  "model": "perf_goal",
+  "access": [
+    {
+      "name": "admin",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ],
+      "roles": [
+        "perf_admin"
+      ]
+    },
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "managers",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+<page route="/hr/insurance/preauths" title="Preauthorisations" model="ins_preauth" icon="badge-check" sort="50">
+  <view type="list" model="ins_preauth" source="list_preauthorisations" create="/hr/insurance/preauths/new" create_label="Ask for approval">
+    <filter field="state" options="submitted,approved,rejected,used,expired,cancelled" label="State"/>
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="estimated_amount" label="Estimated"/>
+      <column field="approved_amount" label="Approved"/>
+      <column field="valid_until" label="Valid until" fieldType="date"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="cancel" label="Cancel" function="cancel_preauthorisation" confirm="Cancel this request?" danger="true"/>
+    </actions>
+    <empty title="No requests" description="Ask for approval before planned care."/>
+  </view>
+</page>

@@ -1,0 +1,10 @@
+<page route="/hr/config/payroll/assign" title="Assign structure to a department" menu_group="Payroll" icon="users" sort="40" roles="hr_payroll.payroll_admin">
+  <view type="form" function="bulk_assign_structure_by_department" submit="Assign" success="Done: see the result for any failures">
+    <group title="Assignment" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments" required="true"/>
+      <field name="structure" label="Structure" fieldType="many2one" source="list_structures" optionLabel="code" entity="structures" required="true"/>
+      <field name="valid_from" label="Valid from" fieldType="date" required="true"/>
+      <field name="valid_to" label="Valid to" fieldType="date"/>
+    </group>
+  </view>
+</page>

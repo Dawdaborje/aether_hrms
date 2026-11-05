@@ -1,0 +1,72 @@
+{
+  "model_id": "mdl_y3ndgiwdcr",
+  "name": "grv_category",
+  "label": "%grv_category%",
+  "plural_label": "%grv_categorys%",
+  "icon": "tag",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_l5t43gi4fw",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_dk7dfwx53w",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_daotnuock3",
+      "name": "sla_days",
+      "label": "%sla_days%",
+      "type": "int",
+      "required": true,
+      "help": "Days to resolve a case of this kind."
+    },
+    {
+      "id": "fld_53fifqycpy",
+      "name": "default_severity",
+      "label": "%default_severity%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_vgwlhq2xur",
+          "value": "low",
+          "label": "%low%"
+        },
+        {
+          "id": "opt_qbnch4fdx6",
+          "value": "medium",
+          "label": "%medium%"
+        },
+        {
+          "id": "opt_tbttfmmbel",
+          "value": "high",
+          "label": "%high%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ta3ajadll6",
+      "name": "confidential",
+      "label": "%confidential%",
+      "type": "bool",
+      "help": "Cases of this kind are confidential unless said otherwise."
+    },
+    {
+      "id": "fld_cyebhhcie3",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

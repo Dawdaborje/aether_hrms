@@ -1,0 +1,38 @@
+{
+  "model": "ins_payment",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "ins_admin",
+        "via:self"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "state",
+        "confirmed_on",
+        "amount"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

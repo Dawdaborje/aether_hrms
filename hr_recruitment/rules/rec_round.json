@@ -1,0 +1,23 @@
+{
+  "model": "rec_round",
+  "access": [
+    {
+      "name": "recruiters",
+      "roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "panel",
+      "operations": [
+        "read"
+      ]
+    }
+  ]
+}

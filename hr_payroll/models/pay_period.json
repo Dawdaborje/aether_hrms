@@ -1,0 +1,62 @@
+{
+  "model_id": "mdl_0dk8du02ed",
+  "name": "pay_period",
+  "label": "%pay_period%",
+  "plural_label": "%pay_periods%",
+  "icon": "calendar-range",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_np0e32snfs",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "unique"
+    },
+    {
+      "id": "fld_r6ui311923",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_xlsnrb8zv0",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_ympm9uz2e7",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_zkvlzwiuly",
+          "value": "open",
+          "label": "%open%"
+        },
+        {
+          "id": "opt_py4nn47dii",
+          "value": "closed",
+          "label": "%closed%"
+        }
+      ],
+      "required": true,
+      "default": "open",
+      "index": "plain"
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "start_date",
+      "end_date",
+      "status"
+    ]
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "model_id": "mdl_bv3t5nectf",
+  "name": "rec_interview",
+  "label": "%rec_interview%",
+  "plural_label": "%rec_interviews%",
+  "icon": "message-circle",
+  "title_field": "application",
+  "fields": [
+    {
+      "id": "fld_pzxwirir6p",
+      "name": "application",
+      "label": "%application%",
+      "type": "link",
+      "target": "rec_application",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_nh2s4hlsil",
+      "name": "round",
+      "label": "%round%",
+      "type": "link",
+      "target": "rec_round",
+      "required": true
+    },
+    {
+      "id": "fld_u7mgq34fqz",
+      "name": "starts_at",
+      "label": "%starts_at%",
+      "type": "datetime",
+      "required": true
+    },
+    {
+      "id": "fld_2wkf3dz3wz",
+      "name": "ends_at",
+      "label": "%ends_at%",
+      "type": "datetime",
+      "required": true
+    },
+    {
+      "id": "fld_pfag6idgn6",
+      "name": "location",
+      "label": "%location%",
+      "type": "string",
+      "max_length": 200
+    },
+    {
+      "id": "fld_v2gcdbk5ed",
+      "name": "panel",
+      "label": "%panel%",
+      "type": "many2many",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_hsqtzcholq",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "default": "scheduled",
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_kurfjhn2vm",
+          "value": "scheduled",
+          "label": "%scheduled%"
+        },
+        {
+          "id": "opt_u5v22nathr",
+          "value": "held",
+          "label": "%held%"
+        },
+        {
+          "id": "opt_ip5qt4ew6y",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        },
+        {
+          "id": "opt_vfki2ucmnw",
+          "value": "no_show",
+          "label": "%no_show%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ui5fb45kds",
+      "name": "outcome",
+      "label": "%outcome%",
+      "type": "select",
+      "default": "pending",
+      "options": [
+        {
+          "id": "opt_q66qqp3xo3",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_z5p367kymx",
+          "value": "advance",
+          "label": "%advance%"
+        },
+        {
+          "id": "opt_u3fb5wjuu2",
+          "value": "reject",
+          "label": "%reject%"
+        }
+      ]
+    },
+    {
+      "id": "fld_2kfncsgvs6",
+      "name": "mean_score",
+      "label": "%mean_score%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_fcf563oqr5",
+      "name": "summary",
+      "label": "%summary%",
+      "type": "text"
+    },
+    {
+      "id": "fld_3jbi7zgbzp",
+      "name": "reminded",
+      "label": "%reminded%",
+      "type": "bool",
+      "default": false
+    }
+  ],
+  "view": {
+    "list": [
+      "application",
+      "round",
+      "starts_at",
+      "status",
+      "outcome"
+    ]
+  }
+}

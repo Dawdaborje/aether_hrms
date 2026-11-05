@@ -1,0 +1,14 @@
+<page route="/hr/config/payroll/tax-slabs" title="Tax slabs" menu_group="Payroll" icon="percent" sort="30" roles="hr_payroll.payroll_admin,hr_payroll.payroll_clerk,hr_payroll.payroll_approver,hr_payroll.payroll_finance">
+  <view type="list" source="list_tax_slabs" create="/hr/config/payroll/tax-slabs/new" create_label="New">
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="regime" label="Regime"/>
+      <column field="currency" label="Currency"/>
+      <column field="valid_from" label="From"/>
+      <column field="valid_to" label="To"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No tax slabs" description="Add yearly income tax bands; structures read them as bracket tables."/>
+  </view>
+</page>

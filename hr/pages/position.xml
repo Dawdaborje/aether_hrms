@@ -1,0 +1,26 @@
+<page route="/hr/positions/{id}" title="Position" model="position" menu="false" roles="hr_user,hr_manager">
+  <view type="form" source="get_position" function="update_position" submit="Save" success="Saved">
+    <group title="Overview" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="code" label="Code"/>
+      <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs"/>
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments"/>
+      <field name="parent" label="Reports to" fieldType="many2one" source="list_positions" entity="positions"/>
+      <field name="headcount" label="Seats" fieldType="integer"/>
+      <field name="status" label="Status" fieldType="selection" options="open, filled, frozen"/>
+      <field name="grade" label="Grade" fieldType="many2one" source="list_grade_options" entity="grades"
+               help="Grades are set up in HR Configuration."/>
+    </group>
+    <group title="Pay" cols="2">
+      <field name="base_wage" label="Base wage" fieldType="float"
+             help="HR managers only. Used when the pay mode in HR defaults is by position or hybrid."/>
+      <field name="currency" label="Currency" fieldType="many2one" source="currency.list_currencies"
+             optionLabel="display_name" entity="currencies"/>
+      <field name="apply_to_holders" label="Apply a changed wage to the people in this position now" fieldType="boolean"
+             help="Starts new terms today for each person here (hybrid: except people with their own wage). Leave off to change only future hires and moves."/>
+    </group>
+    <group title="Notes" cols="1">
+      <field name="notes" label="Notes" fieldType="text"/>
+    </group>
+  </view>
+</page>

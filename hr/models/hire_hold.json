@@ -1,0 +1,78 @@
+{
+  "model_id": "mdl_u3nn7xd4gf",
+  "name": "hire_hold",
+  "label": "%hire_hold%",
+  "plural_label": "%hire_holds%",
+  "icon": "hand",
+  "title_field": "reason",
+  "fields": [
+    {
+      "id": "fld_y7a5n57wcc",
+      "name": "party",
+      "label": "%party%",
+      "type": "link",
+      "target": "party.party",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_mr76tss5ic"
+    },
+    {
+      "id": "fld_7uiwtv5zyb",
+      "name": "holder",
+      "label": "%holder%",
+      "type": "string",
+      "required": true,
+      "max_length": 60,
+      "help": "The plugin that placed the hold."
+    },
+    {
+      "id": "fld_omd744e5tj",
+      "name": "key",
+      "label": "%key%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "help": "Unique per person and holder: placing the same hold twice is one hold."
+    },
+    {
+      "id": "fld_kqyya3deb5",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_nvhkuw3w3p",
+      "name": "released",
+      "label": "%released%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_lokkcgrugb",
+      "name": "released_on",
+      "label": "%released_on%",
+      "type": "date"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_kyqhr37gas",
+      "fields": [
+        "party",
+        "holder",
+        "key"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "party",
+      "holder",
+      "reason",
+      "released"
+    ]
+  }
+}

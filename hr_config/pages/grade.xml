@@ -1,0 +1,14 @@
+<page route="/hr/config/grades/{id}" title="Grade" menu="false" roles="hr.hr_user,hr.hr_manager">
+  <view type="form" source="get_grade" function="update_grade" submit="Save" success="Saved">
+    <group title="Grade" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="rank" label="Rank" fieldType="integer" required="true" help="The ladder: a higher number is a higher grade."/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+    <group title="Wage band" cols="2">
+      <field name="min_wage" label="Lowest wage" fieldType="float" help="Optional. A wage outside the band needs an exception to be approved."/>
+      <field name="max_wage" label="Highest wage" fieldType="float"/>
+    </group>
+  </view>
+</page>

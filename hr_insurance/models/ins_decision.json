@@ -1,0 +1,51 @@
+{
+  "model_id": "mdl_s4kmm4hzhr",
+  "name": "ins_decision",
+  "label": "%ins_decision%",
+  "plural_label": "%ins_decisions%",
+  "icon": "lock",
+  "title_field": "key",
+  "fields": [
+    {
+      "id": "fld_t4x2572qbu",
+      "name": "key",
+      "label": "%key%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_z2t7azcm2u",
+      "name": "enrolment",
+      "label": "%enrolment%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_enrolment"
+    },
+    {
+      "id": "fld_6yomq4l6lw",
+      "name": "member",
+      "label": "%member%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_uxbz4txwzw",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_37fgrd67am",
+      "name": "claim",
+      "label": "%claim%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_claim"
+    }
+  ]
+}

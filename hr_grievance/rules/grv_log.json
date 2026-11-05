@@ -1,0 +1,44 @@
+{
+  "model": "grv_log",
+  "access": [
+    {
+      "name": "own_shared",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "complainant": "$hr.employee",
+        "visibility": "shared"
+      }
+    },
+    {
+      "name": "own_write",
+      "operations": [
+        "create"
+      ],
+      "when": {
+        "complainant": "$hr.employee"
+      }
+    },
+    {
+      "name": "investigator",
+      "operations": [
+        "read",
+        "create"
+      ],
+      "when": {
+        "investigator": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "grievance_admin"
+      ],
+      "operations": [
+        "read",
+        "create"
+      ]
+    }
+  ]
+}

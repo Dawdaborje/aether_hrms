@@ -1,0 +1,33 @@
+[plugin]
+name = "hr_approvals"
+icon_path = "assets/logo.svg"
+label = "Approvals inbox"
+version = "0.1.0"
+description = "One list of everything waiting on you across leave, loans, expenses, travel, benefits, attendance and timesheets."
+long_description = """
+Asks each HR plugin what is waiting on the caller and lists the answers together with the page where each is decided. It owns no data and decides nothing: each request stays with its plugin and its rules. A plugin that cannot answer is named, not hidden. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr_payroll", "hr_onboarding", "hr", "hr_leave", "hr_loan", "hr_expense", "hr_travel", "hr_benefits", "hr_attendance", "hr_timesheet"]
+capabilities = ["plugins::call"]
+access_models = [
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[app]
+icon = "inbox"
+route = "/hr/approvals"
+description = "What waits on your decision"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"
+
+[[ai_tool]]
+name = "approvals_inbox"
+description = "Everything waiting for the person's approval across leave, expenses, travel and the like"
+function = "approvals_inbox"

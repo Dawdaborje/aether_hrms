@@ -1,0 +1,57 @@
+{
+  "model_id": "mdl_9pqw0pxrkp",
+  "name": "pay_exemption_category",
+  "label": "%pay_exemption_category%",
+  "plural_label": "%pay_exemption_categorys%",
+  "icon": "shield",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_s2r5gdvikc",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_yjznbrsj2e",
+      "name": "label",
+      "label": "%label%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_77m387pfcu",
+      "name": "max_amount",
+      "label": "%max_amount%",
+      "type": "decimal",
+      "help": "Yearly cap; empty means none.",
+      "scale": 2
+    },
+    {
+      "id": "fld_x0qxz6srtg",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_eoyllt1bx5",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "string",
+      "max_length": 40,
+      "help": "Code of the category this is a sub-category of; the parent maximum caps the sum of its sub-categories."
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "label",
+      "max_amount"
+    ]
+  }
+}

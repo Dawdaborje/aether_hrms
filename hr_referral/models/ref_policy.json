@@ -1,0 +1,66 @@
+{
+  "model_id": "mdl_wvxqmgsfgs",
+  "name": "ref_policy",
+  "label": "%ref_policy%",
+  "plural_label": "%ref_policys%",
+  "icon": "gift",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_d526pqggqm",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_l26jruhclr",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_hzlvbymeku",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_jsfnmnnpdz",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_2ezxawpwlx",
+      "name": "wait_days",
+      "label": "%wait_days%",
+      "type": "int",
+      "required": true,
+      "help": "Days the hire must stay before the bonus is due."
+    },
+    {
+      "id": "fld_65w5t56b5a",
+      "name": "pay_code",
+      "label": "%pay_code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40
+    },
+    {
+      "id": "fld_vuwnjejn3y",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

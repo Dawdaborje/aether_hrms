@@ -1,0 +1,15 @@
+<page route="/hr/attendance/approvals/shifts" title="Shift requests to approve" icon="clipboard-check" menu_group="Approvals" sort="20">
+  <view type="list" source="shift_requests_waiting_for_me">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="shift" label="Shift"/>
+      <column field="date_from" label="From" fieldType="date"/>
+      <column field="date_to" label="To" fieldType="date"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_shift_request" confirm="Approve this request?"/>
+    </actions>
+    <empty title="Nothing waiting" description="No one on your team is waiting on a decision."/>
+  </view>
+</page>

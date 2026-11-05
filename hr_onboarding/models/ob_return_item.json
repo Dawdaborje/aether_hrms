@@ -1,0 +1,76 @@
+{
+  "model_id": "mdl_9mjolawcd6",
+  "name": "ob_return_item",
+  "label": "%ob_return_item%",
+  "plural_label": "%ob_return_items%",
+  "icon": "package",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_a40cgi2vdn",
+      "name": "departure",
+      "label": "%departure%",
+      "type": "link",
+      "target": "ob_departure",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_x3il9gjowc",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_pvuecp8xsg",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_3w2uvqqnyf",
+          "value": "owed",
+          "label": "%owed%"
+        },
+        {
+          "id": "opt_ifb4j3i03p",
+          "value": "returned",
+          "label": "%returned%"
+        },
+        {
+          "id": "opt_a7zjh3omen",
+          "value": "recovered",
+          "label": "%recovered%"
+        },
+        {
+          "id": "opt_iday584j1f",
+          "value": "waived",
+          "label": "%waived%"
+        }
+      ],
+      "required": true,
+      "default": "owed"
+    },
+    {
+      "id": "fld_traw1ckcqd",
+      "name": "cost",
+      "label": "%cost%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_vbqaq3nike",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "status"
+    ]
+  }
+}

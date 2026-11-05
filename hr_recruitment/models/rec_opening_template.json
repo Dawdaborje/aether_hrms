@@ -1,0 +1,75 @@
+{
+  "model_id": "mdl_4fd2wmwocd",
+  "name": "rec_opening_template",
+  "label": "%rec_opening_template%",
+  "plural_label": "%rec_opening_templates%",
+  "icon": "copy",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_jvd7ckub60",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "max_length": 160
+    },
+    {
+      "id": "fld_10tki720gu",
+      "name": "title",
+      "label": "%title%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_12twm4ltun",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    },
+    {
+      "id": "fld_0aksq5v4o7",
+      "name": "seats",
+      "label": "%seats%",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "id": "fld_6107feywi9",
+      "name": "salary_min",
+      "label": "%salary_min%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_1rxgaf648c",
+      "name": "salary_max",
+      "label": "%salary_max%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_6dtea1wrhb",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 10
+    },
+    {
+      "id": "fld_3qf04o4ctu",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "title",
+      "seats"
+    ]
+  }
+}

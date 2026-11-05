@@ -1,0 +1,10 @@
+<page route="/hr/config/attendance/rotations" title="Rotations" menu_group="Attendance" icon="repeat" sort="15" roles="hr_attendance.att_admin">
+  <view type="list" source="list_rotations" create="/hr/config/attendance/rotations/new" create_label="New">
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="anchor_date" label="Day 1" fieldType="date"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No rotations" description="A rotation repeats a cycle of shifts and days off."/>
+  </view>
+</page>

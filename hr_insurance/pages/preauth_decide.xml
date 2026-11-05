@@ -1,0 +1,11 @@
+<page route="/hr/insurance/preauths/decide" title="Decide a preauthorisation" menu="false" model="ins_preauth" roles="ins_reviewer,ins_admin">
+  <view type="form" function="decide_preauthorisation" submit="Decide" success="Decided" redirect="/hr/insurance/preauths">
+    <group title="Decision" cols="2">
+      <field name="id" label="Request" fieldType="many2one" source="list_preauthorisations" optionLabel="reference" entity="requests" required="true"/>
+      <field name="approve" label="Approve" fieldType="boolean"/>
+      <field name="approved_amount" label="Approved amount"/>
+      <field name="valid_until" label="Valid until" fieldType="date"/>
+      <field name="note" label="Note" fieldType="text" colspan="2"/>
+    </group>
+  </view>
+</page>

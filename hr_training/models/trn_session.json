@@ -1,0 +1,93 @@
+{
+  "model_id": "mdl_3k6ezddzle",
+  "name": "trn_session",
+  "label": "%trn_session%",
+  "plural_label": "%trn_sessions%",
+  "icon": "calendar-days",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_4ofm7ksyql",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_5y7vhrq3cn",
+      "name": "course",
+      "label": "%course%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "trn_course"
+    },
+    {
+      "id": "fld_nvntqxjnkl",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_e5hcx3hk4d",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_5g4ie6zusx",
+      "name": "location",
+      "label": "%location%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_je7vpjs5nw",
+      "name": "trainer",
+      "label": "%trainer%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_zjisv3dqkg",
+      "name": "capacity",
+      "label": "%capacity%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_446767k7oc",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_untmzm5dxa",
+          "value": "scheduled",
+          "label": "%scheduled%"
+        },
+        {
+          "id": "opt_bby5tojht4",
+          "value": "completed",
+          "label": "%completed%"
+        },
+        {
+          "id": "opt_lgz5nfufc4",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_tircdgtzut",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ]
+}

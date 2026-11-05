@@ -1,0 +1,87 @@
+{
+  "model_id": "mdl_66cfslsmpu",
+  "name": "rec_stage",
+  "label": "%rec_stage%",
+  "plural_label": "%rec_stages%",
+  "icon": "columns",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_2fvojct75b",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_2mxnwpkmr5",
+      "name": "sequence",
+      "label": "%sequence%",
+      "type": "int",
+      "required": true,
+      "index": "unique"
+    },
+    {
+      "id": "fld_ygvrhfr6os",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_f2bjzdse3m",
+          "value": "sourcing",
+          "label": "%sourcing%"
+        },
+        {
+          "id": "opt_huhqgdqwsz",
+          "value": "screening",
+          "label": "%screening%"
+        },
+        {
+          "id": "opt_b3jpmqoc3u",
+          "value": "interview",
+          "label": "%interview%"
+        },
+        {
+          "id": "opt_2zm33dzdka",
+          "value": "offer",
+          "label": "%offer%"
+        },
+        {
+          "id": "opt_nsujzldk56",
+          "value": "hired",
+          "label": "%hired%"
+        },
+        {
+          "id": "opt_jzpgf5rlky",
+          "value": "rejected",
+          "label": "%rejected%"
+        }
+      ]
+    },
+    {
+      "id": "fld_qaa5gyafe2",
+      "name": "rot_days",
+      "label": "%rot_days%",
+      "type": "int",
+      "default": 0,
+      "help": "Applications this long in the stage are flagged stale; 0: never."
+    },
+    {
+      "id": "fld_g3hs65ziza",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "sequence",
+      "name",
+      "kind"
+    ]
+  }
+}

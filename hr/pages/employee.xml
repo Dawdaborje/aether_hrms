@@ -1,0 +1,46 @@
+<page route="/hr/employees/{id}" title="Employee" model="employee" roles="hr_user,hr_manager">
+  <view type="form" source="get_employee" function="update_employee" submit="Save" success="Saved">
+    <statusbar field="status" function="change_employee_status"/>
+    <group title="Photo" cols="1">
+      <field name="image" label="Employee photo" fieldType="image"/>
+    </group>
+    <group title="Overview" cols="2">
+      <field name="display_name" label="Name"/>
+      <field name="employee_no" label="Employee no."/>
+      <field name="gender" label="Gender" fieldType="selection"
+               options="male, female, other, prefer_not_to_say"/>
+      <field name="employment_type" label="Employment type" fieldType="selection"
+               options="permanent, contract, temporary, intern, casual"/>
+    </group>
+    <group title="Organization" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="list_departments"
+               entity="departments"/>
+      <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs"/>
+      <field name="position" label="Position" fieldType="many2one" source="list_positions"
+               entity="positions"/>
+      <field name="manager" label="Reports to" fieldType="many2one" source="list_employees"
+               optionLabel="display_name" entity="employees"/>
+      <field name="work_location" label="Work location" fieldType="many2one"
+               source="list_work_locations" optionLabel="name" entity="work_locations"/>
+      <field name="cost_center" label="Cost centre" fieldType="many2one"
+               source="list_cost_centers" optionLabel="name" entity="cost_centers"/>
+    </group>
+    <group title="Pay" cols="2">
+      <field name="wage" label="Base wage" fieldType="float" readonlyWhen="pay_mode=position,wage_source=position"
+             help="Visible to HR managers. When the wage comes from the position it follows the position and is changed there."/>
+      <field name="currency" label="Currency" fieldType="many2one" source="currency.list_currencies"
+             optionLabel="display_name" entity="currencies" readonlyWhen="pay_mode=position,wage_source=position"/>
+      <field name="pay_frequency" label="Pay frequency" fieldType="selection"
+             options="monthly, biweekly, weekly, hourly, annual"/>
+      <field name="wage_source" label="Wage comes from" fieldType="selection" options="position, manual"
+             readonlyWhen="pay_mode!=hybrid"
+             help="Position: follows the position's base wage. Manual: set for this person. Only changeable when the organization's pay mode is hybrid (Settings)."/>
+    </group>
+    <group title="Contact" cols="2">
+      <field name="work_email" label="Work email"/>
+      <field name="work_phone" label="Work phone" fieldType="phone"
+               countryField="work_phone_country"/>
+    </group>
+    <notebook/>
+  </view>
+</page>

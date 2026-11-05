@@ -1,0 +1,10 @@
+<page route="/hr/attendance/work-mode" title="Where I work" model="att_work_mode" icon="house">
+  <view type="list" model="att_work_mode" source="my_work_modes" create="/hr/attendance/work-mode/new" create_label="Set a day">
+    <columns>
+      <column field="work_date" label="Day" fieldType="date"/>
+      <column field="mode" label="Working from" fieldType="badge"/>
+      <column field="note" label="Note"/>
+    </columns>
+    <empty title="Nothing set" description="Tell the team whether you are in the office, at home or travelling."/>
+  </view>
+</page>

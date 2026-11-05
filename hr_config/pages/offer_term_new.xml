@@ -1,0 +1,8 @@
+<page route="/hr/config/recruitment/offer-terms/new" title="New offer term" menu="false" roles="hr_recruitment.recruit_manager">
+  <view type="form" function="create_offer_term" submit="Create" success="Created" redirect="/hr/config/recruitment/offer-terms">
+    <group title="Term" cols="1">
+      <field name="name" label="Name" required="true"/>
+      <field name="body" label="Text (may use candidate, salary, currency, start_date, valid_until, opening in double braces)" fieldType="text" required="true"/>
+    </group>
+  </view>
+</page>

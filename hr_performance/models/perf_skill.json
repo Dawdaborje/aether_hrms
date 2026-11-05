@@ -1,0 +1,47 @@
+{
+  "model_id": "mdl_uepbnvvj8u",
+  "name": "perf_skill",
+  "label": "%perf_skill%",
+  "plural_label": "%perf_skills%",
+  "icon": "brain",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_ay5tn140uy",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_i4u1iww19e",
+      "name": "category",
+      "label": "%category%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_kxaraar0ou",
+      "name": "scale_max",
+      "label": "%scale_max%",
+      "type": "int",
+      "default": 5,
+      "help": "Levels go from 1 to this."
+    },
+    {
+      "id": "fld_0hbyali00c",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "category"
+    ]
+  }
+}

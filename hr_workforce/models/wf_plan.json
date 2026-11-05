@@ -1,0 +1,98 @@
+{
+  "model_id": "mdl_k45za5kj5y",
+  "name": "wf_plan",
+  "label": "%wf_plan%",
+  "plural_label": "%wf_plans%",
+  "icon": "calendar-range",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_7d4gwb7u2c",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_j3sc34cctn",
+      "name": "period_from",
+      "label": "%period_from%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_crrhlu4znw",
+      "name": "period_to",
+      "label": "%period_to%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_wpznecanl3",
+      "name": "department",
+      "label": "%department%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_7dstgzb3h2",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 10
+    },
+    {
+      "id": "fld_oxuhakkbvg",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_6aepxifirp",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_di3h2n3tsl",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_vekh5yohgf",
+          "value": "closed",
+          "label": "%closed%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ids7brnjq2",
+      "name": "total_budget",
+      "label": "%total_budget%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_5ip2ns4okq",
+      "name": "created_by",
+      "label": "%created_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_korqhb44cf",
+      "name": "approved_by",
+      "label": "%approved_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_zcnwflos2r",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "model_id": "mdl_8vkaovifpi",
+  "name": "flt_vehicle",
+  "label": "%flt_vehicle%",
+  "plural_label": "%flt_vehicles%",
+  "icon": "car",
+  "title_field": "plate",
+  "fields": [
+    {
+      "id": "fld_a6z8wl7zln",
+      "name": "plate",
+      "label": "%plate%",
+      "type": "string",
+      "required": true,
+      "max_length": 30,
+      "index": "unique"
+    },
+    {
+      "id": "fld_2ur2exufpm",
+      "name": "make",
+      "label": "%make%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_l3i6as7cbq",
+      "name": "model",
+      "label": "%model%",
+      "type": "string",
+      "max_length": 60
+    },
+    {
+      "id": "fld_866yxbtavh",
+      "name": "year",
+      "label": "%year%",
+      "type": "int"
+    },
+    {
+      "id": "fld_20p5aeu8z1",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_47y0mz5jio",
+          "value": "car",
+          "label": "%car%"
+        },
+        {
+          "id": "opt_rm6derie9h",
+          "value": "van",
+          "label": "%van%"
+        },
+        {
+          "id": "opt_cd748f88pt",
+          "value": "truck",
+          "label": "%truck%"
+        },
+        {
+          "id": "opt_i04kdfxkfa",
+          "value": "motorbike",
+          "label": "%motorbike%"
+        },
+        {
+          "id": "opt_bhvjd18dko",
+          "value": "other",
+          "label": "%other%"
+        }
+      ],
+      "default": "car"
+    },
+    {
+      "id": "fld_bt3zsnpoxl",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_jfqrn3cp2v",
+          "value": "active",
+          "label": "%active%"
+        },
+        {
+          "id": "opt_zpffpd64i1",
+          "value": "maintenance",
+          "label": "%maintenance%"
+        },
+        {
+          "id": "opt_1qqsh5g638",
+          "value": "retired",
+          "label": "%retired%"
+        }
+      ],
+      "index": "plain",
+      "default": "active"
+    },
+    {
+      "id": "fld_v27bwv944x",
+      "name": "odometer",
+      "label": "%odometer%",
+      "type": "int"
+    },
+    {
+      "id": "fld_3pibar755x",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    }
+  ]
+}

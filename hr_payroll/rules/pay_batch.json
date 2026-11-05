@@ -1,0 +1,32 @@
+{
+  "model": "pay_batch",
+  "access": [
+    {
+      "name": "staff",
+      "operations": [
+        "read"
+      ],
+      "roles": [
+        "payroll_admin",
+        "payroll_clerk",
+        "payroll_approver",
+        "payroll_finance"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "written_by_the_calculation_only",
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ],
+      "when": {
+        "idx": {
+          "lt": -1
+        }
+      }
+    }
+  ]
+}

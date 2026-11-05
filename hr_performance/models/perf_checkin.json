@@ -1,0 +1,55 @@
+{
+  "model_id": "mdl_2yr075fchy",
+  "name": "perf_checkin",
+  "label": "%perf_checkin%",
+  "plural_label": "%perf_checkins%",
+  "icon": "activity",
+  "title_field": "goal",
+  "fields": [
+    {
+      "id": "fld_p5l7pg1kc1",
+      "name": "goal",
+      "label": "%goal%",
+      "type": "link",
+      "target": "perf_goal",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_x5biqmr84v",
+      "name": "value",
+      "label": "%value%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_2cmzkng4kl",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_yqxbpmqbkv",
+      "name": "on_date",
+      "label": "%on_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_cpgjwp99dd",
+      "name": "by",
+      "label": "%by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    }
+  ],
+  "view": {
+    "list": [
+      "goal",
+      "value",
+      "on_date"
+    ]
+  }
+}

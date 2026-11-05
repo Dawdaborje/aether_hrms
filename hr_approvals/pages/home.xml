@@ -1,0 +1,10 @@
+<page route="/hr/home" title="My HR" icon="house" sort="1">
+  <view type="dashboard" source="my_hr_home" cols="3">
+    <stat label="Waiting on you" field="waiting_on_me"/>
+    <stat label="Open tasks" field="open_tasks"/>
+    <stat label="Away today" field="away_today"/>
+    <stat label="Latest net pay" field="latest_net"/>
+    <stat label="My leave requests" field="my_leave_requests"/>
+    <chart type="bar" title="Leave available" field="leave_balances" category="name" value="value"/>
+  </view>
+</page>

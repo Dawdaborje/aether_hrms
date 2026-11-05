@@ -1,0 +1,101 @@
+{
+  "model_id": "mdl_tibiawie5w",
+  "name": "bnf_plan",
+  "label": "%bnf_plan%",
+  "plural_label": "%bnf_plans%",
+  "icon": "gift",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_bghb2ll7ec",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_7ekmtsgjdo",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_4bm7hs4xpn",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_k2a6zycp6r",
+          "value": "accrue_then_claim",
+          "label": "%accrue_then_claim%"
+        },
+        {
+          "id": "opt_wflywzc7i2",
+          "value": "claim_against_ceiling",
+          "label": "%claim_against_ceiling%"
+        },
+        {
+          "id": "opt_m747tbxcyq",
+          "value": "payroll",
+          "label": "%payroll%"
+        }
+      ]
+    },
+    {
+      "id": "fld_uzkxchbdc3",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_4td4nq7rmz",
+      "name": "yearly_ceiling",
+      "label": "%yearly_ceiling%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_aem5sob47p",
+      "name": "pay_code",
+      "label": "%pay_code%",
+      "type": "string",
+      "max_length": 40,
+      "help": "Payroll input `adj_<code>` for payroll plans and for claim payouts."
+    },
+    {
+      "id": "fld_hlpvy2lvlh",
+      "name": "max_dependents",
+      "label": "%max_dependents%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_cqvgewhrfp",
+      "name": "allow_spouse",
+      "label": "%allow_spouse%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_fpwstwem3l",
+      "name": "allow_children",
+      "label": "%allow_children%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_km7tpsorka",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

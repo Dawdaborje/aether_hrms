@@ -1,0 +1,204 @@
+{
+  "model_id": "mdl_ohkf6mi095",
+  "name": "ob_step",
+  "label": "%ob_step%",
+  "plural_label": "%ob_steps%",
+  "icon": "check",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_4hs3tuzo8d",
+      "name": "template",
+      "label": "%template%",
+      "type": "link",
+      "target": "ob_template",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_xjjppiukll",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_lsywcdlmzr",
+      "name": "sequence",
+      "label": "%sequence%",
+      "type": "int",
+      "default": 10
+    },
+    {
+      "id": "fld_c07bbxr4dq",
+      "name": "anchor",
+      "label": "%anchor%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_rsdu2qq13s",
+          "value": "start",
+          "label": "%start%"
+        },
+        {
+          "id": "opt_vxqbiw9uyl",
+          "value": "last_day",
+          "label": "%last_day%"
+        },
+        {
+          "id": "opt_uqjxovbqi6",
+          "value": "notice_date",
+          "label": "%notice_date%"
+        }
+      ],
+      "required": true,
+      "default": "start"
+    },
+    {
+      "id": "fld_nbhv6wrxn4",
+      "name": "offset_days",
+      "label": "%offset_days%",
+      "type": "int",
+      "default": 0,
+      "help": "Days from the anchor; negative is before."
+    },
+    {
+      "id": "fld_p7wqsh3hhg",
+      "name": "duration_days",
+      "label": "%duration_days%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_i5iu2jr162",
+      "name": "roll",
+      "label": "%roll%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_3uve349n02",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_weddkfvyxx",
+          "value": "next",
+          "label": "%next%"
+        },
+        {
+          "id": "opt_80kwhlz13t",
+          "value": "previous",
+          "label": "%previous%"
+        }
+      ],
+      "default": "next",
+      "help": "Move a due date that falls on a day off to the next or previous working day."
+    },
+    {
+      "id": "fld_187kd7lz8i",
+      "name": "assignee_kind",
+      "label": "%assignee_kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_wflwetpa49",
+          "value": "employee",
+          "label": "%employee%"
+        },
+        {
+          "id": "opt_x4ccve6pbl",
+          "value": "manager",
+          "label": "%manager%"
+        },
+        {
+          "id": "opt_dzul34ydl8",
+          "value": "manager2",
+          "label": "%manager2%"
+        },
+        {
+          "id": "opt_ogimufklai",
+          "value": "user",
+          "label": "%user%"
+        },
+        {
+          "id": "opt_c0gkth1n13",
+          "value": "role",
+          "label": "%role%"
+        },
+        {
+          "id": "opt_295odqawws",
+          "value": "owner",
+          "label": "%owner%"
+        }
+      ],
+      "required": true,
+      "default": "owner"
+    },
+    {
+      "id": "fld_ipaymx9qrn",
+      "name": "assignee_user",
+      "label": "%assignee_user%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_jcam6rtjhe",
+      "name": "assignee_role",
+      "label": "%assignee_role%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_77xywedtxk",
+      "name": "gate",
+      "label": "%gate%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_cwi6txuckn",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_z2s12fbm35",
+          "value": "hire",
+          "label": "%hire%"
+        },
+        {
+          "id": "opt_5y7ageok3l",
+          "value": "access",
+          "label": "%access%"
+        },
+        {
+          "id": "opt_yta8wuszo1",
+          "value": "settlement",
+          "label": "%settlement%"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "id": "fld_r6i4g54emv",
+      "name": "weight",
+      "label": "%weight%",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "id": "fld_7iqwsxhgu3",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    }
+  ],
+  "view": {
+    "list": [
+      "template",
+      "sequence",
+      "name",
+      "anchor",
+      "offset_days"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+<page route="/hr/insurance/plans" title="Plans" model="ins_plan" icon="shield" roles="ins_admin" menu_group="Setup" sort="31">
+  <view type="list" model="ins_plan" source="list_insurance_plans" create="/hr/insurance/plans/new" create_label="New plan">
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="insurer" label="Insurer"/>
+      <column field="coverage_type" label="Type" fieldType="badge"/>
+      <column field="member_limit" label="Limit per person"/>
+      <column field="premium_amount" label="Premium"/>
+      <column field="premium_period" label="Per"/>
+    </columns>
+    <empty title="No plans" description="A plan holds the terms: limit, deductible, copay, premium."/>
+  </view>
+</page>

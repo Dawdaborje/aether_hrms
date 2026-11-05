@@ -1,0 +1,35 @@
+{
+  "model": "rec_source",
+  "access": [
+    {
+      "name": "staff",
+      "roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "manager",
+      "roles": [
+        "recruit_manager"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "others",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "via:*"
+      ]
+    }
+  ]
+}

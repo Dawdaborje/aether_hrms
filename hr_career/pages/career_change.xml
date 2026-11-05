@@ -1,0 +1,24 @@
+<page route="/hr/career/changes/{id}" title="Career change" menu="false" model="career_change">
+  <view type="form" source="get_career_change">
+    <group title="Change" cols="2">
+      <field name="reference" label="Reference" readonly="true"/>
+      <field name="kind" label="Kind" readonly="true"/>
+      <field name="effective_date" label="Effective" fieldType="date" readonly="true"/>
+      <field name="state" label="State" readonly="true"/>
+    </group>
+    <group title="From → to" cols="2">
+      <field name="from_department" label="Department before" fieldType="many2one" source="hr.list_departments" readonly="true"/>
+      <field name="department" label="Department after" fieldType="many2one" source="hr.list_departments" readonly="true"/>
+      <field name="from_job" label="Job before" fieldType="many2one" source="hr.list_jobs" readonly="true"/>
+      <field name="job" label="Job after" fieldType="many2one" source="hr.list_jobs" readonly="true"/>
+      <field name="from_grade" label="Grade before" readonly="true"/>
+      <field name="grade" label="Grade after" readonly="true"/>
+      <field name="from_wage" label="Wage before" readonly="true"/>
+      <field name="wage" label="Wage after" readonly="true"/>
+    </group>
+    <group title="Notes" cols="1">
+      <field name="reason" label="Reason" fieldType="text" readonly="true"/>
+      <field name="decision_note" label="Decision note" fieldType="text" readonly="true"/>
+    </group>
+  </view>
+</page>

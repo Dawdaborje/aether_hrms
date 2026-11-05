@@ -1,0 +1,10 @@
+<page route="/hr/grievances/new" title="Raise a concern" menu="false" model="grv_case">
+  <view type="form" function="file_grievance" submit="Submit" success="Submitted" redirect="/hr/grievances">
+    <group title="Raise a concern" cols="2">
+      <field name="subject" label="Subject" required="true"/>
+      <field name="category" label="Category" fieldType="many2one" source="list_grievance_categories" optionLabel="name" entity="categories"/>
+      <field name="description" label="What happened" fieldType="textarea" required="true"/>
+      <field name="anonymous" label="File anonymously" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

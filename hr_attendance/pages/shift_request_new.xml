@@ -1,0 +1,10 @@
+<page route="/hr/attendance/shift-requests/new" title="Ask for a shift" menu="false">
+  <view type="form" function="request_shift" submit="Ask" success="Asked" redirect="/hr/attendance/shift-requests">
+    <group title="Shift" cols="2">
+      <field name="shift" label="Shift" fieldType="many2one" source="list_shifts" entity="shifts" required="true"/>
+      <field name="date_from" label="From" fieldType="date" required="true"/>
+      <field name="date_to" label="To" fieldType="date" required="true"/>
+      <field name="reason" label="Reason" required="true"/>
+    </group>
+  </view>
+</page>

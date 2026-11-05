@@ -1,0 +1,10 @@
+<page route="/hr/career/letters/new" title="Issue letter" menu="false" roles="career_admin">
+  <view type="form" function="issue_employee_letter" submit="Issue" success="Issued" redirect="/hr/career/letters">
+    <group title="Letter" cols="2">
+      <field name="employee" label="Employee" fieldType="many2one" source="hr.list_employees" optionLabel="display_name" entity="employees" required="true"/>
+      <field name="template" label="Template" fieldType="many2one" source="list_issue_templates" optionLabel="name" entity="templates" required="true"/>
+      <field name="issued_on" label="Issue date" fieldType="date"/>
+      <field name="last_day" label="Last day (relieving, experience)" fieldType="date"/>
+    </group>
+  </view>
+</page>

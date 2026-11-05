@@ -1,0 +1,30 @@
+<page route="/hr/config/numbering" title="Employee numbers" menu_group="General" icon="hash" sort="15" roles="hr.hr_manager">
+  <group title="How numbers are built" cols="1">
+    <alert title="Pattern tokens"
+           description="Use {number} or {number:4}, {year}, {yy}, {month}, {mm}, {department_code}, {department}, {employment_type}. Example: emp-{department_code}-{year}-{number:4}. More specific rules (department or employment type) win over the default."/>
+  </group>
+  <group title="Preview" cols="1">
+    <modal title="Preview a number" label="Preview next shape">
+      <view type="form" function="preview_employee_number" submit="Preview" success="Preview ready">
+        <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments"/>
+        <field name="employment_type" label="Employment type" fieldType="selection"
+               options="permanent, contract, temporary, intern, casual"/>
+        <field name="hire_date" label="Hire date" fieldType="date"/>
+      </view>
+    </modal>
+  </group>
+  <view type="list" source="list_all_employee_number_rules" open="/hr/config/numbering/{id}"
+        create="/hr/config/numbering/new" create_label="New">
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="pattern" label="Pattern"/>
+      <column field="department" label="Department" fieldType="link" modelTarget="hr.department"/>
+      <column field="employment_type" label="Type" fieldType="badge"/>
+      <column field="reset" label="Reset" fieldType="badge"/>
+      <column field="priority" label="Priority"/>
+      <column field="is_default" label="Default" fieldType="boolean"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No rules" description="Add a pattern, or reload the plugin to seed the default EMP-{number:5} rule."/>
+  </view>
+</page>

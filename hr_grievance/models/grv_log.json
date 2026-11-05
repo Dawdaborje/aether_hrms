@@ -1,0 +1,109 @@
+{
+  "model_id": "mdl_delq2qhk46",
+  "name": "grv_log",
+  "label": "%grv_log%",
+  "plural_label": "%grv_logs%",
+  "icon": "scroll-text",
+  "title_field": "action",
+  "fields": [
+    {
+      "id": "fld_65pcqbjmcv",
+      "name": "case",
+      "label": "%case%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "grv_case"
+    },
+    {
+      "id": "fld_b5hw5jyhex",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_4mcfod63nz",
+      "name": "at",
+      "label": "%at%",
+      "type": "string",
+      "required": true,
+      "max_length": 40
+    },
+    {
+      "id": "fld_jht77y2eef",
+      "name": "actor",
+      "label": "%actor%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_f7ccxg4lug",
+      "name": "actor_employee",
+      "label": "%actor_employee%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_5jzdprctk6",
+      "name": "visibility",
+      "label": "%visibility%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_afp3ln2eoi",
+          "value": "internal",
+          "label": "%internal%"
+        },
+        {
+          "id": "opt_4inqoaiid7",
+          "value": "shared",
+          "label": "%shared%"
+        }
+      ]
+    },
+    {
+      "id": "fld_zfcwa7biv6",
+      "name": "action",
+      "label": "%action%",
+      "type": "string",
+      "required": true,
+      "max_length": 60
+    },
+    {
+      "id": "fld_dqvlswww26",
+      "name": "detail",
+      "label": "%detail%",
+      "type": "text"
+    },
+    {
+      "id": "fld_prodaihsti",
+      "name": "complainant",
+      "label": "%complainant%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "help": "A copy for access rules; hidden from everyone but case managers."
+    },
+    {
+      "id": "fld_ftht2d3u73",
+      "name": "investigator",
+      "label": "%investigator%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "help": "A copy for access rules: who was investigating when the entry was made."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_466wnv3tfz",
+      "fields": [
+        "case",
+        "seq"
+      ],
+      "unique": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<page route="/hr/config/recruitment/sources/{id}" title="Applicant source" menu="false" roles="hr_recruitment.recruit_manager">
+  <view type="form" source="get_rec_source" function="update_rec_source" submit="Save" success="Saved">
+    <group title="Applicant source" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

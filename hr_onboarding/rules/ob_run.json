@@ -1,0 +1,18 @@
+{
+  "model": "ob_run",
+  "access": [
+    {
+      "name": "officers",
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ],
+      "roles": [
+        "ob_officer",
+        "ob_manager"
+      ]
+    }
+  ]
+}

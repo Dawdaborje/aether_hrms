@@ -1,0 +1,35 @@
+[plugin]
+name = "hr_timesheet"
+icon_path = "assets/logo.svg"
+label = "Timesheets"
+version = "0.1.0"
+description = "Hours against projects, approved by the manager, summarised by project with cost."
+long_description = """
+A person logs hours for a day (never more than 24 in total) against a project and submits them. Their manager, or a timesheet administrator, approves or rejects; nobody approves their own hours; an approved entry is final. Projects carry a cost per hour so a summary can say what the hours cost. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr"]
+capabilities = ["db::query", "db::mutate", "plugins::call"]
+access_models = [
+  { name = "ts_project", permissions = ["read", "write"] },
+  { name = "ts_entry", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "timesheet_admin"
+label = "Timesheet administrator"
+description = "Keeps projects, approves everyone's hours and sees every summary."
+
+[app]
+icon = "clock"
+route = "/hr/timesheets"
+description = "Log and approve hours"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

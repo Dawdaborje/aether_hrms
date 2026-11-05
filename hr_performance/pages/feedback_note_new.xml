@@ -1,0 +1,11 @@
+<page route="/hr/performance/feedback/new" title="Give feedback" menu="false">
+  <view type="form" function="give_feedback_note" submit="Send" success="Sent" redirect="/hr/performance/feedback">
+    <group title="Feedback" cols="2">
+      <field name="employee" label="About" fieldType="many2one" source="list_employees" optionLabel="display_name" entity="employees" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="praise, improve, general"/>
+      <field name="rating" label="Rating (1-5)" fieldType="integer"/>
+      <field name="shared" label="Share with them" fieldType="boolean"/>
+      <field name="comment" label="Feedback" fieldType="text" required="true"/>
+    </group>
+  </view>
+</page>

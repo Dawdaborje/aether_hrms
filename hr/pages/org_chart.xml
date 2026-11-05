@@ -1,0 +1,3 @@
+<page route="/hr/org-chart" title="Organisation chart" menu_group="Employee" icon="network" sort="30" roles="hr_user,hr_manager">
+  <orgchart source="org_chart_nodes_list" open="/hr/employees/{id}"/>
+</page>

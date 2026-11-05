@@ -1,0 +1,45 @@
+{
+  "model_id": "mdl_rd53rimkxk",
+  "name": "leave_approver",
+  "label": "%leave_approver%",
+  "plural_label": "%leave_approvers%",
+  "icon": "user-check",
+  "title_field": "department",
+  "fields": [
+    {
+      "id": "fld_f0obq2pe70",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "hr.department",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_2wk5bl6ddu"
+    },
+    {
+      "id": "fld_zl84rvi8b2",
+      "name": "approver",
+      "label": "%approver%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "target_id": "mdl_3h5vuhedxt"
+    }
+  ],
+  "view": {
+    "list": [
+      "department",
+      "approver"
+    ]
+  },
+  "indexes": [
+    {
+      "id": "idx_2a6ap9x511",
+      "fields": [
+        "department",
+        "approver"
+      ],
+      "unique": true
+    }
+  ]
+}

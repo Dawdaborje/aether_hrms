@@ -1,0 +1,71 @@
+{
+  "model": "expense_report",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "approver",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "finance",
+      "roles": [
+        "expense_finance",
+        "expense_admin"
+      ],
+      "operations": [
+        "read",
+        "write",
+        "create"
+      ]
+    },
+    {
+      "name": "nobody_deletes",
+      "roles": [
+        "expense_corrector"
+      ],
+      "operations": [
+        "delete"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "open_reports_only",
+      "operations": [
+        "write"
+      ],
+      "exempt_roles": [
+        "expense_finance",
+        "expense_admin"
+      ],
+      "when": {
+        "state": {
+          "in": [
+            "draft",
+            "submitted",
+            "approved",
+            "rejected"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<page route="/hr/training" title="Training" model="trn_session" icon="graduation-cap">
+  <view type="list" model="trn_session" source="list_sessions" create="/hr/training/enrol" create_label="Enrol">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="course" label="Course"/>
+      <column field="start_date" label="Starts" fieldType="date"/>
+      <column field="capacity" label="Seats"/>
+      <column field="state" label="State"/>
+    </columns>
+    <empty title="No sessions" description="Scheduled training sessions appear here."/>
+  </view>
+</page>

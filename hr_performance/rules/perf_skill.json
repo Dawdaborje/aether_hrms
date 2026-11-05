@@ -1,0 +1,21 @@
+{
+  "model": "perf_skill",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "operations": [
+        "create",
+        "write"
+      ],
+      "roles": [
+        "perf_admin"
+      ]
+    }
+  ]
+}

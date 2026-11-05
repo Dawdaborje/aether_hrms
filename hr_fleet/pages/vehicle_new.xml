@@ -1,0 +1,12 @@
+<page route="/hr/fleet/new" title="New vehicle" menu="false" roles="hr_fleet.fleet_admin">
+  <view type="form" function="create_vehicle" submit="Create" success="Vehicle added" redirect="/hr/fleet">
+    <group title="Vehicle" cols="2">
+      <field name="plate" label="Plate" required="true"/>
+      <field name="make" label="Make"/>
+      <field name="model" label="Model"/>
+      <field name="year" label="Year" fieldType="integer"/>
+      <field name="kind" label="Kind" fieldType="selection" options="car, van, truck, motorbike, other"/>
+      <field name="odometer" label="Odometer" fieldType="integer"/>
+    </group>
+  </view>
+</page>

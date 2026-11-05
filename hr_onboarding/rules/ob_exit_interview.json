@@ -1,0 +1,37 @@
+{
+  "model": "ob_exit_interview",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "officers",
+      "roles": [
+        "ob_officer",
+        "ob_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "private_notes"
+      ],
+      "read_roles": [
+        "ob_manager",
+        "ob_officer"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+<page route="/hr/insurance/payments" title="Payments" model="ins_payment" icon="banknote" roles="ins_admin" sort="70">
+  <view type="list" model="ins_payment" source="list_insurance_payments">
+    <filter field="kind" options="claim_reimbursement,premium_remittance,refund" label="Kind"/>
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="employee" label="Employee"/>
+      <column field="amount" label="Amount"/>
+      <column field="confirmed_on" label="Confirmed" fieldType="date"/>
+      <column field="state" label="State" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="cancel" label="Cancel" function="cancel_insurance_payment" confirm="Cancel this payment?" danger="true"/>
+    </actions>
+    <empty title="No payments" description="Reimbursements and remittances appear here."/>
+  </view>
+</page>

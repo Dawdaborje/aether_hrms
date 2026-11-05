@@ -1,0 +1,192 @@
+{
+  "model_id": "mdl_npzjzqheik",
+  "name": "wf_requisition",
+  "label": "%wf_requisition%",
+  "plural_label": "%wf_requisitions%",
+  "icon": "user-plus",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_srzolo4h65",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_kfecl3gr4e",
+      "name": "position",
+      "label": "%position%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_a6qiudcubh",
+      "name": "department",
+      "label": "%department%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_rpxbqwn4zu",
+      "name": "seats",
+      "label": "%seats%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_qsxrf4hcbp",
+      "name": "seats_filled",
+      "label": "%seats_filled%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_plccetjnoi",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_pcq2iqssbg",
+          "value": "growth",
+          "label": "%growth%"
+        },
+        {
+          "id": "opt_aci7ipzhfr",
+          "value": "replacement",
+          "label": "%replacement%"
+        },
+        {
+          "id": "opt_cd2zkp7skb",
+          "value": "temporary",
+          "label": "%temporary%"
+        }
+      ]
+    },
+    {
+      "id": "fld_vbxqk5teux",
+      "name": "details",
+      "label": "%details%",
+      "type": "text"
+    },
+    {
+      "id": "fld_o4hfvamrls",
+      "name": "needed_by",
+      "label": "%needed_by%",
+      "type": "date"
+    },
+    {
+      "id": "fld_q5fk6zfwwy",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_mwtijfbl3m",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_7xjc6hjb22",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_7n24jfh5ys",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_wl3qx4mi2n",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        },
+        {
+          "id": "opt_44sxmjiinx",
+          "value": "filled",
+          "label": "%filled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_melovs57p3",
+      "name": "plan_line",
+      "label": "%plan_line%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_wmwrc6t3bw",
+      "name": "unplanned",
+      "label": "%unplanned%",
+      "type": "bool",
+      "help": "No approved plan covers these seats."
+    },
+    {
+      "id": "fld_ye7igozpvh",
+      "name": "expected_cost",
+      "label": "%expected_cost%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_yzwpeufbgg",
+      "name": "requested_by",
+      "label": "%requested_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_4ymjlllwm3",
+      "name": "requested_by_employee",
+      "label": "%requested_by_employee%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_cwatgxgqsr",
+      "name": "decided_by",
+      "label": "%decided_by%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_oqeru7va7m",
+      "name": "decision_note",
+      "label": "%decision_note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_3h5yu7joe5",
+      "name": "opening",
+      "label": "%opening%",
+      "type": "string",
+      "max_length": 120,
+      "help": "The opening in hr_recruitment."
+    },
+    {
+      "id": "fld_ljifmsmc75",
+      "name": "posted_on",
+      "label": "%posted_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_n5dtmrzsfy",
+      "name": "filled_on",
+      "label": "%filled_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_lobesy2qxd",
+      "name": "days_to_fill",
+      "label": "%days_to_fill%",
+      "type": "int"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<page route="/hr/career/letters" title="Employee letters" roles="career_admin" icon="mail" sort="20">
+  <view type="list" model="career_letter" source="list_employee_letters" create="/hr/career/letters/new" create_label="Issue">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="kind" label="Kind"/>
+      <column field="issued_on" label="Issued" fieldType="date"/>
+      <column field="accepted_on" label="Accepted" fieldType="date"/>
+    </columns>
+    <empty title="No letters" description="Appointment, relieving and experience letters appear here."/>
+  </view>
+</page>

@@ -1,0 +1,128 @@
+[plugin]
+name = "hr_leave"
+icon_path = "assets/logo.svg"
+label = "Leave"
+version = "0.3.2"
+description = "Leave types, a running record of days taken and owed, requests and approval."
+long_description = """
+Leave. Each type of leave carries its own rules (who
+approves, notice, sandwich, half days, negative balance, earned or yearly days, carry-forward). Days live
+in an append-only ledger: grants, accruals and carry-over add, requests hold and then spend, and a
+cancellation is a reversal, never an edit or a delete. A request costs working days by the person's
+holiday calendar, is held against the balance, and is decided by their manager, by HR, or both. A nightly
+job grants earned leave, lapses carried days and puts people on leave and back. Written in Rust.
+See docs/design.md in this plugin (hr_leave/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "calendar", "hr_compensation"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "leave_type", permissions = ["read", "write"] },
+  { name = "leave_ledger", permissions = ["read", "write"] },
+  { name = "leave_request", permissions = ["read", "write"] },
+  { name = "leave_block", permissions = ["read", "write"] },
+  { name = "leave_plan", permissions = ["read", "write"] },
+  { name = "leave_plan_level", permissions = ["read", "write"] },
+  { name = "leave_plan_assignment", permissions = ["read", "write"] },
+  { name = "leave_encashment", permissions = ["read", "write"] },
+  { name = "leave_comp_claim", permissions = ["read", "write"] },
+  { name = "leave_approver", permissions = ["read", "write"] },
+  { name = "leave_period", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_leave_types"
+help = "Create the usual leave types: annual, sick and unpaid (idempotent)"
+on_install = true
+on_upgrade = true
+
+[[ai_tool]]
+name = "leave_balances"
+description = "The person's own leave balance for each leave type: allocated, spent, pending, available and expiring soon"
+function = "assistant_leave_balances"
+schema = { type = "object", properties = { leave_type = { type = "string", description = "Only this leave type (its id), when asked about one" }, on = { type = "string", description = "The day to work it out for, YYYY-MM-DD; today when left out" } } }
+
+[[ai_tool]]
+name = "my_leave_requests"
+description = "The person's own leave requests and where each stands"
+function = "my_leave_requests"
+
+[[ai_tool]]
+name = "leave_waiting_for_me"
+description = "Leave requests waiting for the person to approve"
+function = "leave_waiting_for_me"
+
+[[ai_tool]]
+name = "who_is_away"
+description = "Who is on approved leave between two days"
+function = "who_is_away_between"
+schema = { type = "object", properties = { from = { type = "string", description = "YYYY-MM-DD" }, to = { type = "string", description = "YYYY-MM-DD" } }, required = ["from", "to"] }
+
+[[ai_tool]]
+name = "preview_leave"
+description = "How many working days a leave would cost the person, before asking for it"
+function = "preview_leave_days"
+schema = { type = "object", properties = { leave_type = { type = "string", description = "The leave type's id" }, start_date = { type = "string", description = "YYYY-MM-DD" }, end_date = { type = "string", description = "YYYY-MM-DD; the start date when one day" }, half_day = { type = "string" } }, required = ["leave_type", "start_date"] }
+
+[[ai_tool]]
+name = "request_leave"
+description = "Ask for leave for the person. Proposed to them, who confirms it; nothing is requested until they do"
+function = "request_leave"
+schema = { type = "object", properties = { leave_type = { type = "string", description = "The leave type's id" }, start_date = { type = "string", description = "YYYY-MM-DD" }, end_date = { type = "string", description = "YYYY-MM-DD" }, half_day = { type = "string" }, reason = { type = "string" } }, required = ["leave_type", "start_date"] }
+writes = true
+
+[[roles]]
+name = "leave_admin"
+label = "Leave administrator"
+description = "Sets up leave types, grants days, decides when HR approval is needed, overrides blocks"
+
+[[roles]]
+name = "ledger_corrector"
+label = "Ledger corrector"
+description = "May edit or delete ledger entries. Nobody should hold this in normal use."
+
+[[events]]
+name = "leave_requested"
+
+[[events]]
+name = "leave_approved"
+
+[[events]]
+name = "leave_rejected"
+
+[[schedule]]
+name = "leave-nightly"
+title = "Update leave balances"
+description = "Accrues earned leave, lapses expired days and handles people going on leave and coming back."
+function = "leave_nightly"
+cron = "20 0 * * *"
+
+[[schedule]]
+name = "leave-yearly"
+title = "Allocate yearly leave"
+description = "Gives everyone their yearly leave and carry-over (safe to run again)."
+function = "allocate_yearly"
+cron = "30 0 1 1 *"
+
+[[command]]
+name = "demo_leave_type"
+function = "generate_demo_leave_type"
+help = "Generate demo leave types"
+demo_model = "leave_type"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[app]
+icon = "calendar-check"
+route = "/hr/leave"
+description = "Leave requests and balances"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

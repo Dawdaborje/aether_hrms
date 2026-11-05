@@ -1,0 +1,37 @@
+{
+  "model": "grv_case",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ],
+      "when": {
+        "complainant": "$hr.employee"
+      }
+    },
+    {
+      "name": "investigator",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "investigator": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "grievance_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

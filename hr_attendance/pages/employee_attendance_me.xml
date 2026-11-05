@@ -1,0 +1,3 @@
+<page extends="/hr/me" title="Attendance" params="employee={id}" sort="50">
+  <use component="attendance_panel"/>
+</page>

@@ -1,0 +1,49 @@
+{
+  "model": "rec_opening",
+  "access": [
+    {
+      "name": "recruiters",
+      "roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "panel",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "id": {
+          "in": "$my_openings"
+        }
+      }
+    },
+    {
+      "name": "public_to_staff",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "status": "open"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "salary_min",
+        "salary_max"
+      ],
+      "read_roles": [
+        "recruiter",
+        "recruit_manager"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+<page route="/hr/config/payroll/periods" title="Payroll periods" menu_group="Payroll" icon="calendar-range" sort="10" roles="hr_payroll.payroll_admin,hr_payroll.payroll_clerk,hr_payroll.payroll_approver,hr_payroll.payroll_finance">
+  <view type="list" source="list_pay_periods" open="/hr/config/payroll/periods/{id}" create="/hr/config/payroll/periods/new" create_label="New">
+    <columns>
+      <column field="name" label="Period"/>
+      <column field="start_date" label="From"/>
+      <column field="end_date" label="To"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No payroll periods" description="Define the fiscal or pay calendar; turn on 'require open period' to enforce it."/>
+  </view>
+</page>

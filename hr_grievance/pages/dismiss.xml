@@ -1,0 +1,8 @@
+<page route="/hr/grievances/dismiss" title="Dismiss a case" icon="x-circle" roles="hr_grievance.grievance_admin">
+  <view type="form" function="dismiss_grievance" submit="Dismiss" success="Dismissed" redirect="/hr/grievances">
+    <group title="Case" cols="1">
+      <field name="id" label="Case" fieldType="many2one" source="list_grievances" optionLabel="subject" entity="cases" required="true"/>
+      <field name="reason" label="Reason" fieldType="textarea" required="true"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,36 @@
+{
+  "model": "asset",
+  "access": [
+    {
+      "name": "holder",
+      "operations": [
+        "read",
+        "write"
+      ],
+      "when": {
+        "holder": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "asset_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "hire_purchase",
+      "roles": [
+        "via:hr_loan"
+      ],
+      "operations": [
+        "read",
+        "write"
+      ]
+    }
+  ]
+}

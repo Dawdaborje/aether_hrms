@@ -1,0 +1,3 @@
+<page extends="/hr/me" title="Emergency contacts" params="employee={id}" sort="20">
+  <use component="contacts_panel"/>
+</page>

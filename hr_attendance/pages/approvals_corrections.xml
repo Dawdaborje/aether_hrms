@@ -1,0 +1,14 @@
+<page route="/hr/attendance/approvals/corrections" title="Corrections to approve" icon="clipboard-check" menu_group="Approvals" sort="10">
+  <view type="list" source="corrections_waiting_for_me">
+    <columns>
+      <column field="employee" label="Employee"/>
+      <column field="work_date" label="Date" fieldType="date"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_correction" confirm="Approve this request?"/>
+    </actions>
+    <empty title="Nothing waiting" description="No one on your team is waiting on a decision."/>
+  </view>
+</page>

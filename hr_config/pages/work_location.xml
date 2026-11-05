@@ -1,0 +1,13 @@
+<page route="/hr/config/locations/{id}" title="Work location" menu="false" roles="hr.hr_user,hr.hr_manager">
+  <view type="form" source="get_work_location" function="update_work_location" submit="Save" success="Saved">
+    <group title="Location" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="office, home, other"/>
+      <field name="timezone" label="Timezone" help="IANA name such as Africa/Banjul."/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+    <group title="Address" cols="1">
+      <field name="address" label="Address" fieldType="text"/>
+    </group>
+  </view>
+</page>

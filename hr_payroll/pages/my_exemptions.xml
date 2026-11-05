@@ -1,0 +1,12 @@
+<page route="/hr/my-exemptions" title="My tax declarations" model="pay_exemption_declaration" icon="file-check">
+  <view type="list" model="pay_exemption_declaration" source="my_exemptions" create="/hr/my-exemptions/new" create_label="Declare">
+    <columns>
+      <column field="year" label="Year"/>
+      <column field="category" label="Category"/>
+      <column field="declared" label="Declared"/>
+      <column field="verified" label="Verified"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No declarations" description="Declare investments or allowances that lower your tax."/>
+  </view>
+</page>

@@ -1,0 +1,3 @@
+<page extends="/hr/employees/{id}" roles="documents_admin" title="Bank accounts" params="employee={id}" sort="30">
+  <use component="bank_panel"/>
+</page>

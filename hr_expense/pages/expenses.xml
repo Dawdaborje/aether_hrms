@@ -1,0 +1,15 @@
+<page route="/hr/expenses" title="Expenses" model="expense_report" icon="receipt">
+  <view type="list" model="expense_report" source="my_reports" create="/hr/expenses/new" create_label="New report">
+    <columns>
+      <column field="number" label="Report"/>
+      <column field="purpose" label="Purpose"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="claimed_total" label="Claimed"/>
+      <column field="net_payable" label="To pay"/>
+    </columns>
+    <actions>
+      <action name="submit" label="Send" function="submit_report" confirm="Send this report for approval?"/>
+    </actions>
+    <empty title="No reports yet" description="Use New report to add one."/>
+  </view>
+</page>

@@ -1,0 +1,13 @@
+<page route="/hr/fleet" title="Vehicles" model="flt_vehicle" icon="car">
+  <view type="list" model="flt_vehicle" source="list_vehicles" open="/hr/fleet/{id}" create="/hr/fleet/new" create_label="New vehicle">
+    <search/>
+    <columns>
+      <column field="plate" label="Plate"/>
+      <column field="make" label="Make"/>
+      <column field="model" label="Model"/>
+      <column field="odometer" label="Odometer"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No vehicles" description="Add the company vehicles here."/>
+  </view>
+</page>

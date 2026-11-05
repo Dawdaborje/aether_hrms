@@ -1,0 +1,201 @@
+{
+  "model_id": "mdl_vhmvxmdzfw",
+  "name": "ins_plan",
+  "label": "%ins_plan%",
+  "plural_label": "%ins_plans%",
+  "icon": "clipboard-list",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_nlwn3w7ys2",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_kjqwedkyeo",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_kz5apndduu",
+      "name": "insurer",
+      "label": "%insurer%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "ins_insurer"
+    },
+    {
+      "id": "fld_pva3vmfnkt",
+      "name": "coverage_type",
+      "label": "%coverage_type%",
+      "type": "select",
+      "required": true,
+      "default": "standard",
+      "options": [
+        {
+          "id": "opt_4xk65n7lwc",
+          "value": "basic",
+          "label": "%basic%"
+        },
+        {
+          "id": "opt_gnq5e27dln",
+          "value": "standard",
+          "label": "%standard%"
+        },
+        {
+          "id": "opt_3ivezxwtmk",
+          "value": "premium",
+          "label": "%premium%"
+        },
+        {
+          "id": "opt_v3m5ypkisr",
+          "value": "family",
+          "label": "%family%"
+        },
+        {
+          "id": "opt_nysv2jr5wp",
+          "value": "individual",
+          "label": "%individual%"
+        }
+      ]
+    },
+    {
+      "id": "fld_zssxyb6ilx",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_u5ovko4ipu",
+      "name": "member_limit",
+      "label": "%member_limit%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_7qkjxgh2ku",
+      "name": "deductible",
+      "label": "%deductible%",
+      "type": "decimal",
+      "default": 0,
+      "scale": 2
+    },
+    {
+      "id": "fld_6ppqpnszmz",
+      "name": "copay_percent",
+      "label": "%copay_percent%",
+      "type": "decimal",
+      "default": 0,
+      "scale": 2
+    },
+    {
+      "id": "fld_ujibll2upc",
+      "name": "network_only",
+      "label": "%network_only%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_uiwaebtakk",
+      "name": "preauth_threshold",
+      "label": "%preauth_threshold%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_yhhmpiiboh",
+      "name": "premium_amount",
+      "label": "%premium_amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_o5mvdvkzov",
+      "name": "premium_period",
+      "label": "%premium_period%",
+      "type": "select",
+      "required": true,
+      "default": "monthly",
+      "options": [
+        {
+          "id": "opt_fbycn62lmh",
+          "value": "monthly",
+          "label": "%monthly%"
+        },
+        {
+          "id": "opt_2btcxjkzq5",
+          "value": "annual",
+          "label": "%annual%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ihdtycl7vi",
+      "name": "employer_share_percent",
+      "label": "%employer_share_percent%",
+      "type": "decimal",
+      "default": 100,
+      "scale": 2
+    },
+    {
+      "id": "fld_uvaed7eoay",
+      "name": "allow_spouse",
+      "label": "%allow_spouse%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_eosxmk43it",
+      "name": "allow_children",
+      "label": "%allow_children%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_3abtz4u6ji",
+      "name": "max_children",
+      "label": "%max_children%",
+      "type": "int"
+    },
+    {
+      "id": "fld_vx2snl46un",
+      "name": "child_max_age",
+      "label": "%child_max_age%",
+      "type": "int",
+      "default": 25
+    },
+    {
+      "id": "fld_ktoq4nlfrc",
+      "name": "claim_window_days",
+      "label": "%claim_window_days%",
+      "type": "int",
+      "default": 90
+    },
+    {
+      "id": "fld_5i5cmk5yhn",
+      "name": "pay_code",
+      "label": "%pay_code%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_t4gvqa727l",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

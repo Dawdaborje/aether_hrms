@@ -1,0 +1,9 @@
+<page route="/hr/payroll/new" title="New pay run" menu="false" roles="hr_payroll.payroll_clerk,hr_payroll.payroll_admin">
+  <view type="form" function="create_pay_run" submit="Create" success="Pay run created" redirect="/hr/payroll">
+    <group title="Run" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="period_start" label="Period start" fieldType="date" required="true"/>
+      <field name="period_end" label="Period end" fieldType="date" required="true"/>
+    </group>
+  </view>
+</page>

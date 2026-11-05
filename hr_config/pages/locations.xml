@@ -1,0 +1,11 @@
+<page route="/hr/config/attendance/locations" title="Punch locations" menu_group="Attendance" icon="map-pin" sort="20" roles="hr_attendance.att_admin">
+  <view type="list" source="list_locations" open="/hr/config/attendance/locations/{id}" create="/hr/config/attendance/locations/new" create_label="New">
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="radius_m" label="Radius (m)"/>
+      <column field="geo_mode" label="Geo mode" fieldType="badge"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No locations" description="Add a place people punch at, with an optional radius."/>
+  </view>
+</page>

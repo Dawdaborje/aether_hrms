@@ -1,0 +1,64 @@
+{
+  "model_id": "mdl_fzb3pv0zif",
+  "name": "comp_withholding_cycle",
+  "label": "%comp_withholding_cycle%",
+  "plural_label": "%comp_withholding_cycles%",
+  "icon": "calendar-x",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_9pg0pyvzqc",
+      "name": "withholding",
+      "label": "%withholding%",
+      "type": "link",
+      "target": "comp_withholding",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_6fihik08b6",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_eznih0lpnq",
+      "name": "period_start",
+      "label": "%period_start%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_y36zpy6vfs",
+      "name": "period_end",
+      "label": "%period_end%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_6q4rh6k7ga",
+      "name": "released",
+      "label": "%released%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_2h7xkjtkva",
+      "name": "released_on",
+      "label": "%released_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_mgk4g2mu7s",
+      "name": "released_by",
+      "label": "%released_by%",
+      "type": "string",
+      "max_length": 80
+    }
+  ]
+}

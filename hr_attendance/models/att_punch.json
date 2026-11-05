@@ -1,0 +1,161 @@
+{
+  "model_id": "mdl_dgkxagyzu4",
+  "name": "att_punch",
+  "label": "%att_punch%",
+  "plural_label": "%att_punchs%",
+  "icon": "fingerprint",
+  "title_field": "employee",
+  "fields": [
+    {
+      "id": "fld_pijlye37ry",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_6fkuebgnfq",
+      "name": "ts",
+      "label": "%ts%",
+      "type": "datetime",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_t67tplzpkq",
+      "name": "direction",
+      "label": "%direction%",
+      "type": "select",
+      "default": "auto",
+      "options": [
+        {
+          "id": "opt_lxnlneg5u7",
+          "value": "in",
+          "label": "%in%"
+        },
+        {
+          "id": "opt_ve4zo6g5f2",
+          "value": "out",
+          "label": "%out%"
+        },
+        {
+          "id": "opt_qwwfaktwhw",
+          "value": "auto",
+          "label": "%auto%"
+        }
+      ]
+    },
+    {
+      "id": "fld_curqejqxd7",
+      "name": "source",
+      "label": "%source%",
+      "type": "select",
+      "default": "web",
+      "options": [
+        {
+          "id": "opt_bdlijyndrj",
+          "value": "web",
+          "label": "%web%"
+        },
+        {
+          "id": "opt_nuuub43kh4",
+          "value": "mobile",
+          "label": "%mobile%"
+        },
+        {
+          "id": "opt_wimvi655tq",
+          "value": "device",
+          "label": "%device%"
+        },
+        {
+          "id": "opt_ihd3jhzaji",
+          "value": "import",
+          "label": "%import%"
+        },
+        {
+          "id": "opt_cgr3sq2tei",
+          "value": "correction",
+          "label": "%correction%"
+        }
+      ]
+    },
+    {
+      "id": "fld_iigkgooffa",
+      "name": "client_ref",
+      "label": "%client_ref%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "help": "Unique per person: sending the same punch twice records it once."
+    },
+    {
+      "id": "fld_eabuc6d3mz",
+      "name": "latitude",
+      "label": "%latitude%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_5koroeobc2",
+      "name": "longitude",
+      "label": "%longitude%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_cvipovoxe2",
+      "name": "distance_m",
+      "label": "%distance_m%",
+      "type": "int"
+    },
+    {
+      "id": "fld_ggwqlwic52",
+      "name": "geo_ok",
+      "label": "%geo_ok%",
+      "type": "bool"
+    },
+    {
+      "id": "fld_xdm3yltxwq",
+      "name": "supersedes",
+      "label": "%supersedes%",
+      "type": "link",
+      "target": "att_punch",
+      "help": "The punch this one replaces; the old one stays for the record."
+    },
+    {
+      "id": "fld_ebg4cmir43",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_mubx5hcvps",
+      "fields": [
+        "employee",
+        "client_ref"
+      ],
+      "unique": true
+    },
+    {
+      "id": "idx_conlekf7e4",
+      "fields": [
+        "employee",
+        "ts"
+      ]
+    }
+  ],
+  "view": {
+    "list": [
+      "employee",
+      "ts",
+      "direction",
+      "source"
+    ]
+  }
+}

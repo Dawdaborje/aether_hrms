@@ -1,0 +1,44 @@
+{
+  "model": "leave_ledger",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "team",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": {
+          "in": "$hr.subordinates"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "leave_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "nobody_edits",
+      "roles": [
+        "ledger_corrector"
+      ],
+      "operations": [
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

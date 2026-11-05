@@ -1,0 +1,32 @@
+{
+  "model_id": "mdl_pe41qxh0if",
+  "name": "rec_source",
+  "label": "%rec_source%",
+  "plural_label": "%rec_sources%",
+  "icon": "megaphone",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_eceyfenf77",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "max_length": 160
+    },
+    {
+      "id": "fld_gklhd19ssm",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "is_active"
+    ]
+  }
+}

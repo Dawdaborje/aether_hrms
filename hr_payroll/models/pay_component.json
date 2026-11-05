@@ -1,0 +1,156 @@
+{
+  "model_id": "mdl_vxgccht4tu",
+  "name": "pay_component",
+  "label": "%pay_component%",
+  "plural_label": "%pay_components%",
+  "icon": "puzzle",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_uu96ljns4g",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_u84ouen8os",
+      "name": "label",
+      "label": "%label%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_ims529r0l8",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_zw4kgp9u0c",
+          "value": "earning",
+          "label": "%earning%"
+        },
+        {
+          "id": "opt_hxfptxcpge",
+          "value": "deduction",
+          "label": "%deduction%"
+        },
+        {
+          "id": "opt_4uybhqa2pp",
+          "value": "employer",
+          "label": "%employer%"
+        },
+        {
+          "id": "opt_t0ozz3kv6p",
+          "value": "info",
+          "label": "%info%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_pdf7me1ahu",
+      "name": "source",
+      "label": "%source%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_ow3at8k3x6",
+          "value": "formula",
+          "label": "%formula%"
+        },
+        {
+          "id": "opt_tzfpzqkveu",
+          "value": "input",
+          "label": "%input%"
+        },
+        {
+          "id": "opt_2mhja30ola",
+          "value": "amount",
+          "label": "%amount%"
+        }
+      ],
+      "required": true,
+      "default": "formula",
+      "help": "Where the amount comes from: a formula, a named input, or a fixed amount."
+    },
+    {
+      "id": "fld_m7borr4mr3",
+      "name": "formula",
+      "label": "%formula%",
+      "type": "text"
+    },
+    {
+      "id": "fld_u4tgtcj8ca",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_cezaaflgxr",
+      "name": "input_name",
+      "label": "%input_name%",
+      "type": "string",
+      "max_length": 60,
+      "help": "The structure input holding the amount."
+    },
+    {
+      "id": "fld_z1d68hzas1",
+      "name": "when_expr",
+      "label": "%when_expr%",
+      "type": "string",
+      "max_length": 200,
+      "help": "The component counts only when this condition is true."
+    },
+    {
+      "id": "fld_ouy0eik0y1",
+      "name": "tags",
+      "label": "%tags%",
+      "type": "json",
+      "help": "Groups it belongs to, for total(\"tag\")."
+    },
+    {
+      "id": "fld_ama9hz8osg",
+      "name": "is_taxable",
+      "label": "%is_taxable%",
+      "type": "bool",
+      "default": true,
+      "help": "Adds the tag `taxable`: the tax formulas can sum it."
+    },
+    {
+      "id": "fld_gd94ambckf",
+      "name": "pro_rata",
+      "label": "%pro_rata%",
+      "type": "bool",
+      "default": false,
+      "help": "Scaled by days worked over days in the period."
+    },
+    {
+      "id": "fld_1ubvtlwdr0",
+      "name": "is_statistical",
+      "label": "%is_statistical%",
+      "type": "bool",
+      "default": false,
+      "help": "A working figure only: shown, never paid."
+    },
+    {
+      "id": "fld_huvhd4qffd",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "label",
+      "kind"
+    ]
+  }
+}

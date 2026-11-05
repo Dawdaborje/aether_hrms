@@ -1,0 +1,11 @@
+<page route="/hr/timesheets/projects" title="Projects" model="ts_project" icon="folder-kanban" roles="hr_timesheet.timesheet_admin">
+  <view type="list" model="ts_project" source="list_ts_projects" create="/hr/timesheets/projects/new" create_label="New project">
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="cost_per_hour" label="Cost per hour"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No projects" description="Hours are logged against these."/>
+  </view>
+</page>

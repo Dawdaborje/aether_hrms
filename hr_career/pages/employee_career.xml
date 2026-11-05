@@ -1,0 +1,3 @@
+<page extends="/hr/employees/{id}" roles="career_admin" title="Career" params="employee={id}" sort="70">
+  <use component="career_panel"/>
+</page>

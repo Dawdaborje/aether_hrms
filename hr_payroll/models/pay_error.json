@@ -1,0 +1,55 @@
+{
+  "model_id": "mdl_tjjtnaqsy1",
+  "name": "pay_error",
+  "label": "%pay_error%",
+  "plural_label": "%pay_errors%",
+  "icon": "alert-triangle",
+  "title_field": "message",
+  "fields": [
+    {
+      "id": "fld_109z4gdcpd",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "pay_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_amsuqmmctk",
+      "name": "employee",
+      "label": "%employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt",
+      "required": true
+    },
+    {
+      "id": "fld_mco0nqulkg",
+      "name": "message",
+      "label": "%message%",
+      "type": "string",
+      "required": true,
+      "max_length": 400
+    },
+    {
+      "id": "fld_l7c0my78r8",
+      "name": "attempt",
+      "label": "%attempt%",
+      "type": "int",
+      "required": true,
+      "index": "plain"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_6mpl42xo3z",
+      "fields": [
+        "run",
+        "attempt",
+        "employee"
+      ],
+      "unique": true
+    }
+  ]
+}

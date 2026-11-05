@@ -1,0 +1,12 @@
+<page route="/hr/config/recruitment/offer-templates/new" title="New offer template" menu="false" roles="hr_recruitment.recruit_manager">
+  <view type="form" function="create_offer_template_form" submit="Save" success="Saved" redirect="/hr/config/recruitment/offer-templates">
+    <group title="New offer template" cols="2">
+      <field name="name" label="Template name" required="true"/>
+      <field name="intro" label="Introduction" fieldType="text"/>
+      <field name="term_1" label="Term 1" fieldType="many2one" source="list_offer_terms" entity="terms"/>
+      <field name="term_2" label="Term 2" fieldType="many2one" source="list_offer_terms" entity="terms"/>
+      <field name="term_3" label="Term 3" fieldType="many2one" source="list_offer_terms" entity="terms"/>
+      <field name="term_4" label="Term 4" fieldType="many2one" source="list_offer_terms" entity="terms"/>
+    </group>
+  </view>
+</page>

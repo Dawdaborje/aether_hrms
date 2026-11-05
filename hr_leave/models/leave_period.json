@@ -1,0 +1,48 @@
+{
+  "model_id": "mdl_ltjhtq2ane",
+  "name": "leave_period",
+  "label": "%leave_period%",
+  "plural_label": "%leave_periods%",
+  "icon": "calendar-range",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_fbu89yi4z5",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "unique"
+    },
+    {
+      "id": "fld_h3aggju1up",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_fz4ei9pbcr",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_pcm8bq8ir7",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "start_date",
+      "end_date",
+      "is_active"
+    ]
+  }
+}

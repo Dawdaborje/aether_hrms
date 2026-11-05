@@ -1,0 +1,37 @@
+[plugin]
+name = "hr_fleet"
+icon_path = "assets/logo.svg"
+label = "Company vehicles"
+version = "0.1.0"
+description = "Vehicles, who holds them, fuel and trip logs, and services with their next due date."
+long_description = """
+One person holds a vehicle at a time: assigning it ends the previous assignment the same day. Logs and services carry an odometer reading and a reading never goes down. Services can name a next-due date, and a list shows what is due soon. Written in Rust.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr"]
+capabilities = ["db::query", "db::mutate", "plugins::call"]
+access_models = [
+  { name = "flt_vehicle", permissions = ["read", "write"] },
+  { name = "flt_assignment", permissions = ["read", "write"] },
+  { name = "flt_log", permissions = ["read", "write"] },
+  { name = "flt_service", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "fleet_admin"
+label = "Fleet administrator"
+description = "Keeps vehicles, assigns them and records services."
+
+[app]
+icon = "car"
+route = "/hr/fleet"
+description = "Vehicles and who holds them"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

@@ -1,0 +1,189 @@
+{
+  "model_id": "mdl_vmx4bws3od",
+  "name": "rec_opening",
+  "label": "%rec_opening%",
+  "plural_label": "%rec_openings%",
+  "icon": "briefcase",
+  "title_field": "title",
+  "fields": [
+    {
+      "id": "fld_nywou7qjux",
+      "name": "title",
+      "label": "%title%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_qwimk45tl3",
+      "name": "position",
+      "label": "%position%",
+      "type": "link",
+      "target": "hr.position",
+      "required": true,
+      "index": "plain",
+      "target_id": "mdl_6aaww7ql2l"
+    },
+    {
+      "id": "fld_52sfkypqno",
+      "name": "department",
+      "label": "%department%",
+      "type": "link",
+      "target": "hr.department",
+      "target_id": "mdl_2wk5bl6ddu"
+    },
+    {
+      "id": "fld_wny6z35zul",
+      "name": "seats",
+      "label": "%seats%",
+      "type": "int",
+      "required": true,
+      "help": "People to hire."
+    },
+    {
+      "id": "fld_3x27cod5vo",
+      "name": "seats_filled",
+      "label": "%seats_filled%",
+      "type": "int",
+      "default": 0,
+      "help": "Counted from hired applications; never edited."
+    },
+    {
+      "id": "fld_6vkkc4wqao",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "index": "plain",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_nj4p6hbk5a",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_kdldpkwblr",
+          "value": "open",
+          "label": "%open%"
+        },
+        {
+          "id": "opt_tp5ukcmmob",
+          "value": "on_hold",
+          "label": "%on_hold%"
+        },
+        {
+          "id": "opt_qml7cm3q5q",
+          "value": "closed",
+          "label": "%closed%"
+        },
+        {
+          "id": "opt_kardyynv5k",
+          "value": "filled",
+          "label": "%filled%"
+        },
+        {
+          "id": "opt_km3lhvb7kk",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ksukpttzjr",
+      "name": "requested_by",
+      "label": "%requested_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_gdoael32ii",
+      "name": "opened_by",
+      "label": "%opened_by%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_tlzudd3pd6",
+      "name": "recruiter",
+      "label": "%recruiter%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_huqllx2b3m",
+      "name": "panel",
+      "label": "%panel%",
+      "type": "many2many",
+      "target": "hr.employee",
+      "help": "Interviewers who can see this opening's applications.",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_2qea3efgde",
+      "name": "opens_on",
+      "label": "%opens_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_khjchhyxsc",
+      "name": "closes_on",
+      "label": "%closes_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_wmnag2uzjd",
+      "name": "close_reason",
+      "label": "%close_reason%",
+      "type": "string",
+      "max_length": 200
+    },
+    {
+      "id": "fld_oyfafjpvca",
+      "name": "salary_min",
+      "label": "%salary_min%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_o6a6r2jm4k",
+      "name": "salary_max",
+      "label": "%salary_max%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_jmh7hdmknt",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 3
+    },
+    {
+      "id": "fld_dtuigc4qns",
+      "name": "description",
+      "label": "%description%",
+      "type": "text"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "title",
+      "position",
+      "seats",
+      "seats_filled",
+      "status"
+    ]
+  }
+}

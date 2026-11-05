@@ -1,0 +1,33 @@
+<component name="documents_panel">
+  <group cols="1">
+    <modal name="document" title="Add identity document" edit_title="Identity document" label="Add document">
+      <view type="form" function="add_identity_document" submit="Add" success="Document added"
+            edit_source="get_identity_document" edit_function="update_identity_document"
+            edit_submit="Save" edit_success="Document saved">
+        <field name="kind" label="Kind" required="true" fieldType="selection"
+               options="passport, national_id, visa, work_permit, driving_licence, other"/>
+        <field name="number" label="Number" required="true"/>
+        <field name="country" label="Country" fieldType="many2one" source="country.list_countries" optionLabel="name" entity="countries"/>
+        <field name="issued_on" label="Issued" fieldType="date"/>
+        <field name="expires_on" label="Expires" fieldType="date"/>
+        <field name="is_primary" label="Primary document" fieldType="boolean"
+               help="The first document of each kind is primary automatically. Tick this to make this one the primary of its kind instead."/>
+        <field name="notes" label="Notes" fieldType="text"/>
+      </view>
+    </modal>
+    <view type="list" model="doc_identity" source="list_identity_documents" edit="document">
+      <columns>
+        <column field="kind" label="Kind" fieldType="badge"/>
+        <column field="number" label="Number"/>
+        <column field="country" label="Country" fieldType="link" modelTarget="country.country"/>
+        <column field="expires_on" label="Expires" fieldType="date"/>
+        <column field="is_primary" label="Primary" fieldType="boolean"/>
+      </columns>
+      <actions>
+        <action name="remove" label="Remove" function="remove_identity_document"
+                confirm="Remove this document?" danger="true"/>
+      </actions>
+      <empty title="No documents" description="Identity documents on file appear here."/>
+    </view>
+  </group>
+</component>

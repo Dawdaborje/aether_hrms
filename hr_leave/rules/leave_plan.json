@@ -1,0 +1,20 @@
+{
+  "model": "leave_plan",
+  "access": [
+    {
+      "name": "everyone_reads",
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "leave_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    }
+  ]
+}

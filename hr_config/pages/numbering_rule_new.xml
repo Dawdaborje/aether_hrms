@@ -1,0 +1,18 @@
+<page route="/hr/config/numbering/new" title="New employee number rule" menu="false" roles="hr.hr_manager">
+  <view type="form" function="create_employee_number_rule" submit="Create" success="Created" redirect="/hr/config/numbering">
+    <group title="Rule" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="pattern" label="Pattern" required="true"
+             help="Tokens: {number}, {number:N}, {year}, {yy}, {month}, {mm}, {department_code}, {department}, {employment_type}."/>
+      <field name="department" label="Only for department" fieldType="many2one"
+             source="list_departments" entity="departments"/>
+      <field name="employment_type" label="Only for employment type" fieldType="selection"
+             options="permanent, contract, temporary, intern, casual"/>
+      <field name="reset" label="Sequence reset" fieldType="selection" options="never, yearly, monthly"/>
+      <field name="priority" label="Priority" fieldType="integer"
+             help="Higher wins when two rules are equally specific."/>
+      <field name="is_default" label="Default fallback" fieldType="boolean"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

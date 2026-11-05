@@ -1,0 +1,22 @@
+<page route="/hr/employees" title="Employees" model="employee" menu_group="Employee" menu_group_icon="users" icon="users" sort="10" roles="hr_user,hr_manager">
+  <view type="list" model="employee" source="list_employees" open="/hr/employees/{id}"
+        create="/hr/employees/hire" create_label="New" page_size="50" default_order="display_name">
+    <search fields="display_name,employee_no,work_email"/>
+    <filter field="status" label="Status" options="active,probation,on_leave,suspended,resigned,terminated,retired,deceased"/>
+    <groupby field="department" label="Department" source="list_departments"/>
+    <groupby field="status" label="Status"/>
+    <columns>
+      <column field="image" label="" fieldType="image"/>
+      <column field="employee_no" label="No." sortable="true"/>
+      <column field="display_name" label="Name" sortable="true"/>
+      <column field="department" label="Department"/>
+      <column field="job" label="Job"/>
+      <column field="manager" label="Reports to"/>
+      <column field="work_email" label="Work email" sortable="true"/>
+      <column field="status" label="Status" fieldType="badge"/>
+      <column field="employment_type" label="Type" fieldType="badge"/>
+      <column field="hire_date" label="Hired" fieldType="date" sortable="true"/>
+    </columns>
+    <empty title="No employees yet" description="Use New to add someone."/>
+  </view>
+</page>

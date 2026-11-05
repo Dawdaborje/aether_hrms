@@ -1,0 +1,16 @@
+<page route="/hr/config/attendance/rotations/new" title="New rotation" menu="false" roles="hr_attendance.att_admin">
+  <view type="form" function="create_rotation_simple" submit="Create" success="Rotation created" redirect="/hr/config/attendance/rotations">
+    <group title="Rotation" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="anchor_date" label="Day 1 falls on" fieldType="date" required="true"/>
+      <field name="days" label="Days in the cycle (1 to 7)" fieldType="integer"/>
+      <field name="day_1" label="Day 1 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="day_2" label="Day 2 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="day_3" label="Day 3 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="day_4" label="Day 4 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="day_5" label="Day 5 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="day_6" label="Day 6 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+      <field name="day_7" label="Day 7 shift (empty = off)" fieldType="many2one" source="list_shifts" optionLabel="name" entity="shifts"/>
+    </group>
+  </view>
+</page>

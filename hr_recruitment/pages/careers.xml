@@ -1,0 +1,10 @@
+<page route="/careers" title="Careers" public="true" icon="briefcase">
+  <view type="list" source="career_jobs" create="/careers/apply" create_label="Apply">
+    <columns>
+      <column field="title" label="Job"/>
+      <column field="description" label="About the job"/>
+      <column field="closes_on" label="Apply by" fieldType="date"/>
+    </columns>
+    <empty title="No open jobs right now" description="Check back soon."/>
+  </view>
+</page>

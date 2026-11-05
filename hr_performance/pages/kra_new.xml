@@ -1,0 +1,8 @@
+<page route="/hr/performance/kras/new" title="New key result area" menu="false" roles="hr_performance.perf_admin">
+  <view type="form" function="create_kra" submit="Create" success="Created" redirect="/hr/performance/kras">
+    <group title="Key result area" cols="1">
+      <field name="name" label="Name" required="true"/>
+      <field name="description" label="About" fieldType="text"/>
+    </group>
+  </view>
+</page>

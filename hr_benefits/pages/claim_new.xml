@@ -1,0 +1,10 @@
+<page route="/hr/benefits/claim" title="New benefit claim" menu="false" model="bnf_claim">
+  <view type="form" function="claim_benefit" submit="Submit" success="Submitted" redirect="/hr/benefits">
+    <group title="New benefit claim" cols="2">
+      <field name="plan" label="Plan" fieldType="many2one" source="list_benefit_plans" optionLabel="name" entity="plans" required="true"/>
+      <field name="amount" label="Amount" required="true"/>
+      <field name="incurred_on" label="Incurred on" fieldType="date" required="true"/>
+      <field name="description" label="Description" fieldType="textarea" required="true"/>
+    </group>
+  </view>
+</page>

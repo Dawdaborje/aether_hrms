@@ -1,0 +1,98 @@
+{
+  "model_id": "mdl_riw7ogbza2",
+  "name": "rec_round",
+  "label": "%rec_round%",
+  "plural_label": "%rec_rounds%",
+  "icon": "layers",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_dejgrxjecf",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 100,
+      "index": "unique"
+    },
+    {
+      "id": "fld_mdxrqgygpk",
+      "name": "criteria",
+      "label": "%criteria%",
+      "type": "json",
+      "required": true,
+      "help": "[{name, weight}] with weights adding up to 100."
+    },
+    {
+      "id": "fld_p5mygtyeg5",
+      "name": "min_average",
+      "label": "%min_average%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "3.00",
+      "help": "The mean score needed to advance."
+    },
+    {
+      "id": "fld_66obmqta3a",
+      "name": "min_panelists",
+      "label": "%min_panelists%",
+      "type": "int",
+      "default": 1,
+      "help": "Feedback needed before the interview has an outcome."
+    },
+    {
+      "id": "fld_oql3zun6en",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_xmg6jf67qy",
+      "name": "mode",
+      "label": "%mode%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_8q6oepwcvj",
+          "value": "onsite",
+          "label": "%onsite%"
+        },
+        {
+          "id": "opt_3zevucu6uu",
+          "value": "phone",
+          "label": "%phone%"
+        },
+        {
+          "id": "opt_4ar0u51guo",
+          "value": "video",
+          "label": "%video%"
+        }
+      ],
+      "default": "onsite"
+    },
+    {
+      "id": "fld_nvsl9gyua7",
+      "name": "duration_min",
+      "label": "%duration_min%",
+      "type": "int",
+      "default": 60
+    },
+    {
+      "id": "fld_v4kjpnggca",
+      "name": "pool",
+      "label": "%pool%",
+      "type": "link",
+      "target": "rec_pool",
+      "help": "Interviewers to pick from when none are named."
+    },
+    {
+      "id": "fld_g9u17cb9xb",
+      "name": "panel_size",
+      "label": "%panel_size%",
+      "type": "int",
+      "default": 0,
+      "help": "How many to pick from the pool; 0 uses the minimum panelists."
+    }
+  ]
+}

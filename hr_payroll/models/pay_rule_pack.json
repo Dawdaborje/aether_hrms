@@ -1,0 +1,102 @@
+{
+  "model_id": "mdl_x6nq9g3ipu",
+  "name": "pay_rule_pack",
+  "label": "%pay_rule_pack%",
+  "plural_label": "%pay_rule_packs%",
+  "icon": "scroll-text",
+  "title_field": "pack_id",
+  "fields": [
+    {
+      "id": "fld_ehivbz82ed",
+      "name": "pack_id",
+      "label": "%pack_id%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "unique"
+    },
+    {
+      "id": "fld_vv80ksxj6n",
+      "name": "country",
+      "label": "%country%",
+      "type": "string",
+      "max_length": 4
+    },
+    {
+      "id": "fld_znvkrueyo8",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "string",
+      "max_length": 30
+    },
+    {
+      "id": "fld_c19uixephl",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 10
+    },
+    {
+      "id": "fld_4xf8ejb9kb",
+      "name": "valid_from",
+      "label": "%valid_from%",
+      "type": "date"
+    },
+    {
+      "id": "fld_2e4l4fzf6c",
+      "name": "valid_to",
+      "label": "%valid_to%",
+      "type": "date"
+    },
+    {
+      "id": "fld_h409fuotl2",
+      "name": "source",
+      "label": "%source%",
+      "type": "string",
+      "max_length": 300
+    },
+    {
+      "id": "fld_cxovyntthy",
+      "name": "verified",
+      "label": "%verified%",
+      "type": "bool",
+      "default": false,
+      "help": "True only once someone checked every figure against its source."
+    },
+    {
+      "id": "fld_76l97g4zmk",
+      "name": "description",
+      "label": "%description%",
+      "type": "json",
+      "required": true
+    },
+    {
+      "id": "fld_7psdf62t58",
+      "name": "expression",
+      "label": "%expression%",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "fld_mh8jd70igv",
+      "name": "hash",
+      "label": "%hash%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_5c7l8aivmd",
+      "name": "tests",
+      "label": "%tests%",
+      "type": "int"
+    },
+    {
+      "id": "fld_fz0ezo4x3q",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

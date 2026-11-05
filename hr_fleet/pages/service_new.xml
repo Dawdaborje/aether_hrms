@@ -1,0 +1,14 @@
+<page route="/hr/fleet/services/new" title="Record a service" menu="false" roles="hr_fleet.fleet_admin">
+  <view type="form" function="record_service" submit="Save" success="Recorded" redirect="/hr/fleet/services">
+    <group title="Service" cols="2">
+      <field name="vehicle" label="Vehicle" fieldType="many2one" source="list_vehicles" optionLabel="plate" entity="vehicles" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="maintenance, repair, inspection, tyres, insurance, other" required="true"/>
+      <field name="date" label="Date" fieldType="date"/>
+      <field name="odometer" label="Odometer" fieldType="integer" required="true"/>
+      <field name="cost" label="Cost" required="true"/>
+      <field name="vendor" label="Vendor"/>
+      <field name="next_due" label="Next due" fieldType="date"/>
+      <field name="note" label="Note"/>
+    </group>
+  </view>
+</page>

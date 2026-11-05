@@ -1,0 +1,12 @@
+<page route="/careers/apply" title="Apply" public="true" menu="false">
+  <view type="form" function="career_apply" submit="Send application" success="Thank you: we have your application." redirect="/careers">
+    <group title="Your application" cols="1">
+      <field name="opening" label="Job" fieldType="many2one" source="career_jobs" optionLabel="title" entity="jobs" required="true"/>
+      <field name="name" label="Your name" required="true"/>
+      <field name="email" label="Email" required="true"/>
+      <field name="phone" label="Phone"/>
+      <field name="cover_note" label="Why you" fieldType="text"/>
+      <field name="resume" label="Resume" fieldType="file"/>
+    </group>
+  </view>
+</page>

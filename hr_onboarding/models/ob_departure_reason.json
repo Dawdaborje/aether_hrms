@@ -1,0 +1,69 @@
+{
+  "model_id": "mdl_o1skdjwdgd",
+  "name": "ob_departure_reason",
+  "label": "%ob_departure_reason%",
+  "plural_label": "%ob_departure_reasons%",
+  "icon": "door-open",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_sac1ujbo65",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_f4xhnv76mo",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_13gyvt6f8m",
+          "value": "resignation",
+          "label": "%resignation%"
+        },
+        {
+          "id": "opt_qpi78h1mil",
+          "value": "termination",
+          "label": "%termination%"
+        },
+        {
+          "id": "opt_7ydnn6ab7z",
+          "value": "end_of_contract",
+          "label": "%end_of_contract%"
+        },
+        {
+          "id": "opt_npy9etc7z8",
+          "value": "retirement",
+          "label": "%retirement%"
+        },
+        {
+          "id": "opt_el5stvwmci",
+          "value": "other",
+          "label": "%other%"
+        }
+      ],
+      "required": true,
+      "default": "other"
+    },
+    {
+      "id": "fld_412ipsxw8y",
+      "name": "status_to",
+      "label": "%status_to%",
+      "type": "string",
+      "max_length": 30,
+      "help": "The employee status that closing sets; filled from the kind when empty."
+    },
+    {
+      "id": "fld_fnogql3p5a",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

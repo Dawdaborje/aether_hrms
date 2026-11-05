@@ -1,0 +1,196 @@
+{
+  "model_id": "mdl_a3alpl8jh2",
+  "name": "perf_cycle",
+  "label": "%perf_cycle%",
+  "plural_label": "%perf_cycles%",
+  "icon": "calendar-range",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_nun6jjo0z2",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique"
+    },
+    {
+      "id": "fld_00zjd1eavr",
+      "name": "start_date",
+      "label": "%start_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_5fgkmpedet",
+      "name": "end_date",
+      "label": "%end_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_53wzndlpjg",
+      "name": "status",
+      "label": "%status%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_a7rf5zyyho",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_c5ddohz8gw",
+          "value": "goal_setting",
+          "label": "%goal_setting%"
+        },
+        {
+          "id": "opt_17pbdngmbb",
+          "value": "self_review",
+          "label": "%self_review%"
+        },
+        {
+          "id": "opt_am7fgkxhlg",
+          "value": "manager_review",
+          "label": "%manager_review%"
+        },
+        {
+          "id": "opt_jr3nmypba3",
+          "value": "calibration",
+          "label": "%calibration%"
+        },
+        {
+          "id": "opt_dgra1q7xoj",
+          "value": "published",
+          "label": "%published%"
+        },
+        {
+          "id": "opt_s30d1atz8u",
+          "value": "closed",
+          "label": "%closed%"
+        }
+      ],
+      "required": true,
+      "default": "draft",
+      "index": "plain"
+    },
+    {
+      "id": "fld_3fvlxknham",
+      "name": "scale_max",
+      "label": "%scale_max%",
+      "type": "int",
+      "required": true,
+      "default": 5
+    },
+    {
+      "id": "fld_6rujc8uwos",
+      "name": "template",
+      "label": "%template%",
+      "type": "link",
+      "target": "perf_template",
+      "required": true
+    },
+    {
+      "id": "fld_fx1192ehhd",
+      "name": "w_goal",
+      "label": "%w_goal%",
+      "type": "int",
+      "default": 40
+    },
+    {
+      "id": "fld_krh2qv8fgf",
+      "name": "w_self",
+      "label": "%w_self%",
+      "type": "int",
+      "default": 10
+    },
+    {
+      "id": "fld_uwonzy3bab",
+      "name": "w_manager",
+      "label": "%w_manager%",
+      "type": "int",
+      "default": 40
+    },
+    {
+      "id": "fld_oqd5ob10mg",
+      "name": "w_peer",
+      "label": "%w_peer%",
+      "type": "int",
+      "default": 10
+    },
+    {
+      "id": "fld_bnodpnn7a1",
+      "name": "missing_policy",
+      "label": "%missing_policy%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_bosh208ow1",
+          "value": "exclude",
+          "label": "%exclude%"
+        },
+        {
+          "id": "opt_n4xlk8onzn",
+          "value": "zero",
+          "label": "%zero%"
+        },
+        {
+          "id": "opt_7rg3uw6hfq",
+          "value": "block",
+          "label": "%block%"
+        }
+      ],
+      "required": true,
+      "default": "exclude"
+    },
+    {
+      "id": "fld_yxffqebv74",
+      "name": "min_peers",
+      "label": "%min_peers%",
+      "type": "int",
+      "default": 0,
+      "help": "Fewer peer reviews than this and the peer component is missing."
+    },
+    {
+      "id": "fld_hlai1z1hi2",
+      "name": "deadline_goal",
+      "label": "%deadline_goal%",
+      "type": "date"
+    },
+    {
+      "id": "fld_epy6joxe9c",
+      "name": "deadline_self",
+      "label": "%deadline_self%",
+      "type": "date"
+    },
+    {
+      "id": "fld_rgusga22eq",
+      "name": "deadline_manager",
+      "label": "%deadline_manager%",
+      "type": "date"
+    },
+    {
+      "id": "fld_hzhwpfz4rk",
+      "name": "deadline_calibration",
+      "label": "%deadline_calibration%",
+      "type": "date"
+    },
+    {
+      "id": "fld_ubbgnlhwcz",
+      "name": "reminded",
+      "label": "%reminded%",
+      "type": "string",
+      "max_length": 60,
+      "help": "The last phase a reminder went out for."
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "status",
+      "start_date",
+      "end_date"
+    ]
+  }
+}

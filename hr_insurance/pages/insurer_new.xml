@@ -1,0 +1,10 @@
+<page route="/hr/insurance/insurers/new" title="New insurer" menu="false" model="ins_insurer" roles="ins_admin">
+  <view type="form" function="create_insurer" submit="Create insurer" success="Insurer created" redirect="/hr/insurance/insurers">
+    <group title="Insurer" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="contact_email" label="Email"/>
+      <field name="contact_phone" label="Phone"/>
+    </group>
+  </view>
+</page>

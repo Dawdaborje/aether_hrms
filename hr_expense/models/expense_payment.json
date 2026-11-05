@@ -1,0 +1,80 @@
+{
+  "model_id": "mdl_lv37w4bw5p",
+  "name": "expense_payment",
+  "label": "%expense_payment%",
+  "plural_label": "%expense_payments%",
+  "icon": "banknote",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_iwltysalkp",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_lphhfliomt",
+          "value": "reimbursement",
+          "label": "%reimbursement%"
+        },
+        {
+          "id": "opt_6grzqr2jet",
+          "value": "advance_issued",
+          "label": "%advance_issued%"
+        },
+        {
+          "id": "opt_tqc274y2b2",
+          "value": "advance_returned",
+          "label": "%advance_returned%"
+        }
+      ]
+    },
+    {
+      "id": "fld_dj46piyta5",
+      "name": "report",
+      "label": "%report%",
+      "type": "link",
+      "target": "expense_report"
+    },
+    {
+      "id": "fld_tbdgrif2qf",
+      "name": "advance",
+      "label": "%advance%",
+      "type": "link",
+      "target": "expense_advance"
+    },
+    {
+      "id": "fld_tuoywonjkt",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 120,
+      "index": "unique",
+      "help": "From the paying system; the same reference is applied once."
+    },
+    {
+      "id": "fld_5yyfyeuc4x",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    },
+    {
+      "id": "fld_j3ucp6tp4l",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 3
+    },
+    {
+      "id": "fld_2qmwx3a5ag",
+      "name": "paid_on",
+      "label": "%paid_on%",
+      "type": "date"
+    }
+  ]
+}

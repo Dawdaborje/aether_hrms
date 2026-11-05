@@ -1,0 +1,13 @@
+<page route="/hr/config/letters/templates/new" title="New letter template" menu="false" roles="hr_career.career_admin">
+  <view type="form" function="create_letter_template" submit="Save" success="Saved" redirect="/hr/config/letters/templates/{id}">
+    <group title="Template" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" required="true"
+             options="appointment, relieving, experience, promotion, demotion, transfer, grade_change, pay_change, any"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+      <field name="body" label="Body" fieldType="text" required="true"
+             help="Placeholders: {{employee}}, {{employee_no}}, {{hire_date}}, {{job}}, {{department}}, {{issue_date}}, {{last_day}}."/>
+    </group>
+  </view>
+</page>

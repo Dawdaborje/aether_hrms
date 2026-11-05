@@ -1,0 +1,15 @@
+<page route="/hr/benefits/approvals" title="Claim approvals" model="bnf_claim" icon="check-check">
+  <view type="list" model="bnf_claim" source="benefit_claims_waiting_for_me">
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="employee" label="Employee"/>
+      <column field="amount" label="Amount"/>
+      <column field="incurred_on" label="Incurred" fieldType="date"/>
+    </columns>
+    <actions>
+      <action name="approve" label="Approve" function="approve_benefit_claim"/>
+      <action name="reject" label="Reject" function="reject_benefit_claim" confirm="Reject this claim?" danger="true"/>
+    </actions>
+    <empty title="Nothing waiting" description="Claims you can decide appear here."/>
+  </view>
+</page>

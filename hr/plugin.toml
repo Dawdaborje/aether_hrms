@@ -1,0 +1,140 @@
+[plugin]
+name = "hr"
+icon_path = "assets/logo.svg"
+label = "Human Resources"
+version = "0.4.0"
+description = "People, departments, positions and dated employment terms."
+long_description = """
+The core of HR: a tree of departments, positions (seats with a headcount), employees who hold them and
+report to each other, their dependents and skills, and a dated history of employment terms. Nothing in it belongs to one country or
+employer. Other plugins (leave, attendance, recruitment, a government registry) build on it. Written in Rust.
+See docs/design.md in this plugin (hr/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["party", "country", "currency", "company", "base_ui"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call", "report::export"]
+access_models = [
+  { name = "department", permissions = ["read", "write"] },
+  { name = "job", permissions = ["read", "write"] },
+  { name = "position", permissions = ["read", "write"] },
+  { name = "employee", permissions = ["read", "write"] },
+  { name = "skill", permissions = ["read", "write"] },
+  { name = "dependent", permissions = ["read", "write"] },
+  { name = "employment", permissions = ["read", "write"] },
+  { name = "employee_private", permissions = ["read", "write"] },
+  { name = "work_location", permissions = ["read", "write"] },
+  { name = "cost_center", permissions = ["read", "write"] },
+  { name = "grade", permissions = ["read", "write"] },
+  { name = "hire_hold", permissions = ["read", "write"] },
+  { name = "hr_setting", permissions = ["read", "write"] },
+  { name = "employee_number_rule", permissions = ["read", "write"] },
+  { name = "counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "hr_user"
+label = "HR officer"
+description = "Hires and updates people, departments, positions and employment terms"
+
+[[roles]]
+name = "hr_manager"
+label = "HR manager"
+description = "Everything an HR officer can do, and sees pay"
+
+[[events]]
+name = "employee_hired"
+
+[[events]]
+name = "employee_rehired"
+
+[[events]]
+name = "employee_status_changed"
+
+[[command]]
+name = "demo_department"
+function = "generate_demo_department"
+help = "Generate demo departments"
+demo_model = "department"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_job"
+function = "generate_demo_job"
+help = "Generate demo jobs"
+demo_model = "job"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_position"
+function = "generate_demo_position"
+help = "Generate demo positions"
+demo_model = "position"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_work_location"
+function = "generate_demo_work_location"
+help = "Generate demo work locations"
+demo_model = "work_location"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "migrate_catalog_links"
+function = "migrate_catalog_links"
+help = "Move free-text work location and cost centre values onto the catalog link fields"
+
+[[command]]
+name = "migrate_grades"
+function = "migrate_grades"
+help = "Make a grade for each grade written as free text on positions and employment (idempotent)"
+on_install = true
+on_upgrade = true
+
+[[command]]
+name = "seed_employee_number_rules"
+function = "seed_employee_number_rules"
+help = "Ensure a default EMP-{number:5} employee number rule exists"
+on_install = true
+on_upgrade = true
+
+[[command]]
+name = "demo_skill"
+function = "generate_demo_skill"
+help = "Generate demo skills"
+demo_model = "skill"
+args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_employee"
+function = "generate_demo_employee"
+help = "Generate demo employees (creates scaffold department/job/position if needed)"
+demo_model = "employee"
+args = [{ name = "count", type = "int", default = 10 }]
+
+# Terms whose first day has come become current every night.
+[[schedule]]
+name = "apply-employment"
+title = "Apply due employment terms"
+description = "Makes employment terms current once their first day arrives."
+function = "apply_due_employments"
+cron = "10 0 * * *"
+
+[app]
+icon = "users"
+route = "/hr"
+description = "People and organization"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"
+
+[[ai_tool]]
+name = "org_chart"
+description = "The reporting structure: who reports to whom, optionally below one person"
+function = "org_chart"
+schema = { type = "object", properties = { root = { type = "string", description = "An employee's id to start from; the top when left out" } } }

@@ -1,0 +1,5 @@
+<page route="/hr/expenses/new" title="New report" model="expense_report">
+  <view type="form" function="create_report" submit="New report" success="Report created" redirect="/hr/expenses">
+    <field name="purpose" label="Purpose" required="true"/>
+  </view>
+</page>

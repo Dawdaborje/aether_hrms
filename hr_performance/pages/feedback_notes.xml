@@ -1,0 +1,11 @@
+<page route="/hr/performance/feedback" title="Feedback about me" model="perf_note" icon="message-square" menu_group="Performance" sort="40">
+  <view type="list" model="perf_note" source="my_feedback_notes" create="/hr/performance/feedback/new" create_label="Give feedback">
+    <columns>
+      <column field="on_date" label="Date" fieldType="date"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="rating" label="Rating"/>
+      <column field="comment" label="Feedback"/>
+    </columns>
+    <empty title="No feedback yet" description="Colleagues and your manager can share feedback any time."/>
+  </view>
+</page>

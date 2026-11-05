@@ -1,0 +1,184 @@
+{
+  "model_id": "mdl_4hvtm7tplz",
+  "name": "ref_referral",
+  "label": "%ref_referral%",
+  "plural_label": "%ref_referrals%",
+  "icon": "user-plus",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_yaejs3q4hc",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_bjstfrdcem",
+      "name": "referrer",
+      "label": "%referrer%",
+      "type": "link",
+      "required": true,
+      "index": "plain",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_5e46sdegbd",
+      "name": "candidate_name",
+      "label": "%candidate_name%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_nhglk22hue",
+      "name": "candidate_email",
+      "label": "%candidate_email%",
+      "type": "string",
+      "required": true,
+      "max_length": 200,
+      "index": "unique"
+    },
+    {
+      "id": "fld_l22ylztr6u",
+      "name": "candidate_phone",
+      "label": "%candidate_phone%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_gzady4w7qm",
+      "name": "opening",
+      "label": "%opening%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_lt5h72oqyu",
+      "name": "application",
+      "label": "%application%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_oatislkcf4",
+      "name": "hired_employee",
+      "label": "%hired_employee%",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_nqjk4gtiwh",
+      "name": "hired_on",
+      "label": "%hired_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_2mkyg5hw52",
+      "name": "policy",
+      "label": "%policy%",
+      "type": "link",
+      "target": "ref_policy"
+    },
+    {
+      "id": "fld_65b7lqjvxl",
+      "name": "bonus_amount",
+      "label": "%bonus_amount%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_hfdr2n4png",
+      "name": "wait_days",
+      "label": "%wait_days%",
+      "type": "int"
+    },
+    {
+      "id": "fld_n63u5fmdis",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 3
+    },
+    {
+      "id": "fld_omn3r247zv",
+      "name": "pay_code",
+      "label": "%pay_code%",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_qayppdbftz",
+      "name": "bonus_due_on",
+      "label": "%bonus_due_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_brlw6zdfqb",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_lfquohrfp4",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_ayo3xbfl6b",
+          "value": "in_process",
+          "label": "%in_process%"
+        },
+        {
+          "id": "opt_52mmnm4mpx",
+          "value": "hired",
+          "label": "%hired%"
+        },
+        {
+          "id": "opt_3op4y23vsb",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_bazi4rex3o",
+          "value": "withdrawn",
+          "label": "%withdrawn%"
+        },
+        {
+          "id": "opt_7xcec2wvsm",
+          "value": "bonus_due",
+          "label": "%bonus_due%"
+        },
+        {
+          "id": "opt_nd3k4smlw4",
+          "value": "paid",
+          "label": "%paid%"
+        },
+        {
+          "id": "opt_qgiyse7e3q",
+          "value": "forfeited",
+          "label": "%forfeited%"
+        }
+      ]
+    },
+    {
+      "id": "fld_hhehkhl6tb",
+      "name": "note",
+      "label": "%note%",
+      "type": "text"
+    },
+    {
+      "id": "fld_t2mgadgcfl",
+      "name": "adjustment",
+      "label": "%adjustment%",
+      "type": "string",
+      "max_length": 120
+    }
+  ]
+}

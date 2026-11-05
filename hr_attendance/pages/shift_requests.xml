@@ -1,0 +1,12 @@
+<page route="/hr/attendance/shift-requests" title="Shift requests" icon="repeat" sort="30">
+  <view type="list" source="my_shift_requests" create="/hr/attendance/shift-requests/new" create_label="Ask">
+    <columns>
+      <column field="reference" label="Ref"/>
+      <column field="shift" label="Shift"/>
+      <column field="date_from" label="From"/>
+      <column field="date_to" label="To"/>
+      <column field="status" label="Status" fieldType="badge"/>
+    </columns>
+    <empty title="No shift requests" description="Ask for another shift for some days."/>
+  </view>
+</page>

@@ -1,0 +1,73 @@
+{
+  "model_id": "mdl_umn25aecnl",
+  "name": "att_overtime_rule",
+  "label": "%att_overtime_rule%",
+  "plural_label": "%att_overtime_rules%",
+  "icon": "percent",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_uztktfr5me",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_lcs2ka3w4y",
+      "name": "day_kind",
+      "label": "%day_kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_nzh7hn73pe",
+          "value": "working",
+          "label": "%working%"
+        },
+        {
+          "id": "opt_ezsjwhekon",
+          "value": "weekly_off",
+          "label": "%weekly_off%"
+        },
+        {
+          "id": "opt_mjvr75avvi",
+          "value": "holiday",
+          "label": "%holiday%"
+        }
+      ]
+    },
+    {
+      "id": "fld_cbkbldo5ta",
+      "name": "from_min",
+      "label": "%from_min%",
+      "type": "int",
+      "required": true,
+      "default": 0,
+      "help": "The band starts after this many overtime minutes in the day."
+    },
+    {
+      "id": "fld_k2k5nze5fi",
+      "name": "to_min",
+      "label": "%to_min%",
+      "type": "int",
+      "help": "The band ends here; empty: no end."
+    },
+    {
+      "id": "fld_x22yhs5f7d",
+      "name": "multiplier",
+      "label": "%multiplier%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_hzplq3s4ba",
+      "name": "is_active",
+      "label": "%is_active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

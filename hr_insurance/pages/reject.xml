@@ -1,0 +1,8 @@
+<page route="/hr/insurance/reject" title="Refuse a claim" menu="false" model="ins_claim" roles="ins_reviewer,ins_admin">
+  <view type="form" function="reject_insurance_claim" submit="Refuse claim" success="Claim refused" redirect="/hr/insurance/review">
+    <group title="Refuse a claim" cols="1">
+      <field name="id" label="Claim" fieldType="many2one" source="insurance_claims_waiting" optionLabel="reference" entity="claims" required="true"/>
+      <field name="note" label="Reason" fieldType="text" required="true" help="The employee sees this."/>
+    </group>
+  </view>
+</page>

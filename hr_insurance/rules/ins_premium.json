@@ -1,0 +1,40 @@
+{
+  "model": "ins_premium",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "employee": "$hr.employee"
+      }
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "ins_admin",
+        "via:self"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "state",
+        "adjustment",
+        "employee_share",
+        "employer_share",
+        "total"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+[plugin]
+name = "hr_documents"
+icon_path = "assets/logo.svg"
+label = "Employee documents"
+version = "0.1.1"
+description = "Identity documents with expiry dates, emergency contacts, and bank accounts with a salary split."
+long_description = """
+and this suite's own employee_private), each is a list. Identity documents (passport, national id, visa, work permit,
+driving licence) carry their own expiry; a nightly job reports at 30 days, 7 days and on the day. Emergency contacts
+have one primary. Bank accounts share net salary by percentage and the shares must add up to exactly 100. The person
+and a documents administrator can read and change them. Written in Rust.
+See docs/design.md in this plugin (hr_documents/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "country"]
+capabilities = ["db::query", "db::mutate", "events::emit", "plugins::call"]
+access_models = [
+  { name = "doc_identity", permissions = ["read", "write"] },
+  { name = "doc_emergency", permissions = ["read", "write"] },
+  { name = "doc_bank", permissions = ["read", "write"] },
+  { name = "doc_relation", permissions = ["read", "write"] },
+  { name = "doc_bank_org", permissions = ["read", "write"] },
+  { name = "doc_bank_branch", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_relations"
+help = "Create the usual emergency-contact relationships (idempotent)"
+on_install = true
+on_upgrade = true
+
+[[command]]
+name = "migrate_links"
+function = "migrate_links"
+help = "Move free-text relation/bank/branch values onto the link fields (idempotent)"
+on_upgrade = true
+
+[[roles]]
+name = "documents_admin"
+label = "Documents administrator"
+description = "Sees and changes every employee's documents, contacts and bank accounts."
+
+[[events]]
+name = "document_expiring"
+
+[[schedule]]
+name = "documents-nightly"
+title = "Warn of expiring documents"
+description = "Warns about identity documents that are expired or about to expire."
+function = "documents_nightly"
+cron = "5 2 * * *"
+
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

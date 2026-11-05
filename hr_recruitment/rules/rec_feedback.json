@@ -1,0 +1,62 @@
+{
+  "model": "rec_feedback",
+  "access": [
+    {
+      "name": "own",
+      "operations": [
+        "read",
+        "create"
+      ],
+      "when": {
+        "interviewer": "$hr.employee"
+      }
+    },
+    {
+      "name": "revealed_to_panel",
+      "operations": [
+        "read"
+      ],
+      "when": {
+        "revealed": true,
+        "interview": {
+          "in": "$my_interviews"
+        }
+      }
+    },
+    {
+      "name": "recruiters",
+      "roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "operations": [
+        "read",
+        "write"
+      ]
+    },
+    {
+      "name": "nobody_edits",
+      "roles": [
+        "recruit_corrector"
+      ],
+      "operations": [
+        "delete"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "own_stays_as_given",
+      "operations": [
+        "write"
+      ],
+      "exempt_roles": [
+        "recruiter",
+        "recruit_manager"
+      ],
+      "when": {
+        "revealed": false
+      }
+    }
+  ]
+}
