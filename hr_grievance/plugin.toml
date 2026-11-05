@@ -3,7 +3,7 @@ name = "hr_grievance"
 icon_path = "assets/logo.svg"
 label = "Grievances"
 version = "0.1.0"
-description = "Confidential grievance cases with conflict-checked investigators, SLAs, escalation and an append-only log."
+description = "Confidential grievance cases with investigators checked for conflicts of interest, response deadlines, escalation and a permanent log."
 long_description = """
 A grievance is a case that moves through fixed states: filed, investigated, findings submitted, decided, possibly
 appealed, closed. The investigator cannot be the complainant, the person complained about, or anyone in a direct

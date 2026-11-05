@@ -3,7 +3,7 @@ name = "hr_referral"
 icon_path = "assets/logo.svg"
 label = "Employee referrals"
 version = "0.1.0"
-description = "Refer a candidate: a state machine, one application, a bonus gated on the hire's tenure."
+description = "Employee referrals of candidates: one application each, with a bonus paid only after the hire has stayed long enough."
 long_description = """
 Anyone working here can refer a candidate (never themselves, never a second time for the same email). Accepting the
 referral opens one application in recruitment, marked as a referral. The bonus is the policy's amount and wait in
