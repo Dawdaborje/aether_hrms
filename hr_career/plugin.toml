@@ -3,7 +3,7 @@ name = "hr_career"
 icon_path = "assets/logo.svg"
 label = "Career"
 version = "0.1.2"
-description = "Promotions, transfers and pay changes as approved change sets, grade ladders and letters."
+description = "Promotions, transfers and pay changes that go through approval, with grade ladders and letters."
 long_description = """
 A career move is a request, not an edit: a promotion, demotion, transfer, grade change or pay change names the
 person, the day it takes effect and the new terms, and waits for a decision. Nobody decides their own change,

@@ -3,7 +3,7 @@ name = "hr_loan"
 icon_path = "assets/logo.svg"
 label = "Staff loans"
 version = "0.2.0"
-description = "Staff loans with schedules, a ledger, payroll deductions under a cap, foreclosure and reversal."
+description = "Staff loans with repayment schedules, a ledger, payroll deductions within a cap, early settlement and reversal."
 long_description = """
 A loan product sets the largest amount and term, the rate and method (reducing balance or flat), the tenure an
 employee needs, and the share of available pay that payroll may take. A request is checked against it and gets its

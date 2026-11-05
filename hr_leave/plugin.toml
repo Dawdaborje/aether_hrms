@@ -3,7 +3,7 @@ name = "hr_leave"
 icon_path = "assets/logo.svg"
 label = "Leave"
 version = "0.3.2"
-description = "Leave types, a ledger of days, requests and approval."
+description = "Leave types, a running record of days taken and owed, requests and approval."
 long_description = """
 Leave. Each type of leave carries its own rules (who
 approves, notice, sandwich, half days, negative balance, earned or yearly days, carry-forward). Days live
