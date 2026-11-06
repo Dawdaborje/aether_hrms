@@ -19,7 +19,7 @@ use sp_engine::{Compiled, Input as PayInput, Structure};
 use crate::common::{
     actor, id_of, int, money, my_employee, require, require_approver, require_clerk, require_finance, require_payroll_staff, text, today_date, Record,
 };
-use crate::rules::{batch_index, check_period, hours_of, distinct, employed_days, last_key, overlaps_period, Totals};
+use crate::rules::{add_component_sums, batch_index, compact_lines, check_period, hours_of, distinct, employed_days, last_key, overlaps_period, Totals};
 
 // A planning page reads this many assignments and queues their batches in one call (700 reads fit the fuel, 1000 did not; each call also has 10 seconds of wall time).
 const PAGE: usize = 100;
@@ -288,6 +288,8 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
     let mut currencies: BTreeMap<String, Option<String>> = BTreeMap::new();
     let mut totals = Totals::default();
     let mut slips: Vec<(String, Value)> = Vec::new();
+    // By structure: the running total of every component over the people calculated with it.
+    let mut component_sums: BTreeMap<String, Vec<sp_engine::Decimal>> = BTreeMap::new();
     let mut errors: Vec<(String, String)> = Vec::new();
 
     for id in &ids {
@@ -359,9 +361,13 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
                 variables.insert(name.clone(), value.clone());
             }
         }
-        match compiled.run(&PayInput { employee_id: id.clone(), variables: variables.clone() }, false) {
+        // Only the amounts are kept (in the structure's order) and the sums per component are added up once the
+        // batch is done: no line objects, labels or tags are built for anyone.
+        let input = PayInput { employee_id: id.clone(), variables };
+        match compiled.calculate_amounts(&input) {
             Err(error) => errors.push((id.clone(), error.to_string())),
-            Ok(slip) => {
+            Ok(calc) => {
+                let slip = &calc.summary;
                 let (gross, deductions, net, employer, shortfall) = (money(&slip.gross.to_string())?, money(&slip.deductions.to_string())?, money(&slip.net.to_string())?, money(&slip.employer_cost.to_string())?, money(&slip.shortfall.to_string())?);
                 totals.calculated += 1;
                 totals.gross = totals.gross + gross;
@@ -369,27 +375,38 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
                 totals.net = totals.net + net;
                 totals.employer_cost = totals.employer_cost + employer;
                 totals.shortfall = totals.shortfall + shortfall;
-                for line in &slip.lines {
-                    let kind = match line.kind {
-                        sp_engine::Kind::Earning => "earning",
-                        sp_engine::Kind::Deduction => "deduction",
-                        sp_engine::Kind::Employer => "employer",
-                        sp_engine::Kind::Info => continue,
-                    };
-                    totals.add_line(&line.id, kind, money(&line.amount.to_string())?);
+                let sums = component_sums.entry(structure_id.clone()).or_insert_with(|| vec![Default::default(); calc.amounts.len()]);
+                for (sum, amount) in sums.iter_mut().zip(&calc.amounts) {
+                    *sum += *amount;
                 }
                 slips.push((
                     id.clone(),
                     json!({
                         "run": shared.run, "employee": id, "employee_name": person["display_name"], "structure_code": text(record, "code"), "structure_version": text(record, "version"),
                         "structure_hash": text(record, "hash"), "currency": code, "gross": gross, "deductions": deductions, "net": net, "employer_cost": employer, "shortfall": shortfall,
-                        "lines": serde_json::to_value(&slip.lines).map_err(|e| Error::msg(e.to_string()))?,
+                        // One amount per component of the structure, in its order (see rules::compact_lines).
+                        "lines": compact_lines(&calc.amounts),
                         // What the structure was given, kept so the payslip can be explained line by line later.
-                        "inputs": serde_json::to_value(&variables).map_err(|e| Error::msg(e.to_string()))?,
+                        "inputs": serde_json::to_value(&input.variables).map_err(|e| Error::msg(e.to_string()))?,
                     }),
                 ));
             }
         }
+    }
+    for (structure_id, sums) in &component_sums {
+        let components: Vec<(&str, &str)> = structures[structure_id]
+            .1
+            .structure()
+            .components
+            .iter()
+            .map(|c| (c.id.as_str(), match c.kind {
+                sp_engine::Kind::Earning => "earning",
+                sp_engine::Kind::Deduction => "deduction",
+                sp_engine::Kind::Employer => "employer",
+                sp_engine::Kind::Info => "info",
+            }))
+            .collect();
+        add_component_sums(&mut totals, &components, sums)?;
     }
     totals.failed = errors.len() as i64;
 

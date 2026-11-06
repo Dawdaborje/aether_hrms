@@ -27,6 +27,7 @@ Salary structures (exact-decimal Swift payroll formulas), parallel batched pay r
 
 ## Design
 
+- A payslip's `lines` are the amount of every component of its structure, as text, in the structure's order (`["50000.00", ...]`); ids, labels and kinds come from the structure it records. Older payslips keep one object per line and still read. Per-component totals of a batch are summed once, not per line.
 - Structures are never mutated in place; payslip stores structure id + hash. Formulas are exact decimal via the Swift payroll engine.
 - Runs are planned in pages and calculated in parallel background batches (fixed work budget per call); every step is idempotent/safe to retry. `watch_pay_runs` recovers stuck batches.
 - Inputs: employment terms from `hr`, days employed in period, leave/attendance summaries, `hr_compensation.payroll_adjustments`. Approval refuses runs with calculation errors; approver ≠ maker. Approval locks the compensation period and emits totals for accounting.

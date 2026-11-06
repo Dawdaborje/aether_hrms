@@ -6,6 +6,7 @@ use aether_sdk::dates::NaiveDate;
 use aether_sdk::decimal::Decimal;
 use aether_sdk::{Error, Result};
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 
 /// Inputs the payroll fills in itself; a structure may declare them, an assignment may not set them.
 /// A clerk may still correct `unpaid_leave_days` and `overtime_hours` for one person in one run (the other four
@@ -111,6 +112,47 @@ impl Totals {
     }
 }
 
+/// A payslip keeps the amount of every component of its structure, in the structure's order, as text:
+/// `["50000.00", "2000.00", ...]`. The structure is immutable and the payslip records which one it used, so the
+/// ids, labels and kinds are not repeated on every payslip (they were about 100 bytes a line, and turning them
+/// into JSON was most of the work of calculating a person).
+pub fn compact_lines(amounts: &[sp_engine::Decimal]) -> Vec<Value> {
+    amounts.iter().map(|a| Value::String(a.to_string())).collect()
+}
+
+/// The rows of a payslip as `{label, kind, amount}`, from what it stored: the compact form above (read against
+/// the components of its structure) or the older form, one object per line, which is passed through.
+pub fn expand_lines(stored: &[Value], components: &[Value]) -> Result<Vec<Value>> {
+    if stored.iter().any(Value::is_string) && stored.len() != components.len() {
+        return Err(Error::msg(format!("this payslip has {} amounts but its structure has {} components", stored.len(), components.len())));
+    }
+    Ok(stored
+        .iter()
+        .enumerate()
+        .map(|(index, line)| match line {
+            Value::String(_) => {
+                let component = &components[index];
+                let label = ["label", "id"].iter().find_map(|k| component.get(*k).and_then(Value::as_str)).unwrap_or_default();
+                json!({ "label": label, "kind": component.get("kind").cloned().unwrap_or(Value::Null), "amount": line })
+            }
+            other => other.clone(),
+        })
+        .collect())
+}
+
+/// Add up what each component came to over a batch: `sums` is one running total per component of `components`
+/// (id and kind), in the same order. Information lines are not part of any total. Adds the same as calling
+/// `Totals::add_line` for every line of every person, with one conversion per component instead of one per line.
+pub fn add_component_sums(totals: &mut Totals, components: &[(&str, &str)], sums: &[sp_engine::Decimal]) -> Result<()> {
+    for ((id, kind), sum) in components.iter().zip(sums) {
+        if *kind == "info" {
+            continue;
+        }
+        totals.add_line(id, kind, Decimal::parse(&sum.to_string())?.with_scale(2)?);
+    }
+    Ok(())
+}
+
 /// The first day of the next page of a cursor-walk is the last key seen.
 pub fn last_key(keys: &[String]) -> Option<&String> {
     keys.last()
@@ -183,6 +225,51 @@ mod tests {
         assert!(overlaps_period(day("2026-01-01")?, Some(day("2026-10-01")?), start, end));
         assert!(assignments_overlap(day("2026-01-01")?, None, day("2026-06-01")?, None));
         assert!(!assignments_overlap(day("2026-01-01")?, Some(day("2026-05-31")?), day("2026-06-01")?, None));
+        Ok(())
+    }
+
+    #[test]
+    fn lines_are_kept_compactly_and_read_back_against_the_structure() -> Result<()> {
+        let amounts: Vec<sp_engine::Decimal> = ["50000.00", "0.00", "2500.00"].iter().map(|s| s.parse().unwrap()).collect();
+        let stored = compact_lines(&amounts);
+        assert_eq!(stored, vec![json!("50000.00"), json!("0.00"), json!("2500.00")]);
+        let components = vec![json!({ "id": "base", "label": "Base salary", "kind": "earning" }), json!({ "id": "loan", "label": "Loan", "kind": "deduction" }), json!({ "id": "paye" , "kind": "deduction" })];
+        let rows = expand_lines(&stored, &components)?;
+        assert_eq!(rows[0], json!({ "label": "Base salary", "kind": "earning", "amount": "50000.00" }));
+        assert_eq!(rows[1], json!({ "label": "Loan", "kind": "deduction", "amount": "0.00" }));
+        assert_eq!(rows[2]["label"], json!("paye"), "a component without a label shows its id");
+        assert!(expand_lines(&stored, &components[..2]).is_err(), "amounts that do not fit the structure are refused, not shown wrongly");
+        Ok(())
+    }
+
+    #[test]
+    fn payslips_stored_the_old_way_still_read() -> Result<()> {
+        let old = vec![json!({ "id": "base", "label": "Base", "kind": "earning", "amount": "100.00", "applied": true, "tags": ["earning"] })];
+        assert_eq!(expand_lines(&old, &[])?, old);
+        assert!(expand_lines(&[], &[])?.is_empty());
+        Ok(())
+    }
+
+    #[test]
+    fn component_sums_equal_adding_every_line() -> Result<()> {
+        let components = [("base", "earning"), ("gross", "info"), ("paye", "deduction"), ("nssf", "employer")];
+        let people: Vec<Vec<&str>> = vec![vec!["1000.00", "1000.00", "100.10", "50.05"], vec!["2500.50", "2500.50", "0.00", "125.03"]];
+        let mut by_lines = Totals::default();
+        let mut sums: Vec<sp_engine::Decimal> = vec![Default::default(); components.len()];
+        for person in &people {
+            for (i, (id, kind)) in components.iter().enumerate() {
+                let amount: sp_engine::Decimal = person[i].parse().unwrap();
+                sums[i] += amount;
+                if *kind != "info" {
+                    by_lines.add_line(id, kind, d(person[i])?);
+                }
+            }
+        }
+        let mut by_sums = Totals::default();
+        add_component_sums(&mut by_sums, &components, &sums)?;
+        assert_eq!(by_sums.components, by_lines.components);
+        assert!(!by_sums.components.contains_key("gross"));
+        assert_eq!(by_sums.components["paye"].amount, d("100.10")?);
         Ok(())
     }
 
