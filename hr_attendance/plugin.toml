@@ -3,7 +3,7 @@ name = "hr_attendance"
 icon_path = "assets/logo.svg"
 label = "Attendance"
 version = "0.2.2"
-description = "Shifts, punches, daily attendance and corrections."
+description = "Shifts, clock-in and clock-out punches, daily attendance and corrections."
 long_description = """
 Raw punches are kept as they came and never edited: a correction is a new punch that supersedes another.
 Each person and date has one derived day (present, absent, half day, leave, holiday, weekly off), worked

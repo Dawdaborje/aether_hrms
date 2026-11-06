@@ -3,7 +3,7 @@ name = "hr_benefits"
 icon_path = "assets/logo.svg"
 label = "Benefits"
 version = "0.1.1"
-description = "Benefit plans with yearly ceilings, an accrual ledger, claims, and health-insurance enrolment."
+description = "Benefit plans with yearly limits, a running record of what has accrued, claims, and health-insurance enrolment."
 long_description = """
 A plan has a yearly ceiling and a way of paying: accrue a share each month then claim, claim against the ceiling from
 day one, or pay through payroll. Accrual, claims and reversals are ledger entries that are never deleted; a claim

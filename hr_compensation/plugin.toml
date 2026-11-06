@@ -3,7 +3,7 @@ name = "hr_compensation"
 icon_path = "assets/logo.svg"
 label = "Compensation"
 version = "0.1.1"
-description = "Extra pay through one funnel: adjustments, awards, withholding, gratuity and the period lock."
+description = "Extra pay handled in one place: adjustments, awards, withholding, gratuity and the payroll period lock."
 long_description = """
 Everything that adds to or takes from a payslip outside the salary structure goes through here: a one-off or
 recurring adjustment with a code, a source and an idempotency key; incentive and retention awards that someone
