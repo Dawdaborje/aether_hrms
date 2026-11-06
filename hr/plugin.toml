@@ -60,6 +60,13 @@ demo_model = "department"
 args = [{ name = "count", type = "int", default = 10 }]
 
 [[command]]
+name = "demo_grade"
+function = "generate_demo_grade"
+help = "Generate the demo grade ladder (G1 to G8, with wage bands)"
+demo_model = "grade"
+args = [{ name = "count", type = "int", default = 8 }]
+
+[[command]]
 name = "demo_job"
 function = "generate_demo_job"
 help = "Generate demo jobs"

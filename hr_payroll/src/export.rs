@@ -96,7 +96,7 @@ fn one(input: SlipExport) -> Result<Value> {
     rows.push(json!({ "label": "Employee", "kind": "", "amount": slip.get("employee_name").cloned().unwrap_or(Value::Null) }));
     rows.push(json!({ "label": "Period", "kind": "", "amount": period }));
     rows.push(json!({ "label": "Structure", "kind": "", "amount": format!("{} {}", text(&slip, "structure_code").unwrap_or(""), text(&slip, "structure_version").unwrap_or("")) }));
-    let stored: Vec<Value> = slip.get("lines").and_then(Value::as_array).cloned().unwrap_or_default();
+    let stored: Vec<Value> = crate::rules::stored_lines(slip.get("lines").unwrap_or(&Value::Null));
     // Payslips keep only amounts, in the order of their structure's components; the structure supplies the rest.
     let components: Vec<Value> = if stored.iter().any(Value::is_string) {
         let structure = db::find::<Record>("pay_structure")

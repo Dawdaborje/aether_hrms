@@ -1,0 +1,30 @@
+<page route="/hr/start" title="Start" icon="house" sort="0" roles="member">
+  <heading source="landing_header"/>
+  <view type="board" source="landing_board"/>
+  <tiles title="For everyone" cols="4">
+    <tile label="My profile" description="Your details and documents" href="/hr/me" icon="user"/>
+    <tile label="My HR" description="Balances, tasks and your latest payslip" href="/hr/home" icon="house"/>
+    <tile label="Leave" description="Ask for leave and see balances" href="/hr/leave" icon="calendar-days"/>
+    <tile label="Attendance" description="Punch in and out, and your days" href="/hr/attendance" icon="clock"/>
+    <tile label="My payslips" description="Pay after each run is approved" href="/hr/my-payslips" icon="banknote"/>
+    <tile label="Expenses" description="Claim what you spent" href="/hr/expenses" icon="receipt"/>
+    <tile label="Training" description="Courses and your certificates" href="/hr/training" icon="graduation-cap"/>
+    <tile label="Approvals" description="Everything waiting on your decision" href="/hr/approvals" icon="inbox"/>
+  </tiles>
+  <tiles title="If you manage people" cols="4">
+    <tile label="My team" description="Who is in or away, and what is coming up" href="/hr/team" icon="users-round"/>
+    <tile label="Leave to approve" description="Requests from your team" href="/hr/leave/approvals" icon="check-check"/>
+    <tile label="Appraisals" description="Reviews for your team" href="/hr/performance/appraisals" icon="target"/>
+    <tile label="Timesheet approvals" description="Hours your team has submitted" href="/hr/timesheets/approvals" icon="timer"/>
+  </tiles>
+  <tiles title="If you work in HR" cols="4">
+    <tile label="Overview" description="Headcount, hires and leavers" href="/hr/overview" icon="layout-dashboard"/>
+    <tile label="Pending actions" description="What HR has to chase today" href="/hr/actions" icon="list-checks"/>
+    <tile label="Employees" description="Everyone who works here" href="/hr/employees" icon="users"/>
+    <tile label="Recruitment" description="Openings, applications and offers" href="/hr/recruitment" icon="user-plus"/>
+    <tile label="Pay runs" description="Calculate, approve and pay" href="/hr/payroll" icon="wallet"/>
+    <tile label="Grievances" description="Confidential cases" href="/hr/grievances" icon="shield-alert"/>
+    <tile label="Organisation chart" description="Who reports to whom" href="/hr/org-chart" icon="network"/>
+    <tile label="Setup" description="HR, leave, attendance and payroll settings" href="/hr/config" icon="settings"/>
+  </tiles>
+</page>

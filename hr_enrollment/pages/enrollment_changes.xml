@@ -1,0 +1,14 @@
+<page route="/hr/enrollments/{id}/changes" title="Send back" model="enrollment" menu="false" roles="hr_user,hr_manager">
+  <view type="form" function="request_enrollment_changes" submit="Send back with new link" success="Sent back. The person has a new link." redirect="/hr/enrollments/{id}">
+    <group title="Which sections need changes" cols="2">
+      <field name="personal" label="Personal" fieldType="boolean"/>
+      <field name="emergency" label="Emergency contact" fieldType="boolean"/>
+      <field name="identity" label="Identity" fieldType="boolean"/>
+      <field name="bank" label="Bank" fieldType="boolean"/>
+      <field name="acknowledgement" label="Acknowledgement" fieldType="boolean"/>
+    </group>
+    <group title="What to change" cols="1">
+      <field name="note" label="Note to the new hire" fieldType="text" required="true"/>
+    </group>
+  </view>
+</page>

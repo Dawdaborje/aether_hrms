@@ -253,6 +253,14 @@
           "label": "%manual%"
         }
       ]
+    },
+    {
+      "id": "fld_2dfe3txq26dv3e2c5uvq",
+      "name": "rank_override_reason",
+      "label": "%rank_override_reason%",
+      "type": "string",
+      "max_length": 200,
+      "help": "Why the manager is not above this person in rank. Set by an HR manager."
     }
   ],
   "indexes": [

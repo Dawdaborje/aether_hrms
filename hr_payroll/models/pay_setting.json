@@ -47,6 +47,14 @@
       "help": "Use declared (unverified) exemptions until proof is verified."
     },
     {
+      "id": "fld_6y5gnuh26pzynz4hhfkz",
+      "name": "pay_suspended",
+      "label": "Pay suspended employees",
+      "type": "bool",
+      "default": false,
+      "help": "Off: a suspended employee is left out of pay runs until the suspension is lifted. On: they are paid as usual."
+    },
+    {
       "id": "fld_wve7jj1eo0",
       "name": "payer_name",
       "label": "%payer_name%",

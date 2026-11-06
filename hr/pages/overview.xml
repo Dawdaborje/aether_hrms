@@ -1,0 +1,3 @@
+<page route="/hr/overview" title="Overview" menu_group="Reports" icon="layout-dashboard" sort="1" roles="hr_user,hr_manager">
+  <view type="board" source="hr_overview_board" drill="hr_overview_drill"/>
+</page>

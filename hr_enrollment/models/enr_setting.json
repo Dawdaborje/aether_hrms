@@ -1,0 +1,27 @@
+{
+  "model_id": "mdl_x5to5x3scr6nfii2ey7h",
+  "name": "enr_setting",
+  "label": "Enrollment setting",
+  "plural_label": "Enrollment settings",
+  "icon": "settings",
+  "title_field": "base_url",
+  "fields": [
+    {
+      "id": "fld_zqlfg6pj55ertc7ybndf",
+      "name": "base_url",
+      "label": "Base url",
+      "type": "string",
+      "max_length": 200,
+      "help": "Address people reach this site at, for example https://hr.example.com. Used in invite emails."
+    },
+    {
+      "id": "fld_ey7dvufaywnuszrx436u",
+      "name": "invite_days",
+      "label": "Invite days",
+      "type": "int",
+      "default": 14,
+      "min": 1,
+      "max": 90
+    }
+  ]
+}

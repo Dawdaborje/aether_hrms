@@ -1,0 +1,91 @@
+<page route="/hr/payroll/{id}" title="Pay run" model="pay_run" menu="false" icon="banknote">
+  <view type="form" source="get_pay_run_detail">
+    <header>
+      <button label="Calculate" function="start_pay_run" showWhen="status=draft,status=failed"/>
+      <button label="Recalculate" function="start_pay_run" confirm="Calculate this run again? The payslips are replaced by new ones." variant="outline" showWhen="status=calculated"/>
+      <button label="Approve" function="approve_pay_run" confirm="Approve this run? Its totals are announced for the ledger and it can no longer be cancelled." showWhen="approval=can_approve"/>
+      <button label="Ask someone to approve" href="/hr/payroll/{id}/request-approval" showWhen="approval=needs_other"/>
+      <button label="Email payslip notices" function="send_payslip_emails" confirm="Email a notice to everyone in this run?" variant="outline" showWhen="status=approved,status=paid"/>
+      <button label="Bank file (CSV)" function="export_bank_file" variant="outline" showWhen="status=approved,status=paid"/>
+      <button label="Bank file (ISO 20022)" function="export_bank_file_xml" variant="outline" showWhen="status=approved,status=paid"/>
+      <button label="Register (Excel)" function="export_payroll_register" variant="outline" showWhen="status=calculated,status=approved,status=paid"/>
+      <button label="Correction difference (Excel)" function="export_correction_difference" variant="outline" showWhen="status=calculated,status=approved,status=paid"/>
+      <button label="Cancel run" function="cancel_pay_run" confirm="Cancel this pay run?" danger="true" showWhen="status=draft,status=calculating,status=calculated,status=failed"/>
+    </header>
+    <statusbar field="status" options="draft, calculating, calculated, approved, paid"/>
+    <group title="Run" cols="2">
+      <field name="number" label="Run" readonly="true"/>
+      <field name="name" label="Name" readonly="true"/>
+      <field name="period_start" label="From" fieldType="date" readonly="true"/>
+      <field name="period_end" label="To" fieldType="date" readonly="true"/>
+      <field name="failure" label="Why it failed" readonly="true" colspan="2"/>
+      <field name="correction_reason" label="Correction reason" fieldType="text" readonly="true" colspan="2"/>
+    </group>
+    <group title="People" cols="3">
+      <field name="total_employees" label="In the run" readonly="true"/>
+      <field name="total_calculated" label="Calculated" readonly="true"/>
+      <field name="total_skipped" label="Not employed in the period" readonly="true"/>
+      <field name="total_failed" label="Could not be calculated" readonly="true"/>
+    </group>
+    <group title="Totals" cols="2">
+      <field name="total_gross" label="Gross" readonly="true"/>
+      <field name="total_deductions" label="Deductions" readonly="true"/>
+      <field name="total_net" label="Net pay" readonly="true"/>
+      <field name="total_employer_cost" label="Employer cost" readonly="true"/>
+    </group>
+    <group title="Approval and payment" cols="2">
+      <field name="approval_note" label="Where it stands" readonly="true" colspan="2"/>
+      <field name="approved_by" label="Approved by" readonly="true"/>
+      <field name="approved_on" label="Approved on" fieldType="date" readonly="true"/>
+      <field name="payment_ref" label="Payment reference" readonly="true"/>
+      <field name="paid_on" label="Paid on" fieldType="date" readonly="true"/>
+    </group>
+    <notebook>
+      <page title="Review">
+        <view type="list" source="review_pay_run_rows">
+          <columns>
+            <column field="employee_name" label="Employee"/>
+            <column field="net" label="Net"/>
+            <column field="previous_net" label="Last time"/>
+            <column field="change_percent" label="Change %"/>
+            <column field="flags" label="Why it is listed"/>
+          </columns>
+          <empty title="Nothing stands out" description="No change above the threshold, no new or missing people, no missing bank accounts."/>
+        </view>
+      </page>
+      <page title="Payslips">
+        <view type="list" source="list_payslips">
+          <columns>
+            <column field="employee_name" label="Employee"/>
+            <column field="gross" label="Gross"/>
+            <column field="deductions" label="Deductions"/>
+            <column field="net" label="Net"/>
+            <column field="employer_cost" label="Employer cost"/>
+          </columns>
+          <empty title="No payslips yet" description="Calculate the run to produce them."/>
+        </view>
+      </page>
+      <page title="Approval requests">
+        <view type="list" source="list_approval_requests">
+          <columns>
+            <column field="requested_from_name" label="Asked"/>
+            <column field="requested_by_name" label="Asked by"/>
+            <column field="requested_at" label="When" fieldType="datetime"/>
+            <column field="attempt" label="Calculation"/>
+            <column field="note" label="Note"/>
+          </columns>
+          <empty title="Nobody has been asked" description="Use Ask someone to approve when you cannot approve the run yourself."/>
+        </view>
+      </page>
+      <page title="Errors">
+        <view type="list" source="list_pay_errors">
+          <columns>
+            <column field="employee" label="Employee"/>
+            <column field="message" label="What went wrong"/>
+          </columns>
+          <empty title="No errors" description="Everyone in this run was calculated."/>
+        </view>
+      </page>
+    </notebook>
+  </view>
+</page>

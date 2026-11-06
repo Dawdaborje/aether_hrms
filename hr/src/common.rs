@@ -14,6 +14,16 @@ pub fn explain<T>(result: Result<T>, what: &str) -> Result<T> {
     })
 }
 
+/// Organisation-wide figures are for HR staff.
+pub fn require_hr_staff() -> Result<()> {
+    let me = context::current()?;
+    if me.has_role("hr.hr_user") || me.has_role("hr.hr_manager") {
+        Ok(())
+    } else {
+        Err(Error::msg("only HR staff can see the HR overview"))
+    }
+}
+
 /// Pay is for HR managers: the wage, its currency and frequency, and how pay is decided.
 pub fn require_pay_manager() -> Result<()> {
     if context::current()?.has_role("hr.hr_manager") {

@@ -67,6 +67,12 @@ pub struct Totals {
     pub shortfall: Decimal,
     /// By component id: its kind and the sum of its lines.
     pub components: BTreeMap<String, ComponentTotal>,
+    /// By structure id: the sum of each of its components, in the structure's order, as one comma-joined string
+    /// (`rules::lines_text`). What a batch reports instead of `components`: a structure of a thousand
+    /// components is one short string to read and add up rather than a thousand entries. Turned into
+    /// `components` once, when the run is finalised ([`Totals::resolve_sums`]).
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub sums: BTreeMap<String, String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -78,7 +84,7 @@ pub struct ComponentTotal {
 impl Default for Totals {
     fn default() -> Self {
         let zero = Decimal::zero(2);
-        Self { employees: 0, calculated: 0, skipped: 0, failed: 0, gross: zero, deductions: zero, net: zero, employer_cost: zero, shortfall: zero, components: BTreeMap::new() }
+        Self { employees: 0, calculated: 0, skipped: 0, failed: 0, gross: zero, deductions: zero, net: zero, employer_cost: zero, shortfall: zero, components: BTreeMap::new(), sums: BTreeMap::new() }
     }
 }
 
@@ -101,6 +107,27 @@ impl Totals {
         for (id, total) in &other.components {
             self.add_line(id, &total.kind, total.amount);
         }
+        for (structure, text) in &other.sums {
+            let mut total = parse_sums(self.sums.get(structure).map_or("", String::as_str));
+            let more = parse_sums(text);
+            if total.len() < more.len() {
+                total.resize(more.len(), sp_engine::Decimal::ZERO);
+            }
+            for (sum, amount) in total.iter_mut().zip(&more) {
+                *sum += *amount;
+            }
+            self.sums.insert(structure.clone(), lines_text(&total));
+        }
+    }
+
+    /// Turn the sums by structure into totals by component, given each structure's components (id and kind).
+    pub fn resolve_sums(&mut self, mut components_of: impl FnMut(&str) -> Result<Vec<(String, String)>>) -> Result<()> {
+        for (structure, text) in std::mem::take(&mut self.sums) {
+            let components = components_of(&structure)?;
+            let components: Vec<(&str, &str)> = components.iter().map(|(id, kind)| (id.as_str(), kind.as_str())).collect();
+            add_component_sums(self, &components, &parse_sums(&text))?;
+        }
+        Ok(())
     }
 
     /// What a payroll must satisfy: earnings less deductions is net, to the cent, with shortfall held back.
@@ -116,6 +143,33 @@ impl Totals {
 /// `["50000.00", "2000.00", ...]`. The structure is immutable and the payslip records which one it used, so the
 /// ids, labels and kinds are not repeated on every payslip (they were about 100 bytes a line, and turning them
 /// into JSON was most of the work of calculating a person).
+/// A payslip's amounts as stored by a batch: one string, the amounts in the structure's order joined by commas
+/// (one JSON value to read and write, however many components the structure has).
+/// The amounts of a [`lines_text`] string.
+pub fn parse_sums(text: &str) -> Vec<sp_engine::Decimal> {
+    if text.is_empty() {
+        return Vec::new();
+    }
+    text.split(',').map(|a| a.parse().unwrap_or_default()).collect()
+}
+
+pub fn lines_text(amounts: &[sp_engine::Decimal]) -> String {
+    amounts.iter().map(ToString::to_string).collect::<Vec<_>>().join(",")
+}
+
+/// The stored `lines` of a payslip as one value per line: the text form above split up, or the array forms
+/// (compact or one object per line) as they are.
+pub fn stored_lines(stored: &Value) -> Vec<Value> {
+    match stored {
+        Value::String(text) if text.is_empty() => Vec::new(),
+        Value::String(text) => text.split(',').map(|a| Value::String(a.to_string())).collect(),
+        Value::Array(items) => items.clone(),
+        _ => Vec::new(),
+    }
+}
+
+/// The amounts as an array of strings: how payslips were stored before `lines_text`.
+#[cfg(test)]
 pub fn compact_lines(amounts: &[sp_engine::Decimal]) -> Vec<Value> {
     amounts.iter().map(|a| Value::String(a.to_string())).collect()
 }
@@ -148,7 +202,11 @@ pub fn add_component_sums(totals: &mut Totals, components: &[(&str, &str)], sums
         if *kind == "info" {
             continue;
         }
-        totals.add_line(id, kind, Decimal::parse(&sum.to_string())?.with_scale(2)?);
+        // Straight from the engine's decimal (to the cent, as payslips are), not through its text.
+        let mut cents = *sum;
+        cents.rescale(2);
+        let units = i64::try_from(cents.mantissa()).map_err(|_| Error::msg(format!("the sum of {id} is too large")))?;
+        totals.add_line(id, kind, Decimal::from_units(units, 2)?);
     }
     Ok(())
 }
@@ -239,6 +297,10 @@ mod tests {
         assert_eq!(rows[1], json!({ "label": "Loan", "kind": "deduction", "amount": "0.00" }));
         assert_eq!(rows[2]["label"], json!("paye"), "a component without a label shows its id");
         assert!(expand_lines(&stored, &components[..2]).is_err(), "amounts that do not fit the structure are refused, not shown wrongly");
+        // The text form a batch stores reads back the same as the array form.
+        let text = json!(lines_text(&amounts));
+        assert_eq!(expand_lines(&stored_lines(&text), &components)?, rows);
+        assert!(stored_lines(&json!("")).is_empty());
         Ok(())
     }
 

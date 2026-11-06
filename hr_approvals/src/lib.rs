@@ -6,6 +6,10 @@
 use aether_sdk::prelude::*;
 use aether_sdk::records::{text, Record};
 
+mod actions;
+mod landing;
+mod team;
+
 /// (kind label, plugin, function, page where it is decided)
 const SOURCES: &[(&str, &str, &str, &str)] = &[
     ("Leave", "hr_leave", "leave_waiting_for_me", "/hr/leave"),

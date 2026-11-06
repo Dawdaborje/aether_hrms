@@ -3,6 +3,12 @@
     <group title="New hires" cols="2">
       <field name="default_probation_days" label="Default probation (days)" fieldType="integer"/>
       <field name="default_notice_days" label="Default notice (days)" fieldType="integer"/>
+      <field name="minimum_working_age" label="Minimum working age" fieldType="integer"
+             help="The youngest age a person may be hired, on the day they join. Checked on the enrollment form and when hiring."/>
+    </group>
+    <group title="Reporting" cols="1">
+      <field name="manager_rank_rule" label="Managers must rank" fieldType="selection" options="strict, equal_ok"
+             help="strict: strictly above the people reporting to them. equal_ok: above or equal. Ranks come from grades; people and positions without a grade are not checked."/>
     </group>
     <group title="Pay" cols="1">
       <field name="pay_mode" label="How base wage is decided" fieldType="selection"

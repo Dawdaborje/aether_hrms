@@ -1,0 +1,80 @@
+{
+  "model_id": "mdl_ojsjlkas6iloy3pk6yrk",
+  "name": "pay_approval_request",
+  "label": "%pay_approval_request%",
+  "plural_label": "%pay_approval_requests%",
+  "icon": "send",
+  "title_field": "requested_from_name",
+  "fields": [
+    {
+      "id": "fld_w6dwve5u62y6phf7dwf3",
+      "name": "run",
+      "label": "%run%",
+      "type": "link",
+      "target": "pay_run",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_rzdtogo6tylnrpfdrop5",
+      "name": "attempt",
+      "label": "%attempt%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_hdxwzypnebrj5tlxn64v",
+      "name": "requested_from",
+      "label": "%requested_from%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_wotdedco23azdf3xyvsb",
+      "name": "requested_from_name",
+      "label": "%requested_from_name%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_7n6fqcnqvupadhvvuy3s",
+      "name": "requested_by",
+      "label": "%requested_by%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_uiwkawwyqygrmjjfskir",
+      "name": "requested_by_name",
+      "label": "%requested_by_name%",
+      "type": "string",
+      "max_length": 160
+    },
+    {
+      "id": "fld_iglt6ggboerbzcgmwthn",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 400
+    },
+    {
+      "id": "fld_b7m2mwk64skrrysx2pfd",
+      "name": "requested_at",
+      "label": "%requested_at%",
+      "type": "string",
+      "max_length": 40
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_vd7dhwaqdzxazqmrtvrz",
+      "fields": [
+        "run",
+        "attempt",
+        "requested_from"
+      ],
+      "unique": true
+    }
+  ]
+}

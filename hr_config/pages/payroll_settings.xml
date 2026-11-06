@@ -4,6 +4,9 @@
       <field name="periods_per_year" label="Pay periods per year" fieldType="integer"/>
       <field name="require_open_period" label="Runs must fall in an open payroll period" fieldType="boolean"/>
     </group>
+    <group title="Who is paid" cols="2">
+      <field name="pay_suspended" label="Pay suspended employees" fieldType="boolean"/>
+    </group>
     <group title="Tax and rules" cols="2">
       <field name="count_pending_declarations" label="Use declared exemptions until proof is verified" fieldType="boolean"/>
       <field name="allow_unverified_rules" label="Allow unverified rule packs (test only)" fieldType="boolean"/>

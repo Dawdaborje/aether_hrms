@@ -1,0 +1,49 @@
+<page route="/enroll/{token}" title="Your enrollment" public="true" menu="false" layout="bare">
+  <view type="form" source="enroll_get" function="enroll_submit" submit="Submit my details" success="Thank you. HR will review your details." clear="false">
+    <group title="Welcome" cols="2">
+      <field name="name" label="Name" readonly="true"/>
+      <field name="email" label="Email" readonly="true"/>
+      <field name="hire_date" label="Joining on" fieldType="date" readonly="true"/>
+      <field name="notice" label="Status" readonly="true"/>
+      <field name="send_back" label="Please check these sections" readonly="true"/>
+      <field name="review_note" label="Note from HR" fieldType="text" readonly="true" colspan="2"/>
+    </group>
+    <group title="Personal details" cols="2">
+      <field name="legal_name" label="Full legal name" required="true"/>
+      <field name="date_of_birth" label="Date of birth" fieldType="date" required="true"
+             min="birth_min" max="birth_max"
+             help="Your age on the day you join must be at least the minimum working age."/>
+      <field name="place_of_birth" label="Place of birth"/>
+      <field name="gender" label="Gender" fieldType="selection" options="male, female, other, prefer_not_to_say"/>
+      <field name="marital_status" label="Marital status" fieldType="selection" options="single, married, partnered, divorced, widowed"/>
+      <field name="nationality" label="Nationality (country)" help="The country, for example Japan or Nigeria."/>
+      <field name="private_email" label="Personal email"/>
+      <field name="private_phone" label="Personal phone" fieldType="phone"/>
+      <field name="private_address" label="Home address" fieldType="text" required="true" colspan="2"/>
+    </group>
+    <group title="Emergency contact" cols="2">
+      <field name="emergency_name" label="Name" required="true"/>
+      <field name="emergency_relation" label="Relationship" fieldType="selection" options="spouse, child, parent, sibling, other" required="true"/>
+      <field name="emergency_phone" label="Phone" fieldType="phone" required="true"/>
+    </group>
+    <group title="Identity documents" cols="2">
+      <field name="passport_no" label="Passport number"/>
+      <field name="passport_expiry" label="Passport expires" fieldType="date"/>
+      <field name="visa_no" label="Visa number"/>
+      <field name="work_permit_expiry" label="Work permit expires" fieldType="date"/>
+      <field name="documents" label="Attach copies" fieldType="file" multiple="true" colspan="2"/>
+    </group>
+    <group title="Bank details" cols="2">
+      <field name="bank_name" label="Bank"/>
+      <field name="bank_account_no" label="Account number"/>
+    </group>
+    <group title="Policies" cols="1">
+      <modal label="Read the policies" title="Company policies and handbook">
+        <view type="form" source="enroll_policies">
+          <field name="policies" label="" fieldType="text" readonly="true"/>
+        </view>
+      </modal>
+      <field name="acknowledged" label="I have read and accept the company policies and handbook" fieldType="boolean" required="true"/>
+    </group>
+  </view>
+</page>

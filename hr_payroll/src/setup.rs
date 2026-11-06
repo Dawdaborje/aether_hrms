@@ -53,6 +53,8 @@ struct Setting {
     email_payslip: Option<bool>,
     #[serde(default)]
     count_pending_declarations: Option<bool>,
+    #[serde(default)]
+    pay_suspended: Option<bool>,
     /// The company account salaries are paid from (used in the bank payment file).
     #[serde(default)]
     payer_name: Option<String>,
@@ -111,7 +113,7 @@ fn sha_hex(text: &str) -> String {
 
 pub(crate) fn new_structure(input: NewStructure) -> Result<Record> {
     require_admin()?;
-    let mut structure: Structure = serde_json::from_value(input.definition.clone()).map_err(|e| Error::msg(format!("the definition: {e}")))?;
+    let mut structure: Structure = serde_json::from_value(input.definition).map_err(|e| Error::msg(format!("the definition: {e}")))?;
     structure.id = input.code.clone();
     structure.version = input.version.clone();
     let mut used = Vec::new();
@@ -137,13 +139,30 @@ pub(crate) fn new_structure(input: NewStructure) -> Result<Record> {
     if structure.rounding.digits != 2 || structure.components.iter().any(|c| c.round.is_some_and(|r| r.digits != 2)) {
         return Err(Error::msg("every amount is rounded to two digits: a structure that rounds otherwise cannot be stored on a payslip"));
     }
-    Compiled::new(&structure).map_err(|e| Error::msg(e.to_string()))?;
     let definition = serde_json::to_value(&structure).map_err(|e| Error::msg(e.to_string()))?;
     let hash = sha_hex(&definition.to_string());
-    db::create("pay_structure", &json!({
-        "code": input.code, "version": input.version, "name": input.name, "currency": structure.currency, "definition": definition, "hash": hash, "packs": used, "is_active": true,
-    }))
-    .map_err(|e| e.or("could not save the structure (this code and version may exist: a change is a new version)"))
+    // Checked (compiled) by the kernel when it can: natively, without this call's fuel, and kept there for the
+    // runs. Compiled here otherwise. Either way a structure that does not compile is never stored.
+    if !crate::calc::check_in_kernel(&hash, &definition).map_err(|e| Error::msg(format!("the structure does not compile: {e}")))? {
+        Compiled::new(&structure).map_err(|e| Error::msg(e.to_string()))?;
+    }
+    let outline = crate::calc::outline_of(&definition);
+    let currency = structure.currency.clone();
+    drop(structure);
+    // Written quietly and read back without its definition: a large structure is not read into this call again.
+    db::transaction()
+        .create("pay_structure", &json!({
+            "code": input.code, "version": input.version, "name": input.name, "currency": currency, "definition": definition, "hash": hash, "packs": used, "is_active": true,
+            "outline": outline,
+        }))
+        .run_quiet()
+        .map_err(|e| e.or("could not save the structure (this code and version may exist: a change is a new version)"))?;
+    db::find::<Record>("pay_structure")
+        .filter("code", input.code.as_str())
+        .filter("version", input.version.as_str())
+        .omit(&["definition"])
+        .first()?
+        .ok_or_else(|| Error::msg("the structure was saved but cannot be read back"))
 }
 
 fn parse_stored(record: &Record) -> Result<RulePack> {
@@ -201,13 +220,18 @@ pub fn periods_per_year() -> Result<i64> {
     Ok(db::find::<Record>("pay_setting").first()?.and_then(|s| s.get("periods_per_year").and_then(Value::as_i64)).filter(|n| *n > 0).unwrap_or(12))
 }
 
+/// Whether suspended employees stay in pay runs (off unless the setting says so).
+pub fn pays_suspended() -> Result<bool> {
+    Ok(db::find::<Record>("pay_setting").first()?.and_then(|s| s.get("pay_suspended").and_then(Value::as_bool)).unwrap_or(false))
+}
+
 fn set_setting(input: Setting) -> Result<Record> {
     require_admin()?;
     if input.periods_per_year.is_some_and(|n| !matches!(n, 1 | 2 | 4 | 12 | 13 | 24 | 26 | 52)) {
         return Err(Error::msg("pay periods per year: 1, 2, 4, 12, 13, 24, 26 or 52"));
     }
     let mut data = json!({ "allow_unverified_rules": input.allow_unverified_rules });
-    for (name, value) in [("periods_per_year", input.periods_per_year.map(|n| json!(n))), ("require_open_period", input.require_open_period.map(|b| json!(b))), ("email_payslip", input.email_payslip.map(|b| json!(b))), ("count_pending_declarations", input.count_pending_declarations.map(|b| json!(b)))] {
+    for (name, value) in [("periods_per_year", input.periods_per_year.map(|n| json!(n))), ("require_open_period", input.require_open_period.map(|b| json!(b))), ("email_payslip", input.email_payslip.map(|b| json!(b))), ("count_pending_declarations", input.count_pending_declarations.map(|b| json!(b))), ("pay_suspended", input.pay_suspended.map(|b| json!(b)))] {
         if let Some(value) = value {
             data[name] = value;
         }
@@ -249,7 +273,7 @@ pub(crate) fn assign(input: Assign) -> Result<Record> {
             return Err(Error::msg("this person already has a salary structure in that time: end it first"));
         }
     }
-    let declared: Vec<String> = structure["definition"]["inputs"].as_array().map(|a| a.iter().filter_map(|i| i["name"].as_str().map(str::to_string)).collect()).unwrap_or_default();
+    let declared: Vec<String> = crate::calc::input_names(&structure).map(str::to_string).collect();
     let variables = input.variables.unwrap_or_default();
     for name in variables.keys() {
         if RESERVED_INPUTS.contains(&name.as_str()) {
@@ -297,7 +321,72 @@ fn set_input(input: RunInput) -> Result<Record> {
     }
 }
 
+/// The ISO code of the organization's default country (the `country.organization` setting, declared by the
+/// country plugin), or nothing before it was chosen. Only the fallback: companies have their own country.
+fn org_country_code() -> Result<Option<String>> {
+    Ok(aether_sdk::settings::get_text("country.organization")?.map(|code| code.to_uppercase()))
+}
+
+#[derive(Deserialize, Default)]
+pub(crate) struct ForCompany {
+    /// The company whose country decides; the default company when left out.
+    #[serde(default)]
+    company: Option<String>,
+}
+
+/// The ISO code of a company's country. Companies are in different countries, so the company decides: the one named,
+/// else the default company. A company without a country falls back on the organization's default.
+fn country_code_for(company: Option<&str>) -> Result<Option<String>> {
+    let found: Option<Value> = match company {
+        Some(id) if !id.is_empty() => plugins::call("company", "get_company", &json!({ "id": id })).ok(),
+        _ => plugins::call::<Option<Value>>("company", "get_default_company", &json!({})).ok().flatten(),
+    };
+    let country_id = found.as_ref().and_then(|c| c.get("country")).and_then(Value::as_str).map(str::to_string);
+    if let Some(id) = country_id {
+        let country: Option<Value> = plugins::call("country", "get_country", &json!({ "id": id })).ok().flatten();
+        if let Some(code) = country.as_ref().and_then(|c| c.get("code")).and_then(Value::as_str) {
+            return Ok(Some(code.to_uppercase()));
+        }
+    }
+    org_country_code()
+}
+
+/// Give every structure stored before outlines existed its outline (see `calc::outline_of`), one at a time: each
+/// is its own write, so a call that stops part way is simply run again.
+fn backfill_outlines() -> Result<Value> {
+    let found: Vec<Record> = db::find("pay_structure").omit(&["definition"]).limit(1000).all()?;
+    let mut done = 0;
+    for record in found.iter().filter(|r| !r["outline"].is_object()) {
+        let Some(id) = text(record, "id") else { continue };
+        let full = require("pay_structure", id, "structure")?;
+        db::update::<Value>("pay_structure", id, &json!({ "outline": crate::calc::outline_of(&full["definition"]) }))?;
+        done += 1;
+    }
+    Ok(json!({ "outlined": done }))
+}
+
 handler! {
+    /// Runs on upgrade: structures made before outlines existed get one.
+    fn backfill_structure_outlines(_: Empty) -> Value {
+        backfill_outlines()
+    }
+
+    /// The country of a company (`company`, else the default company), so payroll knows which country pack applies.
+    /// `country` is null until a country is chosen for the company or the organization.
+    fn payroll_country(input: ForCompany) -> Value {
+        require_payroll_staff()?;
+        Ok(json!({ "country": country_code_for(input.company.as_deref())? }))
+    }
+
+    /// The active rule packs of a company's country (`company`, else the default company). Empty until a country is chosen.
+    fn org_rule_packs(input: ForCompany) -> Vec<Record> {
+        require_payroll_staff()?;
+        match country_code_for(input.company.as_deref())? {
+            Some(code) => db::find("pay_rule_pack").filter("country", code.as_str()).filter("is_active", true).order_by("pack_id").limit(200).all(),
+            None => Ok(Vec::new()),
+        }
+    }
+
     /// Save a salary structure. A structure is never changed: a new version is a new one.
     fn create_structure(input: NewStructure) -> Record {
         new_structure(input)
@@ -329,7 +418,7 @@ handler! {
         Ok(json!({
             "allow_unverified_rules": unverified_allowed()?, "periods_per_year": periods_per_year()?,
             "require_open_period": flag("require_open_period", false), "email_payslip": flag("email_payslip", false),
-            "count_pending_declarations": flag("count_pending_declarations", true),
+            "count_pending_declarations": flag("count_pending_declarations", true), "pay_suspended": flag("pay_suspended", false),
             "payer_name": row.as_ref().and_then(|r| r.get("payer_name").cloned()).unwrap_or(Value::Null),
             "payer_iban": row.as_ref().and_then(|r| r.get("payer_iban").cloned()).unwrap_or(Value::Null),
             "payer_bic": row.as_ref().and_then(|r| r.get("payer_bic").cloned()).unwrap_or(Value::Null),

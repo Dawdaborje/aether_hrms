@@ -6,6 +6,7 @@
     <tile label="HR defaults" description="Probation, notice period and retirement age for new hires" href="/hr/config/hr" icon="sliders-horizontal"/>
     <tile label="Employee numbers" description="Patterns for numbering new employees" href="/hr/config/numbering" icon="hash"/>
     <tile label="Work locations" description="Sites and branches where people work" href="/hr/config/locations" icon="map-pin"/>
+    <tile label="Jobs" description="Designations such as Accountant or Site Engineer" href="/hr/jobs" icon="tag"/>
     <tile label="Grades" description="The ladder of grades, with an optional wage band for each" href="/hr/config/grades" icon="chart-bar"/>
     <tile label="Cost centres" description="Where people and departments are costed" href="/hr/config/cost-centres" icon="coins"/>
   </tiles>
@@ -35,8 +36,10 @@
     <tile label="Offer terms" description="Terms that can go into an offer" href="/hr/config/recruitment/offer-terms" icon="clipboard-list"/>
     <tile label="Offer templates" description="Ready-made offer letters" href="/hr/config/recruitment/offer-templates" icon="file-check"/>
   </tiles>
-  <tiles title="Letters and offboarding" cols="4">
+  <tiles title="Onboarding, letters and offboarding" cols="4">
     <tile label="Letter templates" description="Templates for letters you issue to employees" href="/hr/config/letters/templates" icon="file-text"/>
+    <tile label="Enrollment" description="How long a new hire's invitation link stays valid" href="/hr/enrollments/settings" icon="user-plus"/>
+    <tile label="Enrollment policies" description="The policies a new hire reads and accepts when enrolling" href="/hr/enrollments/policies" icon="scroll-text"/>
     <tile label="Departures" description="People leaving and their notice" href="/hr/config/departures" icon="door-open"/>
   </tiles>
 </page>

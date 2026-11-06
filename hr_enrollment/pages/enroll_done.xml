@@ -1,0 +1,4 @@
+<page route="/enroll/{token}/done" title="Thank you" public="true" menu="false" layout="bare">
+  <heading title="Thank you for submitting your details"
+           subtitle="You can close this page now. HR will contact you if they need more information."/>
+</page>

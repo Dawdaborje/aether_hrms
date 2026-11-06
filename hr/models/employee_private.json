@@ -52,6 +52,11 @@
           "label": "%married%"
         },
         {
+          "id": "opt_mwuai3tpifzjnuim635e",
+          "value": "partnered",
+          "label": "%partnered%"
+        },
+        {
           "id": "opt_op2eqjw5jt",
           "value": "divorced",
           "label": "%divorced%"

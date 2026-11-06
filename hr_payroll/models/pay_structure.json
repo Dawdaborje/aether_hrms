@@ -68,6 +68,13 @@
       "label": "%packs%",
       "type": "json",
       "help": "The rule packs this structure uses: id, hash and whether each was verified."
+    },
+    {
+      "id": "fld_4xtw5d7lmctc6qkxfnyk",
+      "name": "outline",
+      "label": "%outline%",
+      "type": "json",
+      "help": "What a pay run needs to know of the definition without reading it: the names of its inputs and each component's id and kind, as `id:kind,…`."
     }
   ],
   "indexes": [

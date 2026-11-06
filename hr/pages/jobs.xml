@@ -1,0 +1,11 @@
+<page route="/hr/jobs" title="Jobs" model="job" menu_group="Employee" icon="tag" sort="24" roles="hr_user,hr_manager">
+  <view type="list" model="job" source="list_jobs" open="/hr/jobs/{id}" create="/hr/jobs/new" create_label="New">
+    <columns>
+      <column field="name" label="Job"/>
+      <column field="code" label="Code"/>
+      <column field="department" label="Department"/>
+      <column field="is_active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No jobs yet" description="A job is a designation such as Accountant or Site Engineer. Positions (seats in a department) and employees refer to it."/>
+  </view>
+</page>

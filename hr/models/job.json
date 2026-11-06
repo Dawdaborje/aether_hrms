@@ -42,6 +42,23 @@
       "label": "%is_active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_yvqp4npbpyzflsjcjs6e",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "job",
+      "hierarchy": true,
+      "help": "The job this one reports to. Positions of this job report to positions of the parent job."
+    },
+    {
+      "id": "fld_kgho7yslh6m7mb5gkfp2",
+      "name": "grade",
+      "label": "%grade%",
+      "type": "string",
+      "max_length": 20,
+      "help": "Default grade of the positions of this job: sets their rank."
     }
   ],
   "view": {

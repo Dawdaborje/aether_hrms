@@ -1,0 +1,10 @@
+<page route="/hr/enrollments/policies/new" title="New policy" menu="false" roles="hr_user,hr_manager">
+  <view type="form" function="create_enrollment_policy" submit="Create" success="Created" redirect="/hr/enrollments/policies">
+    <group title="Policy" cols="2">
+      <field name="title" label="Title" required="true" colspan="2"/>
+      <field name="position" label="Order" fieldType="integer"/>
+      <field name="is_active" label="Shown to new hires" fieldType="boolean"/>
+      <field name="body" label="Text" fieldType="text" colspan="2"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,51 @@
+<page route="/hr/enrollments/{id}" title="Enrollment" model="enrollment" menu="false" roles="hr_user,hr_manager">
+  <view type="form" source="get_enrollment">
+    <statusbar field="status" options="draft, invited, in_progress, submitted, changes_requested, approved, expired, cancelled"/>
+    <header>
+      <button showWhen="status=approved" variant="default" label="Open employee record" function="open_enrollment_employee"/>
+      <button showWhen="status=draft,status=invited,status=in_progress,status=changes_requested,status=expired" label="Send invitation" function="invite_enrollment" confirm="Email a new single-use link? Any earlier link stops working."/>
+      <button showWhen="status=draft,status=invited,status=in_progress,status=changes_requested,status=expired" label="Copy invitation link" function="copy_enrollment_link" confirm="Make a new link and copy it? Any earlier link stops working."/>
+      <button showWhen="status=submitted" label="Send back" href="/hr/enrollments/{id}/changes"/>
+      <button showWhen="status=submitted" label="Approve and hire" function="approve_enrollment" confirm="Create the employee from these details?"/>
+      <button showWhen="status=draft,status=invited,status=in_progress,status=submitted,status=changes_requested" label="Cancel enrollment" function="cancel_enrollment" confirm="Cancel this enrollment? The link stops working."/>
+    </header>
+    <group title="The person" cols="2">
+      <field name="status" label="Status" fieldType="selection" readonly="true"
+             options="draft, invited, in_progress, submitted, changes_requested, approved, expired, cancelled"/>
+      <field name="status_note" label="What this means" readonly="true"/>
+      <field name="name" label="Name" readonly="true"/>
+      <field name="email" label="Email" readonly="true"/>
+      <field name="hire_date" label="Date of joining" fieldType="date" readonly="true"/>
+      <field name="expires_at" label="Link expires" fieldType="datetime" readonly="true"/>
+      <field name="section_summary" label="Sections" readonly="true" colspan="2"/>
+      <field name="review_note" label="Note sent back" readonly="true" colspan="2"/>
+    </group>
+    <group title="Personal" cols="2">
+      <field name="legal_name" label="Legal name" readonly="true"/>
+      <field name="date_of_birth" label="Date of birth" fieldType="date" readonly="true"/>
+      <field name="place_of_birth" label="Place of birth" readonly="true"/>
+      <field name="gender" label="Gender" readonly="true"/>
+      <field name="marital_status" label="Marital status" readonly="true"/>
+      <field name="nationality" label="Nationality" readonly="true"/>
+      <field name="private_email" label="Personal email" readonly="true"/>
+      <field name="private_phone" label="Personal phone" readonly="true"/>
+      <field name="private_address" label="Address" fieldType="text" readonly="true"/>
+    </group>
+    <group title="Emergency contact" cols="2">
+      <field name="emergency_name" label="Name" readonly="true"/>
+      <field name="emergency_relation" label="Relationship" readonly="true"/>
+      <field name="emergency_phone" label="Phone" readonly="true"/>
+    </group>
+    <group title="Identity" cols="2">
+      <field name="passport_no" label="Passport number" readonly="true"/>
+      <field name="passport_expiry" label="Passport expires" fieldType="date" readonly="true"/>
+      <field name="visa_no" label="Visa number" readonly="true"/>
+      <field name="work_permit_expiry" label="Work permit expires" fieldType="date" readonly="true"/>
+      <field name="files" label="Documents" fieldType="file" multiple="true" readonly="true" colspan="2"/>
+    </group>
+    <group title="Bank" cols="2">
+      <field name="bank_name" label="Bank" readonly="true"/>
+      <field name="bank_account_no" label="Account number" readonly="true"/>
+    </group>
+  </view>
+</page>

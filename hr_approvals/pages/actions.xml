@@ -1,0 +1,3 @@
+<page route="/hr/actions" title="Pending actions" icon="list-checks" sort="3" roles="hr.hr_user,hr.hr_manager">
+  <view type="board" source="hr_actions_board"/>
+</page>

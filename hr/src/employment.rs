@@ -7,7 +7,7 @@
 //! applies records whose day has come.
 
 use aether_sdk::dates::{check_order, format_date, overlaps, parse_date, parse_optional, NaiveDate};
-use aether_sdk::db::Filter;
+use aether_sdk::db::{Filter, Walk};
 use aether_sdk::prelude::*;
 
 use crate::common::{explain, id_of, is_off, pick, require, text, today, Record};
@@ -16,7 +16,7 @@ use crate::rules::status;
 /// The fields of the terms themselves (not who or when).
 const TERMS: &[&str] = &[
     "department", "job", "position", "manager", "employment_type", "work_location", "cost_center", "grade", "wage", "currency",
-    "pay_frequency", "wage_source", "contract_start", "contract_end", "fixed_term", "trial_end", "reason",
+    "pay_frequency", "wage_source", "contract_start", "contract_end", "fixed_term", "trial_end", "reason", "rank_override_reason",
 ];
 /// The terms that the employee row mirrors while they are current.
 const PLACEMENT: &[&str] = &["department", "job", "position", "manager", "employment_type", "work_location", "cost_center"];
@@ -51,6 +51,74 @@ fn date_of(record: &Record, field: &str) -> Result<Option<NaiveDate>> {
 }
 
 /// What the terms must satisfy, whatever else is true.
+/// The bare key of a record id (`employee:abc` and `abc` are the same record).
+fn key_of(id: &str) -> &str {
+    id.rsplit_once(':').map_or(id, |(_, key)| key)
+}
+
+/// Who a person reports to: someone else, who still works here, and not anyone who reports to this person
+/// (directly or through others), which would make a loop with no top.
+fn check_manager(employee: &Record, manager: &str, terms: &Record) -> Result<()> {
+    let employee_id = id_of(employee)?;
+    if key_of(manager) == key_of(employee_id) {
+        return Err(Error::msg("a person cannot report to themselves"));
+    }
+    let boss = require("employee", manager, "manager")?;
+    if !status::counts_in_headcount(text(&boss, "status").unwrap_or("active")) {
+        return Err(Error::msg("the manager no longer works here"));
+    }
+    let above: Vec<Record> = db::tree("employee", "manager", id_of(&boss)?).walk(Walk::Up).all()?;
+    if above.iter().any(|row| text(row, "id").is_some_and(|id| key_of(id) == key_of(employee_id))) {
+        return Err(Error::msg("that person already reports to this one, directly or through others: it would make a loop"));
+    }
+    check_rank(employee, &boss, terms)
+}
+
+/// A manager ranks above the people who report to them (or equal, by the HR default). An HR manager may go
+/// against it by giving a reason, which stays on the terms.
+fn check_rank(employee: &Record, boss: &Record, terms: &Record) -> Result<()> {
+    let under = crate::rank::rank_of(
+        text(terms, "grade"),
+        text(terms, "position").or_else(|| text(employee, "position")),
+        text(terms, "job").or_else(|| text(employee, "job")),
+    )?;
+    if crate::rank::allowed(crate::rank::employee_rank(boss)?, under)? {
+        return Ok(());
+    }
+    if text(terms, "rank_override_reason").is_some_and(|r| !r.trim().is_empty()) {
+        if crate::rank::is_hr_manager() {
+            return Ok(());
+        }
+        return Err(Error::msg("only an HR manager can set the rank rule aside"));
+    }
+    Err(Error::msg(format!("{}; an HR manager can set this aside with a reason", crate::rank::explain_rule()?)))
+}
+
+/// A person moving into a position reports to whoever holds the position it reports to, when that is one person
+/// and they may be the manager. Only when the terms do not name a manager.
+fn auto_manager(data: &mut Record, employee: &Record, explicit: bool, before_position: Option<&str>) {
+    let Some(position) = text(data, "position").map(str::to_string) else { return };
+    if explicit || text(data, "position") == before_position {
+        return;
+    }
+    let Ok(Some(row)) = db::get::<Record>("position", &position) else { return };
+    let Some(parent) = text(&row, "parent") else { return };
+    let Ok(holders) = db::find::<Record>("employee")
+        .matching(Filter::eq("position", parent).and(Filter::one_of("status", status::PRESENT.to_vec())))
+        .limit(2)
+        .all()
+    else {
+        return;
+    };
+    if let [only] = holders.as_slice() {
+        if let Some(id) = text(only, "id") {
+            if check_manager(employee, id, data).is_ok() {
+                data["manager"] = json!(id);
+            }
+        }
+    }
+}
+
 fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Option<&str>) -> Result<()> {
     if let Some(joined) = text(employee, "hire_date").map(parse_date).transpose()? {
         if date_from < joined {
@@ -93,6 +161,9 @@ fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Op
                 return Err(Error::msg(format!("the {what} is closed")));
             }
         }
+    }
+    if let Some(manager) = text(terms, "manager") {
+        check_manager(employee, manager, terms)?;
     }
  // Contract periods of one person never overlap. 
     if let Some(start) = start {
@@ -174,6 +245,7 @@ pub fn refresh(employee_id: &str) -> Result<()> {
                 db::update::<Record>("employee", employee_id, &Value::Object(changes)),
                 "could not apply the current employment terms to the employee",
             )?;
+            crate::position::sync_moved(text(&employee, "position"), current.get("position").and_then(Value::as_str))?;
         }
     }
     Ok(())
@@ -253,7 +325,7 @@ fn apply_pay_mode(data: &mut Record, before: Option<&Record>, given: bool) -> Re
     }
     data["wage"] = serde_json::to_value(base).map_err(|e| Error::msg(e.to_string()))?;
     data["wage_source"] = json!("position");
-    if let Some(currency) = text(&position, "currency") {
+    if let Some(currency) = text(&position, "currency").map(str::to_string).or_else(crate::position::org_currency) {
         data["currency"] = json!(currency);
     }
     Ok(())
@@ -278,7 +350,7 @@ pub fn apply_position_pay(position: &Record) -> Result<u64> {
             continue;
         }
         let mut changes = json!({ "wage": base, "wage_source": "position", "reason": "position pay" });
-        if let Some(currency) = text(position, "currency") {
+        if let Some(currency) = text(position, "currency").map(str::to_string).or_else(crate::position::org_currency) {
             changes["currency"] = json!(currency);
         }
         apply_from_today(employee, &changes)?;
@@ -316,6 +388,8 @@ pub fn create(employee: &Record, date_from: &str, terms: &Record) -> Result<Reco
             }
         }
     }
+    let explicit_manager = terms.get("manager").is_some();
+    auto_manager(&mut data, employee, explicit_manager, before.as_ref().and_then(|b| text(b, "position")));
     apply_pay_mode(&mut data, before.as_ref(), given)?;
     check_terms(&data, employee, from, None)?;
     check_seat(&data, employee)?;
@@ -382,6 +456,14 @@ fn change(input: Change) -> Result<Record> {
             if let Some(value) = view.get(field) {
                 data[field] = value.clone();
             }
+        }
+    }
+    if data.get("position").is_some() && data.get("manager").is_none() {
+        let mut view = existing.clone();
+        view["position"] = data["position"].clone();
+        auto_manager(&mut view, &employee, false, text(&existing, "position"));
+        if text(&view, "manager") != text(&existing, "manager") {
+            data["manager"] = view["manager"].clone();
         }
     }
     let mut merged = existing.clone();

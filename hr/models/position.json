@@ -37,7 +37,7 @@
       "label": "%department%",
       "type": "link",
       "target": "department",
-      "required": true
+      "help": "Leave empty to use the job's department."
     },
     {
       "id": "fld_7iok2om7qv",

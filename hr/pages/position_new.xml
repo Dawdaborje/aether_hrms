@@ -3,10 +3,12 @@
     <field name="name" label="Name" required="true"/>
     <field name="code" label="Code"/>
     <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs" required="true"/>
-    <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments" required="true"/>
+    <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments"
+           help="Leave empty to use the job's department."/>
     <field name="headcount" label="Seats" fieldType="integer"/>
     <field name="base_wage" label="Base wage" fieldType="float" help="HR managers only."/>
     <field name="currency" label="Currency" fieldType="many2one" source="currency.list_currencies"
-           optionLabel="display_name" entity="currencies"/>
+           optionLabel="display_name" entity="currencies"
+           help="Leave empty to use the organization's currency (set in company setup)."/>
   </view>
 </page>
