@@ -5,6 +5,7 @@
       <field name="middle_name" label="Middle name"/>
       <field name="last_name" label="Last name" required="true"/>
       <field name="email" label="Email the invitation goes to" required="true"/>
+      <field name="work_email" label="Work email" help="Optional. The company address for the new employee. The invitation address is kept as their contact, not as a work email."/>
       <field name="phone" label="Phone" fieldType="phone"/>
     </group>
     <group title="The job" cols="2">

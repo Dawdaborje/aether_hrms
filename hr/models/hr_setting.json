@@ -69,7 +69,7 @@
       "label": "%manager_rank_rule%",
       "type": "select",
       "default": "strict",
-      "help": "Whether a manager must rank strictly above the people who report to them, or may rank equal. Ranks come from grades.",
+      "help": "Whether a manager must rank strictly above the people who report to them, or may rank equal. Ranks come from grades. The rule is not checked when either person's rank cannot be worked out (no grade on their terms, position or job), and an HR manager can set it aside with a reason.",
       "options": [
         {
           "id": "opt_d3az5zt72eiaqtenmtqd",

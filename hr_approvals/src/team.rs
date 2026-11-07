@@ -67,12 +67,35 @@ fn whole_team(filters: Option<&Value>) -> bool {
     }
 }
 
+/// People who report to `manager` and still work here, at most `TEAM_LIMIT`. Former employees can fill a page of
+/// matches, so pages are read until enough present reports are found or the matches run out.
 fn reports_of(manager: &str) -> Vec<Record> {
-    plugins::call::<Vec<Record>>("hr", "find_employees", &json!({ "manager": manager, "limit": 500 }))
-        .unwrap_or_default()
-        .into_iter()
-        .filter(|e| PRESENT.contains(&text(e, "status").unwrap_or("active")))
-        .collect()
+    const PAGE: usize = 500;
+    const MAX_PAGES: usize = 20;
+    let mut present: Vec<Record> = Vec::new();
+    let mut offset = 0;
+    for _ in 0..MAX_PAGES {
+        let page = plugins::call::<Vec<Record>>("hr", "find_employees", &json!({ "manager": manager, "limit": PAGE, "offset": offset })).unwrap_or_default();
+        let fetched = page.len();
+        present.extend(page.into_iter().filter(|e| PRESENT.contains(&text(e, "status").unwrap_or("active"))));
+        if fetched < PAGE || present.len() >= TEAM_LIMIT {
+            break;
+        }
+        offset += fetched;
+    }
+    present.truncate(TEAM_LIMIT);
+    present
+}
+
+/// Does anyone report to the caller (and still work here)? The same answer as `glance().is_some()`, without reading
+/// attendance or leave for the figures.
+pub fn manages_people() -> bool {
+    // `glance` gives nothing when today cannot be read; so does this.
+    if aether_sdk::records::today().ok().and_then(|d| dates::parse_date(&d).ok()).is_none() {
+        return false;
+    }
+    let me: Value = ask("hr", "my_employee", &json!({}));
+    me.get("id").and_then(Value::as_str).is_some_and(|id| !team(id, false).is_empty())
 }
 
 /// The manager's direct reports, or everyone below them when `deep`.
@@ -235,13 +258,26 @@ fn board(input: BoardInput) -> Result<Value> {
     }
     let status_rows: Vec<(String, Value, f64)> = by_status.into_iter().map(|(s, n)| (label_of(&s), json!(s), n)).collect();
 
+    // The inbox is the caller's, not the team's: a finance user can be asked to approve someone outside the team. Those
+    // names are looked up, so a raw id is shown only when HR will not say who it is.
+    let mut outside: BTreeMap<String, String> = BTreeMap::new();
+    for r in waiting.iter().take(10) {
+        let Some(who) = r["employee"].as_str().map(key) else { continue };
+        if names.contains_key(who) || outside.contains_key(who) {
+            continue;
+        }
+        let found = ask("hr", "get_employee", &json!({ "id": who }));
+        if let Some(name) = found.get("display_name").and_then(Value::as_str) {
+            outside.insert(who.to_string(), name.to_string());
+        }
+    }
     let inbox_rows: Vec<Value> = waiting
         .iter()
         .take(10)
         .map(|r| {
             let who = r["employee"].as_str().map(key).unwrap_or_default();
-            row(json!({ "kind": r["kind"], "employee": names.get(who).cloned().unwrap_or_else(|| who.to_string()),
-                "when": r["when"], "detail": r["detail"] }))
+            let name = names.get(who).or_else(|| outside.get(who)).cloned().unwrap_or_else(|| who.to_string());
+            row(json!({ "kind": r["kind"], "employee": name, "when": r["when"], "detail": r["detail"] }))
         })
         .collect();
 

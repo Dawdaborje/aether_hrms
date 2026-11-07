@@ -228,17 +228,29 @@ fn month_label(date: NaiveDate) -> String {
     format!("{} {}", NAMES[(date.month() - 1) as usize], date.year() % 100)
 }
 
-/// The months a period touches, oldest first, at most 24.
+/// The most months the month-by-month charts draw.
+const MAX_MONTHS: usize = 24;
+
+/// The months a period touches, oldest first. A longer period keeps its latest `MAX_MONTHS`, so the charts end where
+/// the period ends.
 fn months_in(from: NaiveDate, to: NaiveDate) -> Vec<(NaiveDate, NaiveDate)> {
     let mut months = Vec::new();
     let mut start = month_start(from);
-    while start <= to && months.len() < 24 {
+    while start <= to {
         let next = dates::add_months(start, 1);
         let end = (next - Duration::days(1)).min(to);
         months.push((start.max(from), end));
         start = next;
     }
+    if months.len() > MAX_MONTHS {
+        months.drain(..months.len() - MAX_MONTHS);
+    }
     months
+}
+
+/// Does the period touch more months than the charts draw?
+fn months_clipped(from: NaiveDate, to: NaiveDate) -> bool {
+    dates::add_months(month_start(from), MAX_MONTHS as u32) <= to
 }
 
 fn board(input: BoardInput) -> Result<Value> {
@@ -295,6 +307,8 @@ fn board(input: BoardInput) -> Result<Value> {
 
     // Headcount and movement, month by month.
     let months = months_in(from, to);
+    // Say so when the period is longer than the charts draw; the figures above still cover all of it.
+    let clipped = if months_clipped(from, to) { format!(" (latest {MAX_MONTHS} months)") } else { String::new() };
     let mut trend: Vec<(String, Value, f64)> = Vec::new();
     let (mut hires, mut leavers) = (Vec::new(), Vec::new());
     for (start, end) in &months {
@@ -306,12 +320,12 @@ fn board(input: BoardInput) -> Result<Value> {
     let categories: Vec<String> = months.iter().map(|(s, _)| month_label(*s)).collect();
     let keys: Vec<Value> = months.iter().map(|(s, _)| json!(day(*s))).collect();
     let headcount_trend = json!({ "id": "trend", "chart": "trend", "width": 6, "card": {
-        "kind": "line", "title": "Headcount by month", "categories": categories, "keys": keys,
+        "kind": "line", "title": format!("Headcount by month{clipped}"), "categories": categories, "keys": keys,
         "series": [{ "name": "People at month end", "measure": "count", "values": trend.iter().map(|r| r.2).collect::<Vec<_>>() }],
         "dimensions": ["month"],
     }});
     let movement = json!({ "id": "movement", "chart": "movement", "width": 6, "card": {
-        "kind": "bar", "title": "Hired and left by month", "categories": categories_of(&months), "keys": months.iter().map(|(s, _)| json!(day(*s))).collect::<Vec<_>>(),
+        "kind": "bar", "title": format!("Hired and left by month{clipped}"), "categories": categories_of(&months), "keys": months.iter().map(|(s, _)| json!(day(*s))).collect::<Vec<_>>(),
         "series": [
             { "name": "Hired", "measure": "count", "values": hires },
             { "name": "Left", "measure": "count", "values": leavers },

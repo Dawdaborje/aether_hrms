@@ -87,10 +87,13 @@ fn save(input: Change) -> Result<Record> {
         }
         data.insert("manager_rank_rule".into(), json!(rule));
     }
-    match db::find::<Record>("hr_setting").first()? {
-        Some(existing) => db::update("hr_setting", id_of(&existing)?, &Value::Object(data))?.ok_or_else(|| Error::msg("the setting is gone")),
-        None => db::create("hr_setting", &Value::Object(data)),
-    }
+    let saved = match db::find::<Record>("hr_setting").first()? {
+        Some(existing) => db::update("hr_setting", id_of(&existing)?, &Value::Object(data))?.ok_or_else(|| Error::msg("the setting is gone"))?,
+        None => db::create("hr_setting", &Value::Object(data))?,
+    };
+    // Add-ons that keep a copy of a setting (enrollment links hold the minimum working age) refresh it.
+    events::emit("hr_setting_changed", &json!({}))?;
+    Ok(saved)
 }
 
 handler! {

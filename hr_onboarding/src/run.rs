@@ -487,6 +487,51 @@ struct Search {
     status: Option<String>,
 }
 
+/// Every task that is overdue and still to do, on any run that is pending or in process, with the run's kind and
+/// employee. Read page by page, so no number of open runs hides one: a board that counts late work asks once instead
+/// of opening runs one by one. The caller's own record access applies, as for any other list.
+fn late_open_tasks() -> Result<Vec<Record>> {
+    const PAGE: u32 = 500;
+    const MAX_PAGES: u32 = 40;
+    let bare = |id: &str| id.rsplit_once(':').map_or(id, |(_, key)| key).to_string();
+    let day = format_date(today_date()?);
+    let mut open: std::collections::HashMap<String, Record> = std::collections::HashMap::new();
+    for status in ["pending", "in_process"] {
+        for page in 0..MAX_PAGES {
+            let runs: Vec<Record> = db::find::<Record>("ob_run").filter("status", status).order_by("-anchor_date").limit(PAGE).offset(page * PAGE).all()?;
+            let fetched = runs.len();
+            for run in runs {
+                if let Some(id) = text(&run, "id") {
+                    open.insert(bare(id), run);
+                }
+            }
+            if fetched < PAGE as usize {
+                break;
+            }
+        }
+    }
+    let mut late = Vec::new();
+    for page in 0..MAX_PAGES {
+        let tasks: Vec<Record> = db::find::<Record>("ob_task")
+            .matching(Filter::eq("state", "todo").and(Filter::lt("due_end", day.as_str())))
+            .order_by("due_end")
+            .limit(PAGE)
+            .offset(page * PAGE)
+            .all()?;
+        let fetched = tasks.len();
+        for mut task in tasks {
+            let Some(run) = text(&task, "run").and_then(|r| open.get(&bare(r))) else { continue };
+            task["run_kind"] = run.get("kind").cloned().unwrap_or(Value::Null);
+            task["run_employee"] = run.get("employee").cloned().unwrap_or(Value::Null);
+            late.push(task);
+        }
+        if fetched < PAGE as usize {
+            break;
+        }
+    }
+    Ok(late)
+}
+
 fn tasks_for_me(include_done: bool) -> Result<Vec<Record>> {
     let ids = my_task_ids()?;
     let mut out = Vec::new();
@@ -554,6 +599,11 @@ handler! {
 
     fn list_run_tasks(input: Id) -> Vec<Record> {
         tasks_of(&input.id)
+    }
+
+    /// All overdue to-do tasks of open runs, with each run's kind and employee.
+    fn overdue_tasks(_: Option<Empty>) -> Vec<Record> {
+        late_open_tasks()
     }
 
     /// The caller's own open tasks, and those for a role they hold.

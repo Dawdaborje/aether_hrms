@@ -13,7 +13,6 @@ use aether_sdk::records::{text, Record};
 /// Rows shown per area.
 const SHOWN: usize = 10;
 /// Onboarding and offboarding runs whose tasks are checked.
-const RUN_LIMIT: usize = 100;
 /// Days ahead for departures and probation endings.
 const SOON: i64 = 14;
 /// A letter waiting longer than this many days is chased.
@@ -101,27 +100,19 @@ fn documents(names: &BTreeMap<String, String>, today: NaiveDate) -> Result<Vec<V
 }
 
 fn onboarding_tasks(names: &BTreeMap<String, String>, today: NaiveDate) -> Result<Vec<Value>> {
-    let mut runs: Vec<Record> = Vec::new();
-    for status in ["pending", "in_process"] {
-        runs.extend(ask_rows("hr_onboarding", "list_runs", &json!({ "status": status }))?);
-    }
-    runs.truncate(RUN_LIMIT);
+    // One call for every overdue task of every open run, so the number of runs never hides a late one.
     let mut late: Vec<(i64, Value)> = Vec::new();
-    for run in &runs {
-        let Some(run_id) = text(run, "id") else { continue };
-        let tasks = plugins::call::<Vec<Record>>("hr_onboarding", "list_run_tasks", &json!({ "id": run_id })).unwrap_or_default();
-        for t in tasks {
-            let Some(due) = date_of(&t, "due_end") else { continue };
-            if text(&t, "state") != Some("todo") || due >= today {
-                continue;
-            }
-            let kind = if text(run, "kind") == Some("offboard") { "Offboarding" } else { "Onboarding" };
-            let owner = text(&t, "assignee_note").or_else(|| text(&t, "assignee_role")).unwrap_or_default();
-            late.push((days_between(due, today), json!({
-                "employee": who(names, run, "employee"), "run": kind, "task": text(&t, "name"), "due": text(&t, "due_end"),
-                "late": format!("{} days", days_between(due, today)), "owner": owner,
-            })));
+    for t in ask_rows("hr_onboarding", "overdue_tasks", &json!({}))? {
+        let Some(due) = date_of(&t, "due_end") else { continue };
+        if due >= today {
+            continue;
         }
+        let kind = if text(&t, "run_kind") == Some("offboard") { "Offboarding" } else { "Onboarding" };
+        let owner = text(&t, "assignee_note").or_else(|| text(&t, "assignee_role")).unwrap_or_default();
+        late.push((days_between(due, today), json!({
+            "employee": who(names, &t, "run_employee"), "run": kind, "task": text(&t, "name"), "due": text(&t, "due_end"),
+            "late": format!("{} days", days_between(due, today)), "owner": owner,
+        })));
     }
     late.sort_by(|a, b| b.0.cmp(&a.0));
     Ok(late.into_iter().map(|r| r.1).collect())

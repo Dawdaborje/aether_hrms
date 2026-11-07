@@ -7,12 +7,12 @@ use crate::common::{explain, get, id_of, in_days, now, now_text, pick, require_h
 use crate::{rules, token};
 
 const START: &[&str] = &[
-    "first_name", "middle_name", "last_name", "email", "phone", "department", "job", "position", "manager",
+    "first_name", "middle_name", "last_name", "email", "work_email", "phone", "department", "job", "position", "manager",
     "work_location", "cost_center", "employment_type", "hire_date", "probation_end", "source",
 ];
 /// What the hire needs besides the sections.
 const TERMS: &[&str] = &[
-    "first_name", "middle_name", "last_name", "email", "phone", "department", "job", "position", "manager",
+    "first_name", "middle_name", "last_name", "phone", "department", "job", "position", "manager",
     "work_location", "cost_center", "employment_type", "hire_date", "probation_end",
 ];
 
@@ -72,6 +72,30 @@ struct Search {
     filter: Option<Value>,
 }
 
+/// A position names its job and (usually) its department. Whatever job or department is chosen with it must be those,
+/// or approval would create terms that disagree with the seat. The department stays optional.
+fn check_placement(data: &Record) -> Result<()> {
+    let Some(position) = text(data, "position") else { return Ok(()) };
+    let seat: Option<Record> = plugins::call("hr", "get_position", &json!({ "id": position }))?;
+    let seat = seat.ok_or_else(|| Error::msg("there is no such position"))?;
+    let key = |id: &str| id.rsplit_once(':').map_or(id, |(_, k)| k).to_string();
+    for (field, what) in [("job", "job"), ("department", "department")] {
+        if let (Some(chosen), Some(held)) = (text(data, field), text(&seat, field)) {
+            if key(chosen) != key(held) {
+                return Err(Error::msg(format!("the position belongs to a different {what}: pick the position's own {what}, or leave it out")));
+            }
+        }
+    }
+    Ok(())
+}
+
+/// The minimum working age HR has now. A failure to read it is passed on: a link is never issued under an age that
+/// is only guessed.
+fn current_minimum_age() -> Result<u64> {
+    let setting: Record = plugins::call("hr", "get_hr_setting", &json!({}))?;
+    Ok(setting.get("minimum_working_age").and_then(Value::as_u64).filter(|a| *a > 0).unwrap_or(14))
+}
+
 fn start(input: Record) -> Result<Record> {
     require_hr()?;
     let mut data = clean(pick(&input, START));
@@ -88,6 +112,13 @@ fn start(input: Record) -> Result<Record> {
         return Err(Error::msg("give a valid email address"));
     }
     data["email"] = json!(email);
+    if let Some(work) = text(&data, "work_email").map(str::to_lowercase) {
+        if !rules::fits_email(&work) {
+            return Err(Error::msg("give a valid work email address, or leave it empty"));
+        }
+        data["work_email"] = json!(work);
+    }
+    check_placement(&data)?;
     let open: Vec<Record> = db::find("enrollment").filter("email", email.as_str()).limit(50).all()?;
     if open.iter().any(|row| rules::OPEN.contains(&text(row, "status").unwrap_or(""))) {
         return Err(Error::msg("this person already has an enrollment in progress"));
@@ -173,8 +204,7 @@ fn rotate(row: &Record, next_status: &str) -> Result<(Record, String, String)> {
         .ok_or_else(|| Error::msg("set the Domain in the general settings before sending invitations"))?;
     let days = setting.get("invite_days").and_then(Value::as_i64).unwrap_or(14).clamp(1, 90);
     // The minimum working age now in force, kept on the enrollment for the public form to check against.
-    let hr_setting: Record = plugins::call("hr", "get_hr_setting", &json!({})).unwrap_or_else(|_| json!({}));
-    let minimum_age = hr_setting.get("minimum_working_age").and_then(Value::as_u64).filter(|a| *a > 0).unwrap_or(14);
+    let minimum_age = current_minimum_age()?;
     let secret = token::new_token(id)?;
     let expires = in_days(days)?;
     let saved = db::update::<Record>(
@@ -213,6 +243,19 @@ fn next_for_invite(row: &Record) -> Result<&'static str> {
     };
     if status != next && !rules::can_move(status, next) {
         return Err(Error::msg("this enrollment cannot be invited"));
+    }
+    // Reopening an expired enrollment must not leave two open ones for the same person, both able to be hired.
+    if status == "expired" {
+        let email = text(row, "email").unwrap_or_default().to_lowercase();
+        let this = text(row, "id").unwrap_or_default();
+        let key = |id: &str| id.rsplit_once(':').map_or(id, |(_, k)| k).to_string();
+        let others: Vec<Record> = db::find("enrollment").filter("email", email.as_str()).limit(50).all()?;
+        if others
+            .iter()
+            .any(|o| text(o, "id").map(key) != Some(key(this)) && rules::OPEN.contains(&text(o, "status").unwrap_or("")))
+        {
+            return Err(Error::msg("this person already has another enrollment in progress: finish or cancel it before reopening this one"));
+        }
     }
     Ok(next)
 }
@@ -336,6 +379,14 @@ fn approve(input: Id) -> Result<Record> {
         return Err(Error::msg("a section is still waiting for changes"));
     }
     let mut terms = clean(pick(&row, TERMS));
+    check_placement(&terms)?;
+    // The invitation address is the person's own contact; only an address HR gave as the work email becomes one.
+    if let Some(contact) = text(&row, "email") {
+        terms["contact_email"] = json!(contact);
+    }
+    if let Some(work) = text(&row, "work_email").map(str::trim).filter(|w| !w.is_empty()) {
+        terms["email"] = json!(work);
+    }
     for section in &sections {
         if let (Some(data), Some(fields)) = (section.get("data").and_then(Value::as_object), terms.as_object_mut()) {
             for (key, value) in data {
@@ -388,6 +439,23 @@ fn tick() -> Result<u64> {
         }
     }
     Ok(closed)
+}
+
+/// HR changed a setting: open enrollments take the minimum working age now in force, so the form's date window and the
+/// check at submission follow it even for a link issued earlier.
+fn refresh_minimum_age() -> Result<u64> {
+    let minimum = current_minimum_age()?;
+    let mut changed = 0;
+    for status in rules::OPEN_FOR_HIRE {
+        let rows: Vec<Record> = db::find("enrollment").filter("status", *status).limit(1000).all()?;
+        for row in rows {
+            if row.get("minimum_age").and_then(Value::as_u64) != Some(minimum) {
+                db::update::<Record>("enrollment", id_of(&row)?, &json!({ "minimum_age": minimum }))?;
+                changed += 1;
+            }
+        }
+    }
+    Ok(changed)
 }
 
 fn read_settings() -> Result<Record> {
@@ -459,6 +527,11 @@ handler! {
 
     fn enrollment_tick(_: Empty) -> Value {
         Ok(json!({ "expired": tick()? }))
+    }
+
+    /// Listener for `hr.hr_setting_changed`.
+    fn on_hr_setting_changed(_: Record) -> Value {
+        Ok(json!({ "refreshed": refresh_minimum_age()? }))
     }
 
     fn get_enrollment_settings(_: Empty) -> Record {

@@ -39,6 +39,14 @@
       "index": "plain"
     },
     {
+      "id": "fld_buy5mudsq8nsidqn3z05",
+      "name": "work_email",
+      "label": "Work email",
+      "type": "string",
+      "max_length": 160,
+      "help": "The company address given to the new employee, if there is one. Left empty, the invitation address is not used as a work email."
+    },
+    {
       "id": "fld_5l6h5bsuhfid36vehlhu",
       "name": "phone",
       "label": "Phone",

@@ -27,7 +27,7 @@ HR starts an enrollment with a name, email and the job. The new hire fills in th
 - A new invitation or send-back makes a new token; the old one stops working.
 - Cleared on approve, cancel and expiry. `enrollment_tick` (hourly) expires stale links.
 - Every failure on the public side gives one message, so a guess learns nothing. The kernel rate-limits anonymous clients per address.
-- Links are emailed only; no handler returns one.
+- A link reaches the person by email (`invite_enrollment`) or, when HR chooses, by HR copying a fresh one (`copy_enrollment_link`) to send another way, such as a message. Copying makes a new link and ends the earlier one, needs an HR role, and returns the link to HR only; the stored token is a hash, so an old link can never be shown again. Whoever holds a link can fill in the form, so HR treats a copied link like a password.
 
 ## Public surface
 
@@ -43,7 +43,7 @@ HR starts an enrollment with a name, email and the job. The new hire fills in th
 - Attached documents stay on the enrollment (`files`); they are not copied to the employee.
 - Identity numbers use HR's passport and visa fields; `hr_documents` lists are not filled.
 - No email reminder before a link expires; no resend from the new hire's side.
-- Nothing builds the HR "copy link" button, by design.
+- The HR "copy link" button exists (`copy_enrollment_link`); it replaces the earlier link each time it is used.
 
 ## Roles
 

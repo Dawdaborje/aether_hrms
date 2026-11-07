@@ -41,8 +41,13 @@ struct Hire {
     middle_name: Option<String>,
     #[serde(default)]
     last_name: Option<String>,
+    /// The work email: kept on the employee as `work_email`, and the directory contact when no `contact_email` is given.
     #[serde(default)]
     email: Option<String>,
+    /// The address of the person themselves (an enrollment invitation went here): the directory contact only, never
+    /// the work email.
+    #[serde(default)]
+    contact_email: Option<String>,
     #[serde(default)]
     phone: Option<String>,
     #[serde(flatten)]
@@ -67,7 +72,7 @@ struct Move {
     reason: Option<String>,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, Clone)]
 struct Search {
     /// Free-text search. The list page sends this as `q`; `text` is kept for callers.
     #[serde(default, alias = "q")]
@@ -154,7 +159,7 @@ fn person_name(input: &Hire) -> Result<String> {
 fn create_party_for_hire(input: &Hire) -> Result<(String, Record)> {
     let name = person_name(input)?;
     let mut payload = json!({ "name": name });
-    if let Some(email) = input.email.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+    if let Some(email) = input.contact_email.as_deref().or(input.email.as_deref()).map(str::trim).filter(|s| !s.is_empty()) {
         payload["email"] = json!(email);
     }
     if let Some(phone) = input.phone.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
@@ -508,11 +513,8 @@ struct ManagerSearch {
 
 /// Who the "Reports to" picker offers: not the person themselves, and not anyone below them, since either would
 /// make a loop. A new employee has no one to leave out.
-fn possible_managers(mut input: ManagerSearch) -> Result<Value> {
-    // Narrow by position and rank after the search, so ask for a wide page and cut it down here.
+fn possible_managers(input: ManagerSearch) -> Result<Value> {
     let (want_limit, want_offset) = (input.search.limit.unwrap_or(50).min(500) as usize, input.search.offset.unwrap_or(0) as usize);
-    input.search.limit = Some(500);
-    input.search.offset = None;
     let bare = |id: &str| id.rsplit_once(':').map_or(id, |(_, key)| key).to_string();
     let mut left_out: Vec<String> = Vec::new();
     if let Some(id) = input.id.as_deref().filter(|id| !id.trim().is_empty()) {
@@ -540,14 +542,29 @@ fn possible_managers(mut input: ManagerSearch) -> Result<Value> {
         }
     }
     let check_rank = under.is_some() && !crate::rank::is_hr_manager();
-    let mut found = search(input.search)?;
-    let mut rows: Vec<Value> = found.get_mut("rows").and_then(Value::as_array_mut).map(std::mem::take).unwrap_or_default();
-    rows.retain(|row| text(row, "id").map_or(true, |id| !left_out.contains(&bare(id))));
-    if let Some(only) = &only {
-        rows.retain(|row| text(row, "id").is_some_and(|id| only.contains(&bare(id))));
-    }
-    if check_rank {
-        rows.retain(|row| crate::rank::employee_rank(row).and_then(|boss| crate::rank::allowed(boss, under)).unwrap_or(true));
+    // Eligibility is applied to every page of matches before the page asked for is cut, so someone eligible is
+    // never lost behind 500 who are not, and `total` counts everyone eligible.
+    const PAGE: u32 = 500;
+    const MAX_PAGES: u32 = 40;
+    let mut rows: Vec<Value> = Vec::new();
+    for page in 0..MAX_PAGES {
+        let mut ask = input.search.clone();
+        ask.limit = Some(PAGE);
+        ask.offset = Some(page * PAGE);
+        let mut found = search(ask)?;
+        let mut batch: Vec<Value> = found.get_mut("rows").and_then(Value::as_array_mut).map(std::mem::take).unwrap_or_default();
+        let fetched = batch.len();
+        batch.retain(|row| text(row, "id").map_or(true, |id| !left_out.contains(&bare(id))));
+        if let Some(only) = &only {
+            batch.retain(|row| text(row, "id").is_some_and(|id| only.contains(&bare(id))));
+        }
+        if check_rank {
+            batch.retain(|row| crate::rank::employee_rank(row).and_then(|boss| crate::rank::allowed(boss, under)).unwrap_or(true));
+        }
+        rows.extend(batch);
+        if fetched < PAGE as usize {
+            break;
+        }
     }
     let total = rows.len();
     let rows: Vec<Value> = rows.into_iter().skip(want_offset).take(want_limit).collect();

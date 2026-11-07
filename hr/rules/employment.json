@@ -49,6 +49,15 @@
         "via:hr_career",
         "via:self"
       ]
+    },
+    {
+      "fields": [
+        "rank_override_reason"
+      ],
+      "write_roles": [
+        "hr_manager",
+        "via:self"
+      ]
     }
   ]
 }

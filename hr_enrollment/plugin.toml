@@ -14,7 +14,7 @@ approved, cancelled or expired. Written in Rust. See docs/design.md.
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["hr", "party", "country"]
-capabilities = ["db::query", "db::mutate", "plugins::call", "events::emit", "communication::send", "email::send", "settings::get"]
+capabilities = ["db::query", "db::mutate", "plugins::call", "events::emit", "events::subscribe", "communication::send", "email::send", "settings::get"]
 access_models = [
   { name = "enrollment", permissions = ["read", "write"] },
   { name = "enrollment_section", permissions = ["read", "write"] },
@@ -40,6 +40,12 @@ name = "enrollment_submitted"
 
 [[events]]
 name = "enrollment_approved"
+
+# HR changed its settings: open links take the minimum working age now in force.
+[[events]]
+name = "hr.hr_setting_changed"
+direction = "listen"
+handler = "on_hr_setting_changed"
 
 [[schedule]]
 name = "enrollment-tick"

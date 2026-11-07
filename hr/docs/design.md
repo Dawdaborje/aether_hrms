@@ -32,7 +32,7 @@ Core people and organization: department tree, jobs, positions (seats with headc
 - Identity is `party`; `employee` is the working role. Private data is a separate model with its own rules.
 - Terms live on dated `employment` rows, not a flat contract overwrite. Nightly `apply_due_employments` makes future terms current.
 - Positions have headcount; vacancies = headcount − holders. Subordinates use hierarchy walks, not recursive Python.
-- There is no "new employee" form. People are created by `hire_employee`, called from approved enrollments (`hr_enrollment`) and accepted offers (`hr_recruitment`).
+- People are created by `hire_employee`: from the plain "New employee" form (`/hr/employees/hire`, always available to HR so the plugin works alone), from approved enrollments (`hr_enrollment`) and from accepted offers (`hr_recruitment`). All three go through the same checks and hire holds. The home page shows the enrollment tile only while that add-on's page is listed (`requires_route`).
 - Hire holds let onboarding/recruitment gate `hire_employee` without bypassing HR validation.
 - Status transitions are rule-checked (`next_statuses`); leave/rehire/rehire paths emit events.
 - Employee numbers come from `employee_number_rule` patterns (`{number:N}`, `{year}`, `{department_code}`, …). The most specific active rule wins; otherwise `EMP-{number:5}`.

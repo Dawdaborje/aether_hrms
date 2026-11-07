@@ -79,18 +79,47 @@ pub fn sync_moved(before: Option<&str>, after: Option<&str>) -> Result<()> {
     Ok(())
 }
 
+/// People holding each position now, for every position at once (keyed by the bare id): one grouped count
+/// instead of one query per position.
+fn holder_counts() -> Result<std::collections::HashMap<String, u64>> {
+    let present: Vec<&str> = status::PRESENT.to_vec();
+    let rows = db::aggregate(
+        "employee",
+        Filter::one_of("status", present).and(Filter::is_set("position")),
+        &["position"],
+        &[("people", aether_sdk::db::Figure::Count)],
+    )?;
+    Ok(rows
+        .iter()
+        .filter_map(|row| Some((bare(row.get("position")?.as_str()?), row.get("people")?.as_u64()?)))
+        .collect())
+}
+
+/// The organization's currency, looked up at most once however many positions need it.
+struct DefaultCurrency(Option<Option<String>>);
+
+impl DefaultCurrency {
+    fn get(&mut self) -> Option<String> {
+        self.0.get_or_insert_with(org_currency).clone()
+    }
+}
+
 /// Add the live seat count: `held` people in it and `free` seats left.
 fn with_seats(mut position: Record) -> Result<Record> {
-    let headcount = position.get("headcount").and_then(Value::as_u64).unwrap_or(1);
     let held = holders(id_of(&position)?)?;
+    seat_fields(&mut position, held, &mut DefaultCurrency(None));
+    Ok(position)
+}
+
+fn seat_fields(position: &mut Record, held: u64, currency: &mut DefaultCurrency) {
+    let headcount = position.get("headcount").and_then(Value::as_u64).unwrap_or(1);
     position["held"] = json!(held);
     position["free"] = json!(headcount.saturating_sub(held));
-    if text(&position, "currency").is_none() {
-        if let Some(currency) = org_currency() {
+    if text(position, "currency").is_none() {
+        if let Some(currency) = currency.get() {
             position["currency"] = json!(currency);
         }
     }
-    Ok(position)
 }
 
 fn check(data: &Record, current: Option<&Record>) -> Result<()> {
@@ -170,7 +199,7 @@ fn new_position(input: Record) -> Result<Record> {
     }
     if text(&data, "parent").is_none() {
         if let (Some(job), Some(department)) = (text(&data, "job"), text(&data, "department")) {
-            if let Some(parent) = crate::rank::default_parent(job, department)? {
+            if let Some(parent) = crate::rank::default_parent(job, department, text(&data, "grade"))? {
                 data["parent"] = json!(parent);
             }
         }
@@ -203,9 +232,6 @@ fn change_position(input: Change) -> Result<Record> {
     let data = pick(&input.fields, EDITABLE);
     if data.as_object().is_some_and(|fields| fields.is_empty()) {
         return Err(Error::msg("there is nothing to change"));
-    }
-    if data.get("headcount").is_some_and(|h| Some(h) != existing.get("headcount")) {
-        return Err(Error::msg("the seats are set when the position is added and cannot be edited here"));
     }
     check(&data, Some(&existing))?;
     let pay_changed = ["base_wage", "currency"].iter().any(|f| data.get(*f).is_some_and(|v| Some(v) != existing.get(*f)));
@@ -247,9 +273,10 @@ fn open_positions(input: Vacancies) -> Result<Vec<Record>> {
         filter = filter.and(Filter::eq("department", department));
     }
     let positions: Vec<Record> = db::find::<Record>("position").matching(filter).order_by("name").limit(1000).all()?;
+    let counts = holder_counts()?;
     let mut out = Vec::new();
     for mut position in positions {
-        let held = holders(id_of(&position)?)?;
+        let held = counts.get(&bare(id_of(&position)?)).copied().unwrap_or(0);
         let headcount = position.get("headcount").and_then(Value::as_u64).unwrap_or(1);
         if headcount > held {
             position["held"] = json!(held);
@@ -297,6 +324,11 @@ struct ParentSearch {
     limit: Option<usize>,
     #[serde(default)]
     offset: Option<usize>,
+    /// The job and grade as typed on the form, which may differ from the saved ones.
+    #[serde(default)]
+    job: Option<String>,
+    #[serde(default)]
+    grade: Option<String>,
 }
 
 /// What the "Reports to" picker of a position offers: not itself nor anything below it, positions of the job
@@ -309,6 +341,13 @@ fn possible_parents(input: ParentSearch) -> Result<Value> {
         let below: Vec<Record> = db::tree("position", "parent", id).walk(Walk::Down).all()?;
         left_out.extend(below.iter().filter_map(|r| text(r, "id")).map(bare));
         subject = db::get::<Record>("position", id)?;
+    }
+    // What is on the form wins over what is saved: a job or grade being changed decides who may be the boss.
+    for (field, sent) in [("job", &input.job), ("grade", &input.grade)] {
+        if let Some(sent) = sent {
+            let subject = subject.get_or_insert_with(|| json!({}));
+            subject[field] = if sent.trim().is_empty() { Value::Null } else { json!(sent.trim()) };
+        }
     }
     let jobs: Vec<String> = match subject.as_ref().and_then(|s| text(s, "job")) {
         Some(job) => crate::rank::job_ancestors(job)?.iter().map(|j| bare(j)).collect(),
@@ -358,7 +397,15 @@ handler! {
     }
 
     fn list_positions(_: Empty) -> Vec<Record> {
-        db::find::<Record>("position").order_by("name").limit(1000).all()?.into_iter().map(|p| with_seats(p).map(without_pay)).collect()
+        let counts = holder_counts()?;
+        let mut currency = DefaultCurrency(None);
+        let mut out = Vec::new();
+        for mut position in db::find::<Record>("position").order_by("name").limit(1000).all()? {
+            let held = counts.get(&bare(id_of(&position)?)).copied().unwrap_or(0);
+            seat_fields(&mut position, held, &mut currency);
+            out.push(without_pay(position));
+        }
+        Ok(out)
     }
 
     /// Positions that still have a free seat.
@@ -378,6 +425,15 @@ handler! {
     fn update_job(input: Change) -> Record {
         let data = crate::common::pick(&input.fields, JOB_FIELDS);
         check_job(&data, Some(&input.id))?;
+        // A new default grade must not break a reporting line that holds today.
+        if let Some(grade) = data.get("grade") {
+            let before = db::get::<Record>("job", &input.id)?;
+            let old = before.as_ref().and_then(|j| text(j, "grade")).unwrap_or_default();
+            let new = grade.as_str().unwrap_or_default();
+            if old != new {
+                crate::rank::check_job_grade(&input.id, Some(new))?;
+            }
+        }
         if data.get("name").is_some() && text(&data, "name").is_none() {
             return Err(Error::msg("a job needs a name"));
         }

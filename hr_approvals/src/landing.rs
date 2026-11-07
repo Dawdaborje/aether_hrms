@@ -30,8 +30,8 @@ fn header() -> Value {
     let me: Value = plugins::call("hr", "my_employee", &json!({})).unwrap_or(Value::Null);
     let name = me.get("display_name").and_then(Value::as_str);
     let mut hats = vec!["Employee"];
-    let manager = super::team::glance().is_some();
-    if manager {
+    // Only whether anyone reports to them: the figures behind the team card are not read for the greeting.
+    if super::team::manages_people() {
         hats.push("Manager");
     }
     if is_hr_staff() {

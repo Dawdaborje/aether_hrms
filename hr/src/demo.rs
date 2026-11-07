@@ -196,6 +196,27 @@ fn ensure_grades() -> Result<u32> {
     Ok(made)
 }
 
+/// Existing grades are kept as they are, so before a chain is built check that their ranks still let each job of the
+/// ladder report to the one above it under the manager rank rule. Without this a position of one job could be refused
+/// halfway through generation because, say, G8 was given a lower rank than G7.
+fn check_grade_ladder() -> Result<()> {
+    let mut ranks: Vec<(&str, Option<i64>)> = Vec::new();
+    for (_, grade) in JOB_LADDER {
+        let rank = db::find::<Record>("grade").filter("code", *grade).first()?.and_then(|g| g.get("rank").and_then(Value::as_i64));
+        ranks.push((grade, rank));
+    }
+    for pair in ranks.windows(2) {
+        let ((upper, upper_rank), (lower, lower_rank)) = (pair[0], pair[1]);
+        if !crate::rank::allowed(upper_rank, lower_rank)? {
+            return Err(Error::msg(format!(
+                "the existing grades do not fit the demo job ladder: {upper} must rank above {lower} ({}); change their ranks in HR Configuration or use other grades",
+                crate::rank::explain_rule()?
+            )));
+        }
+    }
+    Ok(())
+}
+
 fn demo_grades() -> Result<Value> {
     Ok(json!({ "created": ensure_grades()? }))
 }
@@ -204,6 +225,7 @@ fn demo_grades() -> Result<Value> {
 fn demo_jobs(count: u32) -> Result<Value> {
     let (dept, _, _) = ensure_scaffold()?;
     ensure_grades()?;
+    check_grade_ladder()?;
     let tag = stamp();
     let mut ids = Vec::new();
     let mut above: Option<String> = None;
@@ -232,8 +254,9 @@ fn demo_jobs(count: u32) -> Result<Value> {
 /// Positions across the jobs, highest rank first so each can report to a position of the job above.
 /// The department is the job's, and a position's "Reports to" is filled in from the job tree.
 fn demo_positions(count: u32) -> Result<Value> {
-    ensure_scaffold()?;
+    let (scaffold_department, _, _) = ensure_scaffold()?;
     ensure_grades()?;
+    check_grade_ladder()?;
     let mut jobs: Vec<(i64, Record)> = Vec::new();
     for job in db::find::<Record>("job").matching(Filter::eq("is_active", true)).limit(500).all()? {
         let rank = match text(&job, "grade") {
@@ -265,6 +288,8 @@ fn demo_positions(count: u32) -> Result<Value> {
             "name": format!("{} {}", text(job, "name").unwrap_or("Seat"), made_for[slot]),
             "code": format!("P{}-{}", i + 1, &tag[..6.min(tag.len())]),
             "job": id_of(job)?,
+            // A job may have no department of its own; the scaffold's stands in so generation does not stop.
+            "department": text(job, "department").unwrap_or(scaffold_department.as_str()),
             "headcount": headcount,
             "status": "open",
         }))?;

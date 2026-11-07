@@ -86,6 +86,11 @@ fn looks_like_date(value: &str) -> bool {
     b.len() == 10 && b[4] == b'-' && b[7] == b'-' && b.iter().enumerate().all(|(i, c)| i == 4 || i == 7 || c.is_ascii_digit())
 }
 
+/// A day that exists on the calendar: `1990-02-30` has the right shape and is still refused.
+fn is_calendar_date(value: &str) -> bool {
+    looks_like_date(value) && parse_date(value).is_ok()
+}
+
 /// The youngest age to be hired when nothing was set.
 pub const DEFAULT_MINIMUM_AGE: u32 = 14;
 /// The oldest age a birth date may give.
@@ -119,8 +124,8 @@ pub fn check_submission(input: &Record, joining: Option<&str>, today: &str, mini
             if PHONE_FIELDS.contains(&field.as_str()) && phone(value) == Phone::Invalid {
                 return Err(format!("{} must be a phone number in international form, such as +2348012345678", field.replace('_', " ")));
             }
-            if DATE_FIELDS.contains(&field.as_str()) && !looks_like_date(value) {
-                return Err(format!("{field} must be a date"));
+            if DATE_FIELDS.contains(&field.as_str()) && !is_calendar_date(value) {
+                return Err(format!("{} must be a real date, such as 1990-02-28", field.replace('_', " ")));
             }
         }
     }
@@ -130,7 +135,9 @@ pub fn check_submission(input: &Record, joining: Option<&str>, today: &str, mini
             return Err(format!("{} is required", required.replace('_', " ")));
         }
     }
-    if let Some(born) = personal.get("date_of_birth").and_then(Value::as_str).and_then(|b| parse_date(b).ok()) {
+    if let Some(born) = personal.get("date_of_birth").and_then(Value::as_str) {
+        // The shape was checked above; a day that does not exist is an error, never a reason to skip the age check.
+        let born = parse_date(born).map_err(|_| "date of birth must be a real date, such as 1990-02-28".to_string())?;
         let (earliest, latest) = birth_window(joining, today, minimum_age)?;
         let today_date = parse_date(today).map_err(|e| e.to_string())?;
         if born > today_date {
@@ -200,7 +207,16 @@ mod tests {
         assert!(check_submission(&input, None, "2026-11-01", 14).is_err());
         input = good();
         input["date_of_birth"] = json!("10/12/1990");
-        assert_eq!(check_submission(&input, None, "2026-11-01", 14), Err("date_of_birth must be a date".into()));
+        assert_eq!(check_submission(&input, None, "2026-11-01", 14), Err("date of birth must be a real date, such as 1990-02-28".into()));
+        // The right shape is not enough: the day has to exist.
+        for (field, value) in [("date_of_birth", "1990-02-30"), ("passport_expiry", "2030-02-30"), ("work_permit_expiry", "2030-13-01")] {
+            input = good();
+            input[field] = json!(value);
+            assert!(check_submission(&input, None, "2026-11-01", 14).unwrap_err().contains("real date"), "{field} {value}");
+        }
+        input = good();
+        input["passport_expiry"] = json!("2030-02-28");
+        assert_eq!(check_submission(&input, None, "2026-11-01", 14), Ok(()));
         input = good();
         input["bank_name"] = json!("Acme Bank");
         assert!(check_submission(&input, None, "2026-11-01", 14).is_err());

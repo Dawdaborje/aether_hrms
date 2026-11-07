@@ -58,7 +58,7 @@ fn key_of(id: &str) -> &str {
 
 /// Who a person reports to: someone else, who still works here, and not anyone who reports to this person
 /// (directly or through others), which would make a loop with no top.
-fn check_manager(employee: &Record, manager: &str, terms: &Record) -> Result<()> {
+fn check_manager(employee: &Record, manager: &str, terms: &Record, before: Option<&Record>) -> Result<()> {
     let employee_id = id_of(employee)?;
     if key_of(manager) == key_of(employee_id) {
         return Err(Error::msg("a person cannot report to themselves"));
@@ -71,12 +71,45 @@ fn check_manager(employee: &Record, manager: &str, terms: &Record) -> Result<()>
     if above.iter().any(|row| text(row, "id").is_some_and(|id| key_of(id) == key_of(employee_id))) {
         return Err(Error::msg("that person already reports to this one, directly or through others: it would make a loop"));
     }
-    check_rank(employee, &boss, terms)
+    check_rank(employee, &boss, terms, before)
+}
+
+/// Is `terms` the same reporting line as `before`, with the fields that decide rank unchanged?
+fn same_line(employee: &Record, manager: &str, terms: &Record, before: Option<&Record>) -> bool {
+    let Some(before) = before else { return false };
+    if text(before, "manager").map(key_of) != Some(key_of(manager)) {
+        return false;
+    }
+    ["grade", "position", "job"].iter().all(|field| {
+        // Position and job fall back to the employee's own; a grade has no such fallback.
+        let held = |record: &Record| -> Option<String> {
+            text(record, field)
+                .or_else(|| if *field == "grade" { None } else { text(employee, field) })
+                .map(str::to_string)
+        };
+        held(terms) == held(before)
+    })
+}
+
+/// Only an HR manager sets the rank rule aside, so only an HR manager may change the reason that records it.
+/// Leaving it as it was is open to anyone who may edit the terms.
+fn guard_override_reason(data: &Record, before: Option<&Record>) -> Result<()> {
+    let Some(sent) = data.get("rank_override_reason") else { return Ok(()) };
+    let clean = |v: Option<&Value>| v.and_then(Value::as_str).map(str::trim).filter(|r| !r.is_empty()).map(str::to_string);
+    if clean(Some(sent)) != clean(before.and_then(|b| b.get("rank_override_reason"))) && !crate::rank::is_hr_manager() {
+        return Err(Error::msg("only an HR manager can set the rank rule aside"));
+    }
+    Ok(())
 }
 
 /// A manager ranks above the people who report to them (or equal, by the HR default). An HR manager may go
 /// against it by giving a reason, which stays on the terms.
-fn check_rank(employee: &Record, boss: &Record, terms: &Record) -> Result<()> {
+fn check_rank(employee: &Record, boss: &Record, terms: &Record, before: Option<&Record>) -> Result<()> {
+    // The same reporting line, with nothing that sets rank changed (grade, position, job): whatever was decided
+    // about it before, an approved exception included, stands. Only a new manager or a rank-affecting edit is checked.
+    if same_line(employee, text(boss, "id").unwrap_or_default(), terms, before) {
+        return Ok(());
+    }
     let under = crate::rank::rank_of(
         text(terms, "grade"),
         text(terms, "position").or_else(|| text(employee, "position")),
@@ -112,14 +145,14 @@ fn auto_manager(data: &mut Record, employee: &Record, explicit: bool, before_pos
     };
     if let [only] = holders.as_slice() {
         if let Some(id) = text(only, "id") {
-            if check_manager(employee, id, data).is_ok() {
+            if check_manager(employee, id, data, None).is_ok() {
                 data["manager"] = json!(id);
             }
         }
     }
 }
 
-fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Option<&str>) -> Result<()> {
+fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Option<&str>, before: Option<&Record>) -> Result<()> {
     if let Some(joined) = text(employee, "hire_date").map(parse_date).transpose()? {
         if date_from < joined {
             return Err(Error::msg(format!("the terms cannot start before the person joined ({joined})")));
@@ -163,7 +196,7 @@ fn check_terms(terms: &Record, employee: &Record, date_from: NaiveDate, this: Op
         }
     }
     if let Some(manager) = text(terms, "manager") {
-        check_manager(employee, manager, terms)?;
+        check_manager(employee, manager, terms, before)?;
     }
  // Contract periods of one person never overlap. 
     if let Some(start) = start {
@@ -388,10 +421,21 @@ pub fn create(employee: &Record, date_from: &str, terms: &Record) -> Result<Reco
             }
         }
     }
+    guard_override_reason(&data, before.as_ref())?;
+    // The same manager on the next terms keeps the reason that let them be the manager.
+    if let Some(before) = &before {
+        if data.get("rank_override_reason").is_none()
+            && text(&data, "manager").or_else(|| text(before, "manager")).map(key_of) == text(before, "manager").map(key_of)
+        {
+            if let Some(reason) = before.get("rank_override_reason").filter(|r| !r.is_null()) {
+                data["rank_override_reason"] = reason.clone();
+            }
+        }
+    }
     let explicit_manager = terms.get("manager").is_some();
     auto_manager(&mut data, employee, explicit_manager, before.as_ref().and_then(|b| text(b, "position")));
     apply_pay_mode(&mut data, before.as_ref(), given)?;
-    check_terms(&data, employee, from, None)?;
+    check_terms(&data, employee, from, None, before.as_ref())?;
     check_seat(&data, employee)?;
     data["employee"] = json!(employee_id);
     data["date_from"] = json!(format_date(from));
@@ -466,12 +510,13 @@ fn change(input: Change) -> Result<Record> {
             data["manager"] = view["manager"].clone();
         }
     }
+    guard_override_reason(&data, Some(&existing))?;
     let mut merged = existing.clone();
     for (key, value) in data.as_object().cloned().unwrap_or_default() {
         merged[key] = value;
     }
     let from = parse_date(text(&merged, "date_from").unwrap_or_default())?;
-    check_terms(&merged, &employee, from, Some(&input.id))?;
+    check_terms(&merged, &employee, from, Some(&input.id), Some(&existing))?;
     check_seat(&data, &employee)?;
     let updated = explain(db::update::<Record>("employment", &input.id, &data), "could not change the terms")?
         .ok_or_else(|| Error::msg("the record is gone"))?;
