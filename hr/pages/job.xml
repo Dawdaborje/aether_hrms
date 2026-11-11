@@ -1,0 +1,15 @@
+<page route="/hr/jobs/{id}" title="Job" model="job" menu="false" roles="hr_user,hr_manager">
+  <view type="form" source="get_job" function="update_job" submit="Save" success="Saved">
+    <group title="Job" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="code" label="Code"/>
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments"/>
+      <field name="is_active" label="Active" fieldType="boolean"/>
+      <field name="parent" label="Reports to (job)" fieldType="many2one" source="list_jobs" entity="jobs"
+             help="The default boss for new positions of this job that are added without a reporting position. Positions that already exist keep the one they have."/>
+      <field name="grade" label="Default grade" fieldType="many2one" source="list_grade_options" entity="grades"
+             help="Sets the rank of this job's positions that have no grade of their own. Changing it is refused while it would put someone above their manager. Grades are set up in HR Configuration."/>
+      <field name="description" label="Description" fieldType="text" colspan="2"/>
+    </group>
+  </view>
+</page>

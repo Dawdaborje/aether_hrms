@@ -1,6 +1,7 @@
 <page route="/hr/employees" title="Employees" model="employee" menu_group="Employee" menu_group_icon="users" icon="users" sort="10" roles="hr_user,hr_manager">
   <view type="list" model="employee" source="list_employees" open="/hr/employees/{id}"
-        create="/hr/employees/hire" create_label="New" page_size="50" default_order="display_name">
+        page_size="50" default_order="display_name"
+        create="/hr/employees/hire" create_label="New employee">
     <search fields="display_name,employee_no,work_email"/>
     <filter field="status" label="Status" options="active,probation,on_leave,suspended,resigned,terminated,retired,deceased"/>
     <groupby field="department" label="Department" source="list_departments"/>
@@ -17,6 +18,6 @@
       <column field="employment_type" label="Type" fieldType="badge"/>
       <column field="hire_date" label="Hired" fieldType="date" sortable="true"/>
     </columns>
-    <empty title="No employees yet" description="Use New to add someone."/>
+    <empty title="No employees yet" description="Add an employee with New employee, or invite a new hire under Employee Enrollment when that app is installed."/>
   </view>
 </page>

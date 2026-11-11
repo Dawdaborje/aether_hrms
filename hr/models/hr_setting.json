@@ -62,6 +62,34 @@
           "label": "%hybrid%"
         }
       ]
+    },
+    {
+      "id": "fld_opxp54uelvedt3c4f4lj",
+      "name": "manager_rank_rule",
+      "label": "%manager_rank_rule%",
+      "type": "select",
+      "default": "strict",
+      "help": "Whether a manager must rank strictly above the people who report to them, or may rank equal. Ranks come from grades. The rule is not checked when either person's rank cannot be worked out (no grade on their terms, position or job), and an HR manager can set it aside with a reason.",
+      "options": [
+        {
+          "id": "opt_d3az5zt72eiaqtenmtqd",
+          "value": "strict",
+          "label": "%rank_strict%"
+        },
+        {
+          "id": "opt_ibbezbgpnq37p4ikpkhv",
+          "value": "equal_ok",
+          "label": "%rank_equal_ok%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ebl4de4blrkixonhzmzv",
+      "name": "minimum_working_age",
+      "label": "%minimum_working_age%",
+      "type": "int",
+      "default": 14,
+      "help": "The youngest age at which a person may be hired, on the day they join."
     }
   ]
 }

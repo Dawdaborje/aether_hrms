@@ -37,10 +37,6 @@ const DEPARTMENTS: &[&str] = &[
     "Operations", "Finance", "People", "Engineering", "Sales", "Marketing", "Support", "Legal", "Product",
     "Facilities",
 ];
-const JOBS: &[&str] = &[
-    "Analyst", "Specialist", "Coordinator", "Manager", "Engineer", "Associate", "Lead", "Officer", "Advisor",
-    "Director",
-];
 const SKILLS: &[(&str, &str)] = &[
     ("Communication", "soft"),
     ("Leadership", "soft"),
@@ -157,40 +153,144 @@ fn demo_departments(count: u32) -> Result<Value> {
     Ok(json!({ "created": ids.len(), "ids": ids }))
 }
 
+/// The grade ladder: code, name, rank, lowest and highest wage of the band.
+const GRADES: &[(&str, &str, i64, i64, i64)] = &[
+    ("G1", "Entry", 1, 1_000, 1_800),
+    ("G2", "Associate", 2, 1_700, 2_800),
+    ("G3", "Professional", 3, 2_600, 4_000),
+    ("G4", "Senior", 4, 3_800, 5_600),
+    ("G5", "Lead", 5, 5_400, 7_600),
+    ("G6", "Manager", 6, 7_200, 10_000),
+    ("G7", "Director", 7, 9_500, 14_000),
+    ("G8", "Executive", 8, 13_000, 22_000),
+];
+
+/// The job ladder, top first: name and the grade of its positions. Each job reports to the one above it.
+const JOB_LADDER: &[(&str, &str)] = &[
+    ("Chief Executive", "G8"),
+    ("Director", "G7"),
+    ("Department Manager", "G6"),
+    ("Team Lead", "G5"),
+    ("Senior Specialist", "G4"),
+    ("Specialist", "G3"),
+    ("Associate", "G2"),
+    ("Assistant", "G1"),
+];
+
+/// Make the grades that do not exist yet; those that do are left alone.
+fn ensure_grades() -> Result<u32> {
+    let mut made = 0;
+    for (code, name, rank, min, max) in GRADES {
+        if db::find::<Record>("grade").filter("code", *code).first()?.is_some() {
+            continue;
+        }
+        explain(
+            db::create::<Record>(
+                "grade",
+                &json!({ "code": code, "name": name, "rank": rank, "min_wage": min.to_string(), "max_wage": max.to_string(), "is_active": true }),
+            ),
+            "could not create a grade",
+        )?;
+        made += 1;
+    }
+    Ok(made)
+}
+
+/// Existing grades are kept as they are, so before a chain is built check that their ranks still let each job of the
+/// ladder report to the one above it under the manager rank rule. Without this a position of one job could be refused
+/// halfway through generation because, say, G8 was given a lower rank than G7.
+fn check_grade_ladder() -> Result<()> {
+    let mut ranks: Vec<(&str, Option<i64>)> = Vec::new();
+    for (_, grade) in JOB_LADDER {
+        let rank = db::find::<Record>("grade").filter("code", *grade).first()?.and_then(|g| g.get("rank").and_then(Value::as_i64));
+        ranks.push((grade, rank));
+    }
+    for pair in ranks.windows(2) {
+        let ((upper, upper_rank), (lower, lower_rank)) = (pair[0], pair[1]);
+        if !crate::rank::allowed(upper_rank, lower_rank)? {
+            return Err(Error::msg(format!(
+                "the existing grades do not fit the demo job ladder: {upper} must rank above {lower} ({}); change their ranks in HR Configuration or use other grades",
+                crate::rank::explain_rule()?
+            )));
+        }
+    }
+    Ok(())
+}
+
+fn demo_grades() -> Result<Value> {
+    Ok(json!({ "created": ensure_grades()? }))
+}
+
+/// Jobs in chains of the ladder: each reports to the job above it and carries its grade.
 fn demo_jobs(count: u32) -> Result<Value> {
     let (dept, _, _) = ensure_scaffold()?;
+    ensure_grades()?;
+    check_grade_ladder()?;
     let tag = stamp();
     let mut ids = Vec::new();
+    let mut above: Option<String> = None;
     for i in 0..count {
-        let name = JOBS[i as usize % JOBS.len()];
-        let label = if count as usize > JOBS.len() {
-            format!("{name} {}", i + 1)
-        } else {
-            name.to_string()
-        };
+        let level = i as usize % JOB_LADDER.len();
+        let chain = i as usize / JOB_LADDER.len();
+        if level == 0 {
+            above = None;
+        }
+        let (name, grade) = JOB_LADDER[level];
+        let label = if chain > 0 { format!("{name} {}", chain + 1) } else { name.to_string() };
         let row = position::create_job_for_demo(json!({
             "name": label,
             "code": format!("J{}-{}", i + 1, &tag[..6.min(tag.len())]),
             "department": dept,
             "description": "Demo job",
+            "grade": grade,
+            "parent": above,
         }))?;
-        ids.push(id_of(&row)?.to_string());
+        above = Some(id_of(&row)?.to_string());
+        ids.push(above.clone().unwrap_or_default());
     }
     Ok(json!({ "created": ids.len(), "ids": ids }))
 }
 
+/// Positions across the jobs, highest rank first so each can report to a position of the job above.
+/// The department is the job's, and a position's "Reports to" is filled in from the job tree.
 fn demo_positions(count: u32) -> Result<Value> {
-    let (dept, job, _) = ensure_scaffold()?;
+    let (scaffold_department, _, _) = ensure_scaffold()?;
+    ensure_grades()?;
+    check_grade_ladder()?;
+    let mut jobs: Vec<(i64, Record)> = Vec::new();
+    for job in db::find::<Record>("job").matching(Filter::eq("is_active", true)).limit(500).all()? {
+        let rank = match text(&job, "grade") {
+            Some(code) => db::find::<Record>("grade").filter("code", code).first()?.and_then(|g| g.get("rank").and_then(Value::as_i64)),
+            None => None,
+        };
+        jobs.push((rank.unwrap_or(0), job));
+    }
+    if jobs.is_empty() {
+        demo_jobs(JOB_LADDER.len() as u32)?;
+        return demo_positions(count);
+    }
+    jobs.sort_by(|a, b| b.0.cmp(&a.0));
     let tag = stamp();
     let mut ids = Vec::new();
-    for i in 0..count {
-        let name = format!("Seat {}", i + 1);
+    let mut made_for: Vec<u32> = vec![0; jobs.len()];
+    for i in 0..count as usize {
+        let slot = i % jobs.len();
+        let (rank, job) = &jobs[slot];
+        made_for[slot] += 1;
+        let headcount = match rank {
+            7.. => 1,
+            6 => 2,
+            5 => 3,
+            4 => 4,
+            _ => 5,
+        };
         let row = position::create_for_demo(json!({
-            "name": name,
+            "name": format!("{} {}", text(job, "name").unwrap_or("Seat"), made_for[slot]),
             "code": format!("P{}-{}", i + 1, &tag[..6.min(tag.len())]),
-            "job": job,
-            "department": dept,
-            "headcount": 5,
+            "job": id_of(job)?,
+            // A job may have no department of its own; the scaffold's stands in so generation does not stop.
+            "department": text(job, "department").unwrap_or(scaffold_department.as_str()),
+            "headcount": headcount,
             "status": "open",
         }))?;
         ids.push(id_of(&row)?.to_string());
@@ -301,6 +401,10 @@ fn demo_employees(count: u32) -> Result<Value> {
 handler! {
     fn generate_demo_department(input: DemoCount) -> Value {
         demo_departments(count_of(input))
+    }
+
+    fn generate_demo_grade(_input: DemoCount) -> Value {
+        demo_grades()
     }
 
     fn generate_demo_job(input: DemoCount) -> Value {

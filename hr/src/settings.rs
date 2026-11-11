@@ -18,6 +18,12 @@ struct Change {
     /// Where base pay comes from: `individual`, `position` or `hybrid`.
     #[serde(default)]
     pay_mode: Option<String>,
+    /// Whether a manager must rank strictly above (`strict`) or may rank equal (`equal_ok`).
+    #[serde(default)]
+    manager_rank_rule: Option<String>,
+    /// The youngest age at which a person may be hired.
+    #[serde(default)]
+    minimum_working_age: Option<i64>,
 }
 
 pub fn current() -> Result<Record> {
@@ -35,6 +41,12 @@ pub fn default_probation_end(start: &str) -> Result<Option<String>> {
         return Ok(None);
     }
     Ok(Some(format_date(parse_date(start)? + Duration::days(days))))
+}
+
+/// The youngest age at which a person may be hired: HR defaults, else the policy default.
+pub fn minimum_working_age() -> Result<u32> {
+    let age = int(&current()?, "minimum_working_age");
+    Ok(if age > 0 { age as u32 } else { crate::rules::MIN_WORKING_AGE })
 }
 
 pub fn default_notice_days() -> Result<i64> {
@@ -63,10 +75,25 @@ fn save(input: Change) -> Result<Record> {
         crate::common::require_pay_manager()?;
         data.insert("pay_mode".into(), json!(mode));
     }
-    match db::find::<Record>("hr_setting").first()? {
-        Some(existing) => db::update("hr_setting", id_of(&existing)?, &Value::Object(data))?.ok_or_else(|| Error::msg("the setting is gone")),
-        None => db::create("hr_setting", &Value::Object(data)),
+    if let Some(age) = input.minimum_working_age {
+        if !(10..=25).contains(&age) {
+            return Err(Error::msg("the minimum working age is between 10 and 25"));
+        }
+        data.insert("minimum_working_age".into(), json!(age));
     }
+    if let Some(rule) = input.manager_rank_rule.as_deref() {
+        if !["strict", "equal_ok"].contains(&rule) {
+            return Err(Error::msg("the rank rule is strict or equal_ok"));
+        }
+        data.insert("manager_rank_rule".into(), json!(rule));
+    }
+    let saved = match db::find::<Record>("hr_setting").first()? {
+        Some(existing) => db::update("hr_setting", id_of(&existing)?, &Value::Object(data))?.ok_or_else(|| Error::msg("the setting is gone"))?,
+        None => db::create("hr_setting", &Value::Object(data))?,
+    };
+    // Add-ons that keep a copy of a setting (enrollment links hold the minimum working age) refresh it.
+    events::emit("hr_setting_changed", &json!({}))?;
+    Ok(saved)
 }
 
 handler! {

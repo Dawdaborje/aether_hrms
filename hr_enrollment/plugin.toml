@@ -1,0 +1,68 @@
+[plugin]
+name = "hr_enrollment"
+icon_path = "assets/logo.svg"
+label = "Employee Enrollment"
+version = "0.1.0"
+description = "New hires fill in their own details from an emailed link; HR reviews them and approves, and only then is the employee created."
+long_description = """
+HR starts an enrollment with the person's name, email and the job they are joining. The new hire gets a single-use link
+(no account needed) and fills in their personal details, emergency contact, identity documents, bank details and the
+policy acknowledgement. HR reviews the sections, sends back any that need changes, or approves. Approving calls the HR
+plugin's hire_employee, so hire holds and every HR check still apply; the employee record does not exist before that.
+The link carries a random token; only its SHA-256 is stored, it expires, and it stops working once the enrollment is
+approved, cancelled or expired. Written in Rust. See docs/design.md.
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["hr", "party", "country"]
+capabilities = ["db::query", "db::mutate", "plugins::call", "events::emit", "events::subscribe", "communication::send", "email::send", "settings::get"]
+access_models = [
+  { name = "enrollment", permissions = ["read", "write"] },
+  { name = "enrollment_section", permissions = ["read", "write"] },
+  { name = "enr_setting", permissions = ["read", "write"] },
+  { name = "enr_policy", permissions = ["read", "write"] },
+]
+# The enrollment link: anyone holding a valid token may read their own enrollment and submit it.
+public_functions = ["enroll_get", "enroll_submit", "enroll_policies"]
+public_capabilities = ["db::query", "db::mutate", "events::emit"]
+public_access_models = [
+  { name = "enr_policy", permissions = ["read"] },
+  { name = "enrollment", permissions = ["read", "write"] },
+  { name = "enrollment_section", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[events]]
+name = "enrollment_started"
+
+[[events]]
+name = "enrollment_submitted"
+
+[[events]]
+name = "enrollment_approved"
+
+# HR changed its settings: open links take the minimum working age now in force.
+[[events]]
+name = "hr.hr_setting_changed"
+direction = "listen"
+handler = "on_hr_setting_changed"
+
+[[schedule]]
+name = "enrollment-tick"
+title = "Expire old invitations"
+description = "Closes enrollments whose link has expired so the token stops working."
+function = "enrollment_tick"
+every = "1h"
+
+[app]
+label = "Employee Enrollment"
+icon = "user-check"
+route = "/hr/enrollments"
+description = "Invite new hires to enroll"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "hrms"

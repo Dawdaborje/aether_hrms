@@ -8,7 +8,7 @@ use aether_sdk::prelude::*;
 use crate::common::{explain, id_of, pick, require, text, today, Record};
 use crate::employment;
 use crate::numbering::{self, NumberContext};
-use crate::rules::{status, MIN_WORKING_AGE};
+use crate::rules::status;
 
 /// What an HR officer may set on the employee row itself.
 const IDENTITY: &[&str] = &[
@@ -41,8 +41,13 @@ struct Hire {
     middle_name: Option<String>,
     #[serde(default)]
     last_name: Option<String>,
+    /// The work email: kept on the employee as `work_email`, and the directory contact when no `contact_email` is given.
     #[serde(default)]
     email: Option<String>,
+    /// The address of the person themselves (an enrollment invitation went here): the directory contact only, never
+    /// the work email.
+    #[serde(default)]
+    contact_email: Option<String>,
     #[serde(default)]
     phone: Option<String>,
     #[serde(flatten)]
@@ -67,7 +72,7 @@ struct Move {
     reason: Option<String>,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, Clone)]
 struct Search {
     /// Free-text search. The list page sends this as `q`; `text` is kept for callers.
     #[serde(default, alias = "q")]
@@ -120,8 +125,9 @@ fn check_dates(hired: Option<aether_sdk::dates::NaiveDate>, probation_end: Optio
     if let Some(hired) = hired {
         check_order(hired, probation_end, "probation")?;
         if let Some(born) = born {
-            if age_on(born, hired) < MIN_WORKING_AGE {
-                return Err(Error::msg(format!("a person must be at least {MIN_WORKING_AGE} when hired")));
+            let minimum = crate::settings::minimum_working_age()?;
+            if age_on(born, hired) < minimum {
+                return Err(Error::msg(format!("a person must be at least {minimum} when hired")));
             }
         }
     }
@@ -153,7 +159,7 @@ fn person_name(input: &Hire) -> Result<String> {
 fn create_party_for_hire(input: &Hire) -> Result<(String, Record)> {
     let name = person_name(input)?;
     let mut payload = json!({ "name": name });
-    if let Some(email) = input.email.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+    if let Some(email) = input.contact_email.as_deref().or(input.email.as_deref()).map(str::trim).filter(|s| !s.is_empty()) {
         payload["email"] = json!(email);
     }
     if let Some(phone) = input.phone.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
@@ -273,6 +279,7 @@ fn hire(input: Hire) -> Result<Record> {
 
     let _: Value = plugins::call("party", "update_party", &json!({ "id": party_id, "is_employee": true }))?;
     let hired = require("employee", &employee_id, "employee")?;
+    crate::position::sync_moved(None, text(&hired, "position"))?;
     events::emit("employee_hired", &json!({ "employee": employee_id, "party": party_id }))?;
     Ok(hired)
 }
@@ -306,6 +313,12 @@ fn change(input: Change) -> Result<Record> {
             if new_text != old_text {
                 placement.insert((*field).to_string(), new_text.map_or(Value::Null, |v| json!(v)));
             }
+        }
+    }
+    // Setting the rank rule aside travels with the manager change, so it is kept on those terms.
+    if placement.contains_key("manager") {
+        if let Some(reason) = text(&input.fields, "rank_override_reason").map(str::trim).filter(|r| !r.is_empty()) {
+            placement.insert("rank_override_reason".into(), json!(reason));
         }
     }
     // Pay (wage, currency, frequency) lives in the employment terms too, and only an HR manager changes it.
@@ -418,6 +431,7 @@ fn move_status(input: Move) -> Result<Record> {
         changes["is_active"] = json!(false);
     }
     let updated = db::update::<Record>("employee", &input.id, &changes)?.ok_or_else(|| Error::msg("the employee is gone"))?;
+    crate::position::sync_moved(text(&updated, "position"), None)?;
 
     if status::is_ended(&input.status) {
         employment::end_all(&input.id, day)?;
@@ -486,6 +500,75 @@ fn search(input: Search) -> Result<Value> {
         find = find.offset(offset);
     }
     Ok(json!({ "rows": find.all()?, "total": total }))
+}
+
+#[derive(Deserialize)]
+struct ManagerSearch {
+    /// The employee whose "Reports to" this is (the page's record).
+    #[serde(default)]
+    id: Option<String>,
+    #[serde(flatten)]
+    search: Search,
+}
+
+/// Who the "Reports to" picker offers: not the person themselves, and not anyone below them, since either would
+/// make a loop. A new employee has no one to leave out.
+fn possible_managers(input: ManagerSearch) -> Result<Value> {
+    let (want_limit, want_offset) = (input.search.limit.unwrap_or(50).min(500) as usize, input.search.offset.unwrap_or(0) as usize);
+    let bare = |id: &str| id.rsplit_once(':').map_or(id, |(_, key)| key).to_string();
+    let mut left_out: Vec<String> = Vec::new();
+    if let Some(id) = input.id.as_deref().filter(|id| !id.trim().is_empty()) {
+        left_out.push(bare(id));
+        let below: Vec<Record> = db::tree("employee", "manager", id).walk(Walk::Down).all()?;
+        left_out.extend(below.iter().filter_map(|row| text(row, "id")).map(bare));
+    }
+    // Who may be offered: those holding the position this person's position reports to (when someone does),
+    // and, but for HR managers who may set the rule aside, those who rank high enough.
+    let mut only: Option<Vec<String>> = None;
+    let mut under = None;
+    if let Some(subject) = input.id.as_deref().filter(|id| !id.trim().is_empty()).map(|id| require("employee", id, "employee")).transpose()? {
+        under = crate::rank::employee_rank(&subject)?;
+        if let Some(parent) = text(&subject, "position")
+            .and_then(|p| db::get::<Record>("position", p).ok().flatten())
+            .and_then(|p| text(&p, "parent").map(str::to_string))
+        {
+            let holders: Vec<Record> = db::find::<Record>("employee")
+                .matching(Filter::eq("position", parent.as_str()).and(Filter::one_of("status", status::PRESENT.to_vec())))
+                .limit(500)
+                .all()?;
+            if !holders.is_empty() {
+                only = Some(holders.iter().filter_map(|h| text(h, "id")).map(bare).collect());
+            }
+        }
+    }
+    let check_rank = under.is_some() && !crate::rank::is_hr_manager();
+    // Eligibility is applied to every page of matches before the page asked for is cut, so someone eligible is
+    // never lost behind 500 who are not, and `total` counts everyone eligible.
+    const PAGE: u32 = 500;
+    const MAX_PAGES: u32 = 40;
+    let mut rows: Vec<Value> = Vec::new();
+    for page in 0..MAX_PAGES {
+        let mut ask = input.search.clone();
+        ask.limit = Some(PAGE);
+        ask.offset = Some(page * PAGE);
+        let mut found = search(ask)?;
+        let mut batch: Vec<Value> = found.get_mut("rows").and_then(Value::as_array_mut).map(std::mem::take).unwrap_or_default();
+        let fetched = batch.len();
+        batch.retain(|row| text(row, "id").map_or(true, |id| !left_out.contains(&bare(id))));
+        if let Some(only) = &only {
+            batch.retain(|row| text(row, "id").is_some_and(|id| only.contains(&bare(id))));
+        }
+        if check_rank {
+            batch.retain(|row| crate::rank::employee_rank(row).and_then(|boss| crate::rank::allowed(boss, under)).unwrap_or(true));
+        }
+        rows.extend(batch);
+        if fetched < PAGE as usize {
+            break;
+        }
+    }
+    let total = rows.len();
+    let rows: Vec<Value> = rows.into_iter().skip(want_offset).take(want_limit).collect();
+    Ok(json!({ "rows": rows, "total": total }))
 }
 
 /// The rows of `search`, without the total.
@@ -627,7 +710,9 @@ fn rehire(input: Rehire) -> Result<Record> {
     }
     let _: Value = plugins::call("party", "update_party", &json!({ "id": party, "is_employee": true }))?;
     events::emit("employee_rehired", &json!({ "employee": input.employee, "party": party }))?;
-    require("employee", &input.employee, "employee")
+    let rehired = require("employee", &input.employee, "employee")?;
+    crate::position::sync_moved(None, text(&rehired, "position"))?;
+    Ok(rehired)
 }
 
 handler! {
@@ -699,6 +784,11 @@ handler! {
 
     fn list_employees(input: Search) -> Value {
         search(input)
+    }
+
+    /// The people an employee could report to (the "Reports to" picker).
+    fn list_possible_managers(input: ManagerSearch) -> Value {
+        possible_managers(input)
     }
 
     /// The same search as `list_employees`, as a plain list of employees: for other plugins, which page with

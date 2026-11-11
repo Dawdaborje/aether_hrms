@@ -1,0 +1,10 @@
+{
+  "model": "enrollment",
+  "access": [
+    {
+      "name": "hr",
+      "roles": ["hr.hr_user", "hr.hr_manager"],
+      "operations": ["read", "create", "write", "delete"]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-<page route="/hr/home" title="My HR" icon="house" sort="1">
+<page route="/hr/home" title="My HR" icon="house" sort="1" roles="member">
   <view type="dashboard" source="my_hr_home" cols="3">
     <stat label="Waiting on you" field="waiting_on_me"/>
     <stat label="Open tasks" field="open_tasks"/>

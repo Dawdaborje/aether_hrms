@@ -1,0 +1,99 @@
+{
+  "model_id": "mdl_ufrgpigrgc5cp6rgqxjb",
+  "name": "enrollment_section",
+  "label": "Enrollment section",
+  "plural_label": "Enrollment sections",
+  "icon": "list-checks",
+  "title_field": "kind",
+  "fields": [
+    {
+      "id": "fld_xusuiand55fkiw3npu3h",
+      "name": "enrollment",
+      "label": "Enrollment",
+      "type": "link",
+      "target": "enrollment",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_sjht635cncbkc5vu5xx2",
+      "name": "kind",
+      "label": "Kind",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_ovjopavy4xzkclfx2k7i",
+          "value": "personal"
+        },
+        {
+          "id": "opt_gscfxdgpddjy6wjv36bg",
+          "value": "emergency"
+        },
+        {
+          "id": "opt_os3ftwxtx56jfiqzi654",
+          "value": "identity"
+        },
+        {
+          "id": "opt_7u24gcpks65bkxhosdi5",
+          "value": "bank"
+        },
+        {
+          "id": "opt_i4m6g5hliacrkv24s75u",
+          "value": "acknowledgement"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_swroiqstgth5uwlqauam",
+      "name": "data",
+      "label": "Data",
+      "type": "json"
+    },
+    {
+      "id": "fld_yvgdvm7etfyoeok4pozl",
+      "name": "status",
+      "label": "Status",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_dasenkgy4syozomeufaa",
+          "value": "submitted"
+        },
+        {
+          "id": "opt_ww6236ujfc77arss6zab",
+          "value": "accepted"
+        },
+        {
+          "id": "opt_aeydh754jfdrns2z7ys3",
+          "value": "changes_requested"
+        }
+      ],
+      "default": "submitted"
+    },
+    {
+      "id": "fld_zi7bpmamltijjcnz5wid",
+      "name": "comment",
+      "label": "Comment",
+      "type": "text",
+      "max_length": 1000
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_h3c6w3kt5gr5uwtqn65j",
+      "fields": [
+        "enrollment",
+        "kind"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "enrollment",
+      "kind",
+      "status"
+    ]
+  }
+}

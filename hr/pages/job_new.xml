@@ -1,0 +1,14 @@
+<page route="/hr/jobs/new" title="New job" model="job" menu="false" roles="hr_user,hr_manager">
+  <view type="form" function="create_job" submit="Add job" success="Job added" redirect="/hr/jobs">
+    <group title="Job" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="code" label="Code"/>
+      <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments"/>
+      <field name="parent" label="Reports to (job)" fieldType="many2one" source="list_jobs" entity="jobs"
+             help="Positions of this job report to positions of that job."/>
+      <field name="grade" label="Default grade" fieldType="many2one" source="list_grade_options" entity="grades"
+             help="Sets the rank of this job's positions that have no grade of their own. Grades are set up in HR Configuration."/>
+      <field name="description" label="Description" fieldType="text" colspan="2"/>
+    </group>
+  </view>
+</page>

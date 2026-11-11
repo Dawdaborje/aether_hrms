@@ -1,0 +1,7 @@
+<page route="/hr/enrollments/settings" title="Enrollment settings" model="enr_setting" menu="false" roles="hr_manager">
+  <view type="form" source="get_enrollment_settings" function="save_enrollment_settings" submit="Save" success="Saved">
+    <group title="Invitations" cols="1">
+      <field name="invite_days" label="Link valid for (days)" fieldType="integer"/>
+    </group>
+  </view>
+</page>

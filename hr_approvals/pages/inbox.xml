@@ -1,4 +1,4 @@
-<page route="/hr/approvals" title="Approvals" icon="inbox">
+<page route="/hr/approvals" title="Approvals" icon="inbox" roles="member">
   <view type="list" source="approvals_inbox" open="{route}">
     <search/>
     <columns>

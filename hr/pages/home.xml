@@ -5,13 +5,15 @@
   <tiles title="People" cols="4">
     <tile label="My profile" description="Your own employee record" href="/hr/me" icon="user"/>
     <tile label="Employees" description="Everyone who works here" href="/hr/employees" icon="users"/>
-    <tile label="Hire someone" description="Add a new employee and their first terms" href="/hr/employees/hire" icon="user-plus"/>
+    <tile label="Enroll someone" description="Invite a new hire to fill in their details; approving the enrollment creates the employee" href="/hr/enrollments" icon="user-check" requires_route="/hr/enrollments"/>
+    <tile label="Add an employee" description="Enter a new employee's details yourself" href="/hr/employees/hire" icon="user-plus"/>
   </tiles>
   <tiles title="Organization" cols="4">
     <tile label="Departments" description="Teams, units and who leads them" href="/hr/departments" icon="building-2"/>
     <tile label="Organisation chart" description="Who reports to whom" href="/hr/org-chart" icon="network"/>
   </tiles>
   <tiles title="Reports" cols="4">
+    <tile label="Overview" description="Headcount, hires, leavers and who is on probation, by period and department" href="/hr/overview" icon="layout-dashboard"/>
     <tile label="Turnover" description="Joiners and leavers over time" href="/hr/reports/turnover" icon="trending-down"/>
   </tiles>
 </page>

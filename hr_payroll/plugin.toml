@@ -2,7 +2,7 @@
 name = "hr_payroll"
 icon_path = "assets/logo.svg"
 label = "Payroll"
-version = "0.1.0"
+version = "0.1.1"
 description = "Pay runs calculated by the Swift payroll engine in parallel batches, approved by a second person."
 long_description = """
 A salary structure is a list of components with exact-decimal formulas (the Swift payroll engine): earnings,
@@ -17,8 +17,8 @@ Employees read their own payslips once the run is approved. Written in Rust.
 See docs/design.md in this plugin (hr_payroll/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["hr", "currency", "hr_leave", "hr_attendance", "hr_compensation", "hr_documents"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "scheduler::enqueue", "report::export", "communication::send", "email::send"]
+dependencies = ["hr", "currency", "country", "company", "hr_leave", "hr_attendance", "hr_compensation", "hr_documents"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "scheduler::enqueue", "payroll::calculate", "report::export", "communication::send", "email::send", "settings::get", "notify::send", "org::members"]
 access_models = [
   { name = "pay_structure", permissions = ["read", "write"] },
   { name = "pay_assignment", permissions = ["read", "write"] },
@@ -28,6 +28,7 @@ access_models = [
   { name = "pay_batch", permissions = ["read", "write"] },
   { name = "payslip", permissions = ["read", "write"] },
   { name = "pay_error", permissions = ["read", "write"] },
+  { name = "pay_approval_request", permissions = ["read", "write"] },
   { name = "pay_rule_pack", permissions = ["read", "write"] },
   { name = "pay_setting", permissions = ["read", "write"] },
   { name = "pay_component", permissions = ["read", "write"] },
@@ -105,6 +106,13 @@ name = "seed_rule_packs"
 function = "seed_rule_packs"
 help = "Load the tax and contribution rule packs shipped with the plugin"
 on_install = true
+on_upgrade = true
+
+# Structures stored before `outline` existed get one, so pay runs need not read their whole definition.
+[[command]]
+name = "backfill_structure_outlines"
+function = "backfill_structure_outlines"
+help = "Give every salary structure its outline (input names and component kinds)"
 on_upgrade = true
 
 [[ai_tool]]

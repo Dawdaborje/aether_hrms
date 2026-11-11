@@ -5,9 +5,15 @@
       <field name="code" label="Code"/>
       <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs"/>
       <field name="department" label="Department" fieldType="many2one" source="list_departments" entity="departments"/>
-      <field name="parent" label="Reports to" fieldType="many2one" source="list_positions" entity="positions"/>
-      <field name="headcount" label="Seats" fieldType="integer"/>
-      <field name="status" label="Status" fieldType="selection" options="open, filled, frozen"/>
+      <field name="parent" label="Reports to" fieldType="many2one" source="list_possible_parents" entity="positions"
+             depends="job,grade"
+             help="Only positions of the job above this one and of higher rank are offered, using the job and grade as they are on this form."/>
+      <field name="headcount" label="Seats" fieldType="integer"
+             help="How many people can hold this position. It cannot go below the number who hold it now."/>
+      <field name="held" label="Filled" fieldType="integer" readonly="true"/>
+      <field name="free" label="Free seats" fieldType="integer" readonly="true"/>
+      <field name="status" label="Status" fieldType="selection" options="open, filled, frozen"
+             help="Open and filled follow the seats by themselves. Only freeze or unfreeze it here."/>
       <field name="grade" label="Grade" fieldType="many2one" source="list_grade_options" entity="grades"
                help="Grades are set up in HR Configuration."/>
     </group>

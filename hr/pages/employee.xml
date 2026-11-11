@@ -1,6 +1,6 @@
 <page route="/hr/employees/{id}" title="Employee" model="employee" roles="hr_user,hr_manager">
   <view type="form" source="get_employee" function="update_employee" submit="Save" success="Saved">
-    <statusbar field="status" function="change_employee_status"/>
+    <statusbar field="status" options="probation, active, on_leave, suspended, resigned, terminated, retired" function="change_employee_status"/>
     <group title="Photo" cols="1">
       <field name="image" label="Employee photo" fieldType="image"/>
     </group>
@@ -18,8 +18,11 @@
       <field name="job" label="Job" fieldType="many2one" source="list_jobs" entity="jobs"/>
       <field name="position" label="Position" fieldType="many2one" source="list_positions"
                entity="positions"/>
-      <field name="manager" label="Reports to" fieldType="many2one" source="list_employees"
-               optionLabel="display_name" entity="employees"/>
+      <field name="manager" label="Reports to" fieldType="many2one" source="list_possible_managers"
+               optionLabel="display_name" entity="employees"
+               help="Only the holder of the position this one reports to, and people of higher rank, are offered."/>
+      <field name="rank_override_reason" label="Rank rule set aside because"
+             help="HR managers only: needed to pick a manager who does not rank above this person."/>
       <field name="work_location" label="Work location" fieldType="many2one"
                source="list_work_locations" optionLabel="name" entity="work_locations"/>
       <field name="cost_center" label="Cost centre" fieldType="many2one"

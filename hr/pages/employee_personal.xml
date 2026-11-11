@@ -4,7 +4,7 @@
     <group title="Personal details" cols="2">
       <field name="date_of_birth" label="Date of birth" fieldType="date"/>
       <field name="marital_status" label="Marital status" fieldType="selection"
-               options="single, married, divorced, widowed"/>
+               options="single, married, partnered, divorced, widowed"/>
     </group>
   </view>
 </page>

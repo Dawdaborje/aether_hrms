@@ -1,0 +1,44 @@
+{
+  "model_id": "mdl_t7zypxke2c3njaw5b2mq",
+  "name": "enr_policy",
+  "label": "Enrollment policy",
+  "plural_label": "Enrollment policies",
+  "icon": "scroll-text",
+  "title_field": "title",
+  "fields": [
+    {
+      "id": "fld_jx77hhuzbivy7lwovwbr",
+      "name": "title",
+      "label": "Title",
+      "type": "string",
+      "max_length": 120,
+      "required": true
+    },
+    {
+      "id": "fld_cgthqejghnc3qpo7my2u",
+      "name": "body",
+      "label": "Text",
+      "type": "text",
+      "max_length": 20000,
+      "help": "What the new hire reads before accepting. Plain text; a blank line starts a new paragraph."
+    },
+    {
+      "id": "fld_vjcdn46tp6fbqiyt3vvp",
+      "name": "position",
+      "label": "Order",
+      "type": "int",
+      "default": 10,
+      "help": "Policies are shown from the lowest number to the highest."
+    },
+    {
+      "id": "fld_fkedmlnace5wz5xwi7bd",
+      "name": "is_active",
+      "label": "Shown",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": ["title", "position", "is_active"]
+  }
+}

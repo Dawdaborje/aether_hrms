@@ -1,0 +1,15 @@
+<page route="/hr/enrollments" title="Employee Enrollment" model="enrollment" icon="user-check" sort="12" roles="hr_user,hr_manager">
+  <view type="list" model="enrollment" source="list_enrollments" open="/hr/enrollments/{id}"
+        create="/hr/enrollments/new" create_label="New enrollment">
+    <search fields="name,email"/>
+    <filter field="status" label="Status" options="All=all,draft,invited,in_progress,submitted,changes_requested,approved,expired,cancelled"/>
+    <columns>
+      <column field="name" label="Name"/>
+      <column field="email" label="Email"/>
+      <column field="hire_date" label="Joins" fieldType="date"/>
+      <column field="status" label="Status" fieldType="badge"/>
+      <column field="expires_at" label="Link expires" fieldType="date"/>
+    </columns>
+    <empty title="No enrollments" description="Start one to invite a new hire to fill in their own details."/>
+  </view>
+</page>

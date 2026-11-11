@@ -1,0 +1,10 @@
+<page route="/hr/enrollments/policies" title="Enrollment policies" menu="false" roles="hr_user,hr_manager">
+  <view type="list" source="list_enrollment_policies" open="/hr/enrollments/policies/{id}" create="/hr/enrollments/policies/new" create_label="New">
+    <columns>
+      <column field="title" label="Policy"/>
+      <column field="position" label="Order"/>
+      <column field="is_active" label="Shown" fieldType="boolean"/>
+    </columns>
+    <empty title="No policies" description="Add the policies and handbook sections a new hire reads before accepting."/>
+  </view>
+</page>

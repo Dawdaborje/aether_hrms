@@ -1,0 +1,13 @@
+<page route="/hr/enrollments/policies/{id}" title="Policy" menu="false" roles="hr_user,hr_manager">
+  <view type="form" source="get_enrollment_policy" function="update_enrollment_policy" submit="Save" success="Saved">
+    <header>
+      <button label="Delete" function="delete_enrollment_policy" confirm="Delete this policy? New hires will no longer see it." danger="true" redirect="/hr/enrollments/policies"/>
+    </header>
+    <group title="Policy" cols="2">
+      <field name="title" label="Title" required="true" colspan="2"/>
+      <field name="position" label="Order" fieldType="integer"/>
+      <field name="is_active" label="Shown to new hires" fieldType="boolean"/>
+      <field name="body" label="Text" fieldType="text" colspan="2"/>
+    </group>
+  </view>
+</page>

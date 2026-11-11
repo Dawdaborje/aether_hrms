@@ -1,0 +1,23 @@
+<page route="/hr/enrollments/new" title="New enrollment" model="enrollment" menu="false" roles="hr_user,hr_manager">
+  <view type="form" function="start_enrollment" submit="Start enrollment" success="Enrollment started. Open it to send the invitation." redirect="/hr/enrollments/{id}">
+    <group title="The person" cols="2">
+      <field name="first_name" label="First name" required="true"/>
+      <field name="middle_name" label="Middle name"/>
+      <field name="last_name" label="Last name" required="true"/>
+      <field name="email" label="Email the invitation goes to" required="true"/>
+      <field name="work_email" label="Work email" help="Optional. The company address for the new employee. The invitation address is kept as their contact, not as a work email."/>
+      <field name="phone" label="Phone" fieldType="phone"/>
+    </group>
+    <group title="The job" cols="2">
+      <field name="department" label="Department" fieldType="many2one" source="hr.list_departments" entity="departments"/>
+      <field name="job" label="Designation / job" fieldType="many2one" source="hr.list_jobs" entity="jobs" required="true" help="Jobs are added under Employee &gt; Jobs."/>
+      <field name="position" label="Position" fieldType="many2one" source="hr.list_positions" entity="positions"/>
+      <field name="manager" label="Reports to" fieldType="many2one" source="hr.list_employees" optionLabel="display_name" entity="employees"/>
+      <field name="work_location" label="Work location" fieldType="many2one" source="hr.list_work_locations" optionLabel="name" entity="work_locations"/>
+      <field name="cost_center" label="Cost centre" fieldType="many2one" source="hr.list_cost_centers" optionLabel="name" entity="cost_centers"/>
+      <field name="employment_type" label="Employment type" fieldType="selection" options="permanent, contract, temporary, intern, casual"/>
+      <field name="hire_date" label="Date of joining" fieldType="date"/>
+      <field name="probation_end" label="Probation ends" fieldType="date"/>
+    </group>
+  </view>
+</page>

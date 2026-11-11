@@ -96,15 +96,25 @@ fn one(input: SlipExport) -> Result<Value> {
     rows.push(json!({ "label": "Employee", "kind": "", "amount": slip.get("employee_name").cloned().unwrap_or(Value::Null) }));
     rows.push(json!({ "label": "Period", "kind": "", "amount": period }));
     rows.push(json!({ "label": "Structure", "kind": "", "amount": format!("{} {}", text(&slip, "structure_code").unwrap_or(""), text(&slip, "structure_version").unwrap_or("")) }));
-    if let Some(lines) = slip.get("lines").and_then(Value::as_array) {
-        for line in lines {
-            let label = ["label", "name", "code"].iter().find_map(|k| line.get(*k).and_then(Value::as_str)).unwrap_or("");
-            rows.push(json!({
-                "label": label,
-                "kind": line.get("kind").cloned().unwrap_or(Value::Null),
-                "amount": line.get("amount").cloned().unwrap_or(Value::Null),
-            }));
-        }
+    let stored: Vec<Value> = crate::rules::stored_lines(slip.get("lines").unwrap_or(&Value::Null));
+    // Payslips keep only amounts, in the order of their structure's components; the structure supplies the rest.
+    let components: Vec<Value> = if stored.iter().any(Value::is_string) {
+        let structure = db::find::<Record>("pay_structure")
+            .filter("code", text(&slip, "structure_code").unwrap_or_default())
+            .filter("version", text(&slip, "structure_version").unwrap_or_default())
+            .first()?
+            .ok_or_else(|| Error::msg("the structure of this payslip is gone"))?;
+        structure["definition"]["components"].as_array().cloned().unwrap_or_default()
+    } else {
+        Vec::new()
+    };
+    for line in crate::rules::expand_lines(&stored, &components)? {
+        let label = ["label", "name", "code"].iter().find_map(|k| line.get(*k).and_then(Value::as_str)).unwrap_or("");
+        rows.push(json!({
+            "label": label,
+            "kind": line.get("kind").cloned().unwrap_or(Value::Null),
+            "amount": line.get("amount").cloned().unwrap_or(Value::Null),
+        }));
     }
     for (label, field) in [("Gross", "gross"), ("Deductions", "deductions"), ("Net pay", "net")] {
         rows.push(json!({ "label": label, "kind": "total", "amount": money(&slip, field) }));

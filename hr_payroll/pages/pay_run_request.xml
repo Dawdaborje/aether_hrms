@@ -1,0 +1,9 @@
+<page route="/hr/payroll/{id}/request-approval" title="Ask someone to approve" model="pay_run" menu="false" icon="send">
+  <view type="form" function="request_pay_run_approval" submit="Send request" success="Request sent" redirect="/hr/payroll/{id}">
+    <group title="Who should approve it?" cols="1">
+      <field name="to" label="Colleague" fieldType="many2one" source="list_approval_candidates" optionLabel="display_name" entity="people" required="true"
+             help="They get a notification with a link to this run. They need the payroll approver role."/>
+      <field name="note" label="Note (optional)" fieldType="text"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,277 @@
+{
+  "model_id": "mdl_x6j3max2yz3zwi2e7rb5",
+  "name": "enrollment",
+  "label": "Enrollment",
+  "plural_label": "Enrollments",
+  "icon": "user-plus",
+  "title_field": "last_name",
+  "fields": [
+    {
+      "id": "fld_e37ydcmswvo64cbjirzp",
+      "name": "first_name",
+      "label": "First name",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_qp6i3e64xpa7otvl2x6r",
+      "name": "middle_name",
+      "label": "Middle name",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_27izppzmkle7ui4r6o5h",
+      "name": "last_name",
+      "label": "Last name",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_u6qgvywq7fmrrkmna37j",
+      "name": "email",
+      "label": "Email",
+      "type": "string",
+      "required": true,
+      "max_length": 160,
+      "index": "plain"
+    },
+    {
+      "id": "fld_buy5mudsq8nsidqn3z05",
+      "name": "work_email",
+      "label": "Work email",
+      "type": "string",
+      "max_length": 160,
+      "help": "The company address given to the new employee, if there is one. Left empty, the invitation address is not used as a work email."
+    },
+    {
+      "id": "fld_5l6h5bsuhfid36vehlhu",
+      "name": "phone",
+      "label": "Phone",
+      "type": "string",
+      "max_length": 40
+    },
+    {
+      "id": "fld_dphzp2phfllncexvjpiw",
+      "name": "department",
+      "label": "Department",
+      "type": "link",
+      "target": "hr.department",
+      "target_id": "mdl_2wk5bl6ddu"
+    },
+    {
+      "id": "fld_mag3msbsapjrtw7lq2uk",
+      "name": "job",
+      "label": "Job",
+      "type": "link",
+      "target": "hr.job",
+      "target_id": "mdl_r244x6gqni"
+    },
+    {
+      "id": "fld_lpdqiy2sc4knn3nbnr3f",
+      "name": "position",
+      "label": "Position",
+      "type": "link",
+      "target": "hr.position",
+      "target_id": "mdl_6aaww7ql2l"
+    },
+    {
+      "id": "fld_dwk5phwzct4pjv7mfifu",
+      "name": "manager",
+      "label": "Manager",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_x7oa6ev74e5g7rlrpati",
+      "name": "work_location",
+      "label": "Work location",
+      "type": "link",
+      "target": "hr.work_location",
+      "target_id": "mdl_n6jg37f7wb"
+    },
+    {
+      "id": "fld_tqhwzjp4q42hejsu27uc",
+      "name": "cost_center",
+      "label": "Cost center",
+      "type": "link",
+      "target": "hr.cost_center",
+      "target_id": "mdl_cc7k2m9p4w"
+    },
+    {
+      "id": "fld_7rnwfxov2qusytadcnul",
+      "name": "employment_type",
+      "label": "Employment type",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_fxrknupwywoe5p4i5fig",
+          "value": "permanent"
+        },
+        {
+          "id": "opt_vnhpehrawbkmwe223xmo",
+          "value": "contract"
+        },
+        {
+          "id": "opt_ijyhwhxrviky5ivpakue",
+          "value": "temporary"
+        },
+        {
+          "id": "opt_2mkhhv3pghx72ftuheym",
+          "value": "intern"
+        },
+        {
+          "id": "opt_u4mo7yi4avadxxurtfvf",
+          "value": "casual"
+        }
+      ]
+    },
+    {
+      "id": "fld_z6f5jbrh6pgespzq7rgx",
+      "name": "hire_date",
+      "label": "Hire date",
+      "type": "date"
+    },
+    {
+      "id": "fld_jn35eetgs4tmipgysoye",
+      "name": "probation_end",
+      "label": "Probation end",
+      "type": "date"
+    },
+    {
+      "id": "fld_72lptcg4axpwk6m4qwhv",
+      "name": "status",
+      "label": "Status",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_ald66i3u5rpn7wvqgkqq",
+          "value": "draft"
+        },
+        {
+          "id": "opt_fy374eoswk45mmchfuze",
+          "value": "invited"
+        },
+        {
+          "id": "opt_kxs3ly7e3oak67tkwq2r",
+          "value": "in_progress"
+        },
+        {
+          "id": "opt_2ksjoedlmpqbaxd6feb4",
+          "value": "submitted"
+        },
+        {
+          "id": "opt_qfxmdmlpbeylikudqdei",
+          "value": "changes_requested"
+        },
+        {
+          "id": "opt_2eu4v5ozmffngu4lmxw2",
+          "value": "approved"
+        },
+        {
+          "id": "opt_4kk6e3yddokzyo3shuff",
+          "value": "expired"
+        },
+        {
+          "id": "opt_d2krmylhtcsoh3nfvx4s",
+          "value": "cancelled"
+        }
+      ],
+      "default": "draft"
+    },
+    {
+      "id": "fld_m2yht3y6vprx425zmkid",
+      "name": "token_hash",
+      "label": "Token hash",
+      "type": "string",
+      "max_length": 64,
+      "index": "plain",
+      "help": "SHA-256 of the invite link's token. The token itself is never stored."
+    },
+    {
+      "id": "fld_glu3ay54e5lnn5rtewo4",
+      "name": "invited_at",
+      "label": "Invited at",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_ysh3za7oo6h6ssicnnle",
+      "name": "expires_at",
+      "label": "Expires at",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_wwvmsmmee7v2zwfye7um",
+      "name": "opened_at",
+      "label": "Opened at",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_vlw35mtqvrmfjigjjpbf",
+      "name": "submitted_at",
+      "label": "Submitted at",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_cx57zubtxjhcemuppsnq",
+      "name": "acknowledged_at",
+      "label": "Acknowledged at",
+      "type": "datetime"
+    },
+    {
+      "id": "fld_c5rx2uaylbyto77tpgtc",
+      "name": "review_note",
+      "label": "Review note",
+      "type": "text",
+      "max_length": 2000
+    },
+    {
+      "id": "fld_x2airyz6wruemvivskig",
+      "name": "reviewed_by",
+      "label": "Reviewed by",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_3z4zqqf45l2br733xwhv",
+      "name": "employee",
+      "label": "Employee",
+      "type": "link",
+      "target": "hr.employee",
+      "target_id": "mdl_3h5vuhedxt"
+    },
+    {
+      "id": "fld_n74bggdo5nfvounob7bq",
+      "name": "source",
+      "label": "Source",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_pytmdblcau5tss6efvyd",
+      "name": "files",
+      "label": "Files",
+      "type": "json",
+      "help": "Documents the new hire attached."
+    },
+    {
+      "id": "fld_yyx6jmeotjeuajxh7mxh",
+      "name": "minimum_age",
+      "label": "Minimum age",
+      "type": "int",
+      "help": "The minimum working age when the link was issued, kept so the form checks the birth date against it."
+    }
+  ],
+  "view": {
+    "list": [
+      "last_name",
+      "first_name",
+      "email",
+      "status",
+      "hire_date"
+    ]
+  }
+}

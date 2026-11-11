@@ -14,7 +14,7 @@ use aether_sdk::db::Filter;
 use aether_sdk::parallel::{self, Chunk};
 use aether_sdk::prelude::*;
 use aether_sdk::scheduler;
-use sp_engine::{Compiled, Input as PayInput, Structure};
+use crate::calc::{self, Outcome, Pending};
 
 use crate::common::{
     actor, id_of, int, money, my_employee, require, require_approver, require_clerk, require_finance, require_payroll_staff, text, today_date, Record,
@@ -23,13 +23,22 @@ use crate::rules::{batch_index, check_period, hours_of, distinct, employed_days,
 
 // A planning page reads this many assignments and queues their batches in one call (700 reads fit the fuel, 1000 did not; each call also has 10 seconds of wall time).
 const PAGE: usize = 100;
-// One call has 50 million instructions. Measured with the demo structure: 25 people per call work, 50 do not.
+// One call has 50 million instructions. Calculating in the call itself (an older kernel), measured with the demo
+// structure: 25 people per call work, 50 do not. When the kernel calculates (`payroll::calculate`) and writes the
+// lines (`payroll::write`), a person costs the call about 0.1 ms of reading their figures and building their row,
+// whatever the size of the structure: measured on a live run, 100 people go over the budget, 40 and 60 fit, and
+// 40 is as fast because the batches run side by side on every core.
 const DEFAULT_BATCH: i64 = 20;
-const MAX_BATCH: i64 = 40;
+const DEFAULT_KERNEL_BATCH: i64 = 40;
+const MAX_BATCH: i64 = 400;
 const MIN_BATCH: i64 = 5;
+/// Most writes in one transaction (the kernel's `db::transaction` limit): a batch's payslips, errors and report.
+const MAX_WRITES: usize = 500;
 /// A run still calculating after this long is declared failed.
 const STUCK_MINUTES: i64 = 20;
 const QUEUE: &str = "payroll";
+/// Batch reports one finalising step reads.
+const FIN_PAGE: usize = 200;
 
 #[derive(Deserialize)]
 struct NewRun {
@@ -88,6 +97,7 @@ struct Payment {
 
 #[derive(Deserialize)]
 struct Slips {
+    #[serde(alias = "id")]
     run: String,
     #[serde(default)]
     after: Option<String>,
@@ -104,7 +114,7 @@ fn create_run(input: NewRun) -> Result<Record> {
     let (start, end) = (parse_date(&input.period_start)?, parse_date(&input.period_end)?);
     check_period(start, end)?;
     crate::library::check_run_period(start, end)?;
-    let batch = input.batch_size.unwrap_or(DEFAULT_BATCH);
+    let batch = input.batch_size.unwrap_or_else(|| if calc::kernel_calculates() { DEFAULT_KERNEL_BATCH } else { DEFAULT_BATCH });
     if !(MIN_BATCH..=MAX_BATCH).contains(&batch) {
         return Err(Error::msg(format!("a batch is {MIN_BATCH} to {MAX_BATCH} people: one call has a fixed budget of work")));
     }
@@ -213,7 +223,7 @@ fn maybe_finalise(run_id: &str, attempt: i64) -> Result<()> {
     if run.get("planning_done") != Some(&json!(true)) {
         return Ok(());
     }
-    let plans: Vec<Record> = db::find("pay_plan").filter("run", run_id).filter("attempt", attempt).limit(1000).all()?;
+    let plans: Vec<Record> = db::find("pay_plan").filter("run", run_id).filter("attempt", attempt).limit(1000).omit(&["jobs"]).all()?;
     let expected: i64 = plans.iter().map(|p| int(p, "batches")).sum();
     let done = db::count("pay_batch", Filter::eq("run", run_id).and(Filter::eq("attempt", attempt)))? as i64;
     if done >= expected {
@@ -256,15 +266,22 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
     let snapshot: Value = plugins::call("hr", "employment_snapshot", &json!({ "employees": ids, "on": format_date(end) }))?;
     let run_inputs: Vec<Record> = db::find("pay_input").filter("run", shared.run.as_str()).matching(Filter::one_of("employee", ids.clone())).limit(1000).all()?;
 
-    let mut structures: BTreeMap<String, (Record, Compiled)> = BTreeMap::new();
-    // Which structures are in play decides whether leave and attendance are asked about at all.
-    for structure_id in assignments.iter().filter_map(|a| text(a, "structure")).collect::<std::collections::BTreeSet<_>>() {
-        let record = require("pay_structure", structure_id, "structure")?;
-        let definition: Structure = serde_json::from_value(record["definition"].clone()).map_err(|e| Error::msg(format!("structure {structure_id}: {e}")))?;
-        let compiled = Compiled::new(&definition).map_err(|e| Error::msg(format!("structure {structure_id}: {e}")))?;
-        structures.insert(structure_id.to_string(), (record, compiled));
+    // The structures in play, as stored: the kernel calculates with them (see `calc`), so the batch only reads
+    // their inputs and components here and compiles one itself only if it has to calculate someone itself.
+    // Only the structures someone in this batch is on in this period (the assignments read include earlier and
+    // later ones): a structure of 10,000 rules has an outline of 150 kB.
+    let mut structures: BTreeMap<String, Record> = BTreeMap::new();
+    let mut in_play = std::collections::BTreeSet::new();
+    for id in &ids {
+        if let Some(assignment) = pick_assignment(&assignments, id, start, end)? {
+            in_play.extend(text(assignment, "structure").map(str::to_string));
+        }
     }
-    let wants = |name: &str| structures.values().any(|(_, c)| c.structure().inputs.iter().any(|i| i.name == name));
+    for structure_id in in_play {
+        let record = calc::structure_for_run(&structure_id)?;
+        structures.insert(structure_id, record);
+    }
+    let wants = |name: &str| structures.values().any(|r| calc::input_names(r).any(|i| i == name));
     let leave: Value = if wants("unpaid_leave_days") {
         plugins::call("hr_leave", "payroll_leave_summary", &json!({ "employees": ids, "from": format_date(start), "to": format_date(end) }))?
     } else {
@@ -276,18 +293,19 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
         Value::Null
     };
     // Extra pay comes from one place: structures that declare inputs named `adj_<code>` get that code's total for the period.
-    let adjustments: Value = if structures.values().any(|(_, c)| c.structure().inputs.iter().any(|i| i.name.starts_with("adj_"))) {
+    let adjustments: Value = if structures.values().any(|r| calc::input_names(r).any(|i| i.starts_with("adj_"))) {
         plugins::call("hr_compensation", "payroll_adjustments", &json!({ "employees": ids, "from": format_date(start), "to": format_date(end) }))?
     } else {
         Value::Null
     };
     let periods_per_year = crate::setup::periods_per_year()?;
+    let pay_suspended = crate::setup::pays_suspended()?;
     // A structure that declares `exemptions_annual` gets the person's declared/verified yearly exemptions.
     let exemptions = if wants("exemptions_annual") { crate::library::exemptions_for(&ids, &format_date(end)[..4])? } else { BTreeMap::new() };
     let other_income = if wants("other_income_annual") { crate::library::other_income_for(&ids, &format_date(end)[..4])? } else { BTreeMap::new() };
     let mut currencies: BTreeMap<String, Option<String>> = BTreeMap::new();
     let mut totals = Totals::default();
-    let mut slips: Vec<(String, Value)> = Vec::new();
+    let mut pending: Vec<Pending> = Vec::new();
     let mut errors: Vec<(String, String)> = Vec::new();
 
     for id in &ids {
@@ -299,6 +317,17 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
         let person = &snapshot[id.as_str()];
         if person.is_null() {
             errors.push((id.clone(), "this employee is not in the directory".into()));
+            continue;
+        }
+        let status = person["status"].as_str().unwrap_or_default();
+        // A suspended employee is out of the run unless the organization pays through suspensions.
+        if status == "suspended" && !pay_suspended {
+            totals.skipped += 1;
+            continue;
+        }
+        // An ended employment without a last day cannot be prorated: it would be paid in full, so it is held for HR.
+        if matches!(status, "resigned" | "terminated" | "retired" | "deceased") && person["end_date"].is_null() {
+            errors.push((id.clone(), format!("their employment is {status} but has no end date, so their last pay cannot be worked out")));
             continue;
         }
         let hired = person["hire_date"].as_str().map(parse_date).transpose()?;
@@ -314,12 +343,9 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
         };
         let structure_id = text(assignment, "structure").unwrap_or_default().to_string();
         if !structures.contains_key(&structure_id) {
-            let record = require("pay_structure", &structure_id, "structure")?;
-            let definition: Structure = serde_json::from_value(record["definition"].clone()).map_err(|e| Error::msg(format!("structure {structure_id}: {e}")))?;
-            let compiled = Compiled::new(&definition).map_err(|e| Error::msg(format!("structure {structure_id}: {e}")))?;
-            structures.insert(structure_id.clone(), (record, compiled));
+            structures.insert(structure_id.clone(), calc::structure_for_run(&structure_id)?);
         }
-        let (record, compiled) = &structures[&structure_id];
+        let record = &structures[&structure_id];
         let code = text(record, "currency").unwrap_or_default().to_string();
         if !currencies.contains_key(&code) {
             let found: Option<Record> = plugins::call("currency", "get_currency_by_code", &json!({ "code": code }))?;
@@ -330,7 +356,7 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
             continue;
         }
 
-        let declared: Vec<&str> = compiled.structure().inputs.iter().map(|i| i.name.as_str()).collect();
+        let declared: Vec<&str> = calc::input_names(record).collect();
         let mut variables: BTreeMap<String, Value> = BTreeMap::new();
         let mut put = |name: &str, value: Value| {
             if declared.contains(&name) {
@@ -359,82 +385,119 @@ fn batch_job(chunk: Chunk<String>) -> Result<Value> {
                 variables.insert(name.clone(), value.clone());
             }
         }
-        match compiled.run(&PayInput { employee_id: id.clone(), variables: variables.clone() }, false) {
-            Err(error) => errors.push((id.clone(), error.to_string())),
-            Ok(slip) => {
-                let (gross, deductions, net, employer, shortfall) = (money(&slip.gross.to_string())?, money(&slip.deductions.to_string())?, money(&slip.net.to_string())?, money(&slip.employer_cost.to_string())?, money(&slip.shortfall.to_string())?);
+        pending.push(Pending { id: id.clone(), structure: structure_id, name: person["display_name"].clone(), variables });
+    }
+
+    // Everyone at once, by the kernel on every core when it can (`payroll::calculate`); in this call otherwise.
+    let calculated = calc::calculate(&structures, pending)?;
+    let by_kernel = calculated.by_kernel;
+    let ticket = calculated.ticket.clone();
+    let mut slips: Vec<(String, Value)> = Vec::new();
+    for (person, outcome) in calculated.people {
+        match outcome {
+            Outcome::Failed(message) => errors.push((person.id, message)),
+            Outcome::Done(slip) => {
+                let record = &structures[&person.structure];
+                let code = text(record, "currency").unwrap_or_default().to_string();
+                let (gross, deductions, net, employer, shortfall) = (money(&slip.gross)?, money(&slip.deductions)?, money(&slip.net)?, money(&slip.employer_cost)?, money(&slip.shortfall)?);
                 totals.calculated += 1;
                 totals.gross = totals.gross + gross;
                 totals.deductions = totals.deductions + deductions;
                 totals.net = totals.net + net;
                 totals.employer_cost = totals.employer_cost + employer;
                 totals.shortfall = totals.shortfall + shortfall;
-                for line in &slip.lines {
-                    let kind = match line.kind {
-                        sp_engine::Kind::Earning => "earning",
-                        sp_engine::Kind::Deduction => "deduction",
-                        sp_engine::Kind::Employer => "employer",
-                        sp_engine::Kind::Info => continue,
-                    };
-                    totals.add_line(&line.id, kind, money(&line.amount.to_string())?);
-                }
                 slips.push((
-                    id.clone(),
+                    person.id.clone(),
                     json!({
-                        "run": shared.run, "employee": id, "employee_name": person["display_name"], "structure_code": text(record, "code"), "structure_version": text(record, "version"),
+                        "run": shared.run, "employee": person.id, "employee_name": person.name, "structure_code": text(record, "code"), "structure_version": text(record, "version"),
                         "structure_hash": text(record, "hash"), "currency": code, "gross": gross, "deductions": deductions, "net": net, "employer_cost": employer, "shortfall": shortfall,
-                        "lines": serde_json::to_value(&slip.lines).map_err(|e| Error::msg(e.to_string()))?,
+                        // One amount per component of the structure, in its order, as one string (see rules::lines_text).
+                        "lines": slip.lines,
                         // What the structure was given, kept so the payslip can be explained line by line later.
-                        "inputs": serde_json::to_value(&variables).map_err(|e| Error::msg(e.to_string()))?,
+                        "inputs": person.variables,
                     }),
                 ));
             }
         }
+    }
+    // Reported by structure, as one string each; finalising turns them into totals by component.
+    for (structure_id, sums) in &calculated.sums {
+        totals.sums.insert(structure_id.clone(), crate::rules::lines_text(sums));
     }
     totals.failed = errors.len() as i64;
 
     // Every attempt writes its own payslips (an earlier attempt's stay as the record of what was calculated
     // then), so a batch only creates. Its rows and its report go in one transaction: a batch that is run
     // again after a failure finds either all of it written or none.
-    let mut tx = db::transaction();
+    // The writes as the kernel takes them, built here so each row is moved into its op rather than copied.
+    let mut ops: Vec<Value> = Vec::with_capacity(slips.len() + errors.len() + 1);
     let mut writes = 0;
-    for (_, row) in &mut slips {
+    // Which payslips' lines the kernel holds (they are put in by `payroll::write`).
+    let mut kept: Vec<Option<String>> = Vec::new();
+    for (employee, mut row) in slips {
         row["attempt"] = json!(shared.attempt);
-        tx = tx.create("payslip", row);
+        let held = row["lines"].is_null();
+        if held {
+            if let Some(fields) = row.as_object_mut() {
+                fields.remove("lines");
+            }
+        }
+        kept.push(held.then_some(employee));
+        ops.push(json!({ "op": "create", "model": "payslip", "data": row }));
         writes += 1;
     }
     for (employee, message) in &errors {
-        tx = tx.create("pay_error", &json!({ "run": shared.run, "attempt": shared.attempt, "employee": employee, "message": message.chars().take(390).collect::<String>() }));
+        ops.push(json!({ "op": "create", "model": "pay_error", "data": { "run": shared.run, "attempt": shared.attempt, "employee": employee, "message": message.chars().take(390).collect::<String>() } }));
         writes += 1;
     }
     let report = json!({
         "run": shared.run, "attempt": shared.attempt, "idx": batch_no, "status": "done", "employees": totals.employees, "calculated": totals.calculated,
         "skipped": totals.skipped, "failed": totals.failed, "totals": serde_json::to_value(&totals).map_err(|e| Error::msg(e.to_string()))?,
     });
-    if writes >= 50 {
+    if writes >= MAX_WRITES {
         return Err(Error::msg("a batch of this size does not fit one transaction"));
     }
-    tx.create("pay_batch", &report).run()?;
+    // Quiet: the rows are not read back into this call (hundreds of payslips would cost much of its fuel).
+    if kept.iter().any(Option::is_some) && ticket.is_none() {
+        return Err(Error::msg("the kernel kept payslip lines without a ticket"));
+    }
+    ops.push(json!({ "op": "create", "model": "pay_batch", "data": report }));
+    calc::write_ops(ticket.as_deref(), ops, &kept)?;
     maybe_finalise(&shared.run, shared.attempt)?;
-    Ok(json!({ "batch": batch_no, "calculated": totals.calculated, "failed": totals.failed, "skipped": totals.skipped }))
+    Ok(json!({ "batch": batch_no, "calculated": totals.calculated, "failed": totals.failed, "skipped": totals.skipped, "by_kernel": by_kernel }))
 }
 
 fn finalise_job(job: Finalise) -> Result<Value> {
     let Some(run) = current(&job.run, job.attempt)? else { return Ok(json!({ "stale": true })) };
-    let rows: Vec<Record> = db::find("pay_batch")
-        .matching(Filter::eq("run", job.run.as_str()).and(Filter::eq("attempt", job.attempt)).and(Filter::gt("idx", job.after)))
-        .order_by("idx")
-        .limit(200)
-        .all()?;
+    let page = Filter::eq("run", job.run.as_str()).and(Filter::eq("attempt", job.attempt)).and(Filter::gt("idx", job.after));
     let mut acc = job.acc;
+    // The component sums of a page are added up by the kernel (`payroll::sum_lines`), onto the running sums this
+    // job carries: a structure of thousands of components has thousands of sums in every report, too many to
+    // read and add here. The rest of each report is read without them. An older kernel: everything here.
+    let natively = match aether_sdk::transport::call(
+        "payroll::sum_lines",
+        &json!({ "model": "pay_batch", "filter": page.to_json(), "order": "idx", "limit": FIN_PAGE, "field": "totals", "key": "sums", "add_to": acc.sums }),
+    ) {
+        Ok(reply) => Some(serde_json::from_value::<BTreeMap<String, String>>(reply["data"]["sums"].clone()).map_err(|e| Error::msg(format!("the kernel's sums: {e}")))?),
+        Err(Error::UnknownCommand(_) | Error::Capability(_)) => None,
+        Err(error) => return Err(error),
+    };
+    let mut find = db::find::<Record>("pay_batch").matching(page).order_by("idx").limit(FIN_PAGE as u32);
+    if natively.is_some() {
+        find = find.omit(&["totals.sums"]);
+    }
+    let rows = find.all()?;
     let mut last = job.after;
     for row in &rows {
         let batch: Totals = serde_json::from_value(row["totals"].clone()).map_err(|e| Error::msg(format!("a batch's totals: {e}")))?;
         acc.merge(&batch);
         last = int(row, "idx");
     }
+    if let Some(sums) = natively {
+        acc.sums = sums;
+    }
     let group = text(&run, "group").unwrap_or_default().to_string();
-    if rows.len() == 200 {
+    if rows.len() == FIN_PAGE {
         scheduler::enqueue("finalise_page")
             .payload(&Finalise { run: job.run, attempt: job.attempt, after: last, acc })
             .queue(QUEUE)
@@ -442,18 +505,22 @@ fn finalise_job(job: Finalise) -> Result<Value> {
             .send()?;
         return Ok(json!({ "more": true }));
     }
-    let plans: Vec<Record> = db::find("pay_plan").filter("run", job.run.as_str()).filter("attempt", job.attempt).limit(1000).all()?;
+    let plans: Vec<Record> = db::find("pay_plan").filter("run", job.run.as_str()).filter("attempt", job.attempt).limit(1000).omit(&["jobs"]).all()?;
+    acc.resolve_sums(|structure| Ok(calc::component_kinds(&calc::structure_kinds(structure)?)))?;
     let consistent = acc.is_consistent();
     let mut totals = serde_json::to_value(&acc).map_err(|e| Error::msg(e.to_string()))?;
     totals["consistent"] = json!(consistent);
-    db::update::<Record>(
-        "pay_run",
-        &job.run,
-        &json!({
-            "status": "calculated", "finalized": true, "totals": totals, "error_count": acc.failed,
-            "planned_employees": plans.iter().map(|p| int(p, "employees")).sum::<i64>(), "batches_total": plans.iter().map(|p| int(p, "batches")).sum::<i64>(),
-        }),
-    )?;
+    // Quiet: the run is not read back (its totals by component would come with it).
+    db::transaction()
+        .update(
+            "pay_run",
+            &job.run,
+            &json!({
+                "status": "calculated", "finalized": true, "totals": totals, "error_count": acc.failed,
+                "planned_employees": plans.iter().map(|p| int(p, "employees")).sum::<i64>(), "batches_total": plans.iter().map(|p| int(p, "batches")).sum::<i64>(),
+            }),
+        )
+        .run_quiet()?;
     events::emit("payroll_run_calculated", &json!({ "run": job.run, "errors": acc.failed, "consistent": consistent }))?;
     Ok(json!({ "finalised": true, "errors": acc.failed }))
 }
@@ -465,7 +532,7 @@ fn watch_runs() -> Result<Value> {
     let mut failed_runs = 0u64;
     for run in &running {
         let (id, attempt) = (id_of(run)?, int(run, "attempt"));
-        let plans: Vec<Record> = db::find("pay_plan").filter("run", id).filter("attempt", attempt).limit(1000).all()?;
+        let plans: Vec<Record> = db::find("pay_plan").filter("run", id).filter("attempt", attempt).limit(1000).omit(&["jobs"]).all()?;
         // A planning page that ran out of budget leaves no job to look at: a run that is far too old is failed.
         let age = match (text(run, "started").map(aether_sdk::dates::parse_datetime).transpose()?, aether_sdk::dates::parse_datetime(&context::current()?.now)) {
             (Some(started), Ok(now)) => (now - started).num_minutes(),
@@ -621,7 +688,7 @@ fn progress(input: Id) -> Result<Value> {
     require_payroll_staff()?;
     let run = require("pay_run", &input.id, "run")?;
     let attempt = int(&run, "attempt");
-    let plans: Vec<Record> = db::find("pay_plan").filter("run", input.id.as_str()).filter("attempt", attempt).limit(1000).all()?;
+    let plans: Vec<Record> = db::find("pay_plan").filter("run", input.id.as_str()).filter("attempt", attempt).limit(1000).omit(&["jobs"]).all()?;
     let done = db::count("pay_batch", Filter::eq("run", input.id.as_str()).and(Filter::eq("attempt", attempt)))?;
     let slips = db::count("payslip", Filter::eq("run", input.id.as_str()).and(Filter::eq("attempt", attempt)))?;
     let errors = db::count("pay_error", Filter::eq("run", input.id.as_str()).and(Filter::eq("attempt", attempt)))?;
@@ -687,9 +754,30 @@ handler! {
         db::get("pay_run", &input.id)
     }
 
+    /// The run for its page: the run as stored, with its totals laid out as plain `total_*` fields.
+    fn get_pay_run_detail(input: Id) -> Record {
+        require_payroll_staff()?;
+        let mut run = require("pay_run", &input.id, "run")?;
+        let totals = run["totals"].clone();
+        if let Some(fields) = run.as_object_mut() {
+            for name in ["employees", "calculated", "skipped", "failed", "gross", "deductions", "net", "employer_cost", "shortfall"] {
+                fields.insert(format!("total_{name}"), totals[name].clone());
+            }
+        }
+        let state = crate::approval::approval_state(&run)?;
+        let note = crate::approval::approval_note(&run, state)?;
+        if let Some(fields) = run.as_object_mut() {
+            fields.insert("approval".into(), json!(state));
+            fields.insert("approval_note".into(), json!(note));
+        }
+        Ok(run)
+    }
+
     fn list_pay_runs(_: Empty) -> Vec<Record> {
         require_payroll_staff()?;
-        db::find("pay_run").order_by("-period_end").limit(200).all()
+        // Without the totals by component (hundreds per run for a large structure): the list shows none of them, and
+        // reading them for 200 runs would cost the call more than it may spend. `get_pay_run_detail` has them.
+        db::find("pay_run").order_by("-period_end").limit(200).omit(&["totals"]).all()
     }
 
     fn pay_run_progress(input: Id) -> Value {

@@ -156,5 +156,11 @@
   "work_permit_expiry": "Work permit expiry",
   "work_phone": "Work phone",
   "work_phone_country": "Work phone country",
-  "yearly": "Yearly"
+  "yearly": "Yearly",
+  "rank_override_reason": "Rank rule set aside because",
+  "manager_rank_rule": "Managers must rank",
+  "rank_strict": "Strictly above",
+  "rank_equal_ok": "Above or equal",
+  "partnered": "Partnered",
+  "minimum_working_age": "Minimum working age"
 }

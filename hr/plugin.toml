@@ -44,6 +44,9 @@ label = "HR manager"
 description = "Everything an HR officer can do, and sees pay"
 
 [[events]]
+name = "hr_setting_changed"
+
+[[events]]
 name = "employee_hired"
 
 [[events]]
@@ -58,6 +61,13 @@ function = "generate_demo_department"
 help = "Generate demo departments"
 demo_model = "department"
 args = [{ name = "count", type = "int", default = 10 }]
+
+[[command]]
+name = "demo_grade"
+function = "generate_demo_grade"
+help = "Generate the demo grade ladder (G1 to G8, with wage bands)"
+demo_model = "grade"
+args = [{ name = "count", type = "int", default = 8 }]
 
 [[command]]
 name = "demo_job"

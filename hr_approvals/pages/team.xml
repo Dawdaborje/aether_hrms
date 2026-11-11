@@ -1,0 +1,3 @@
+<page route="/hr/team" title="My team" icon="users-round" sort="2" roles="member">
+  <view type="board" source="team_board" drill="team_board_drill"/>
+</page>
